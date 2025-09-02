@@ -1,8 +1,6 @@
-# Jeffrey Tseng - Modern Portfolio
+# Jeffrey Tseng - Website Project
 
-A stunning, modern portfolio website built with cutting-edge web technologies.
-
-## 🚀 Features
+## Features
 
 - **Modern Design**: Beautiful, responsive design with smooth animations
 - **Interactive Components**: Engaging buttons, hover effects, and transitions
@@ -12,7 +10,7 @@ A stunning, modern portfolio website built with cutting-edge web technologies.
 - **Tailwind CSS**: Utility-first CSS framework for rapid styling
 - **Performance Optimized**: Fast loading with Vite build tool
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **React 18** - Modern React with hooks and functional components
 - **TypeScript** - Type-safe JavaScript development
@@ -21,7 +19,7 @@ A stunning, modern portfolio website built with cutting-edge web technologies.
 - **Framer Motion** - Production-ready motion library for React
 - **Lucide React** - Beautiful, customizable SVG icons
 
-## 🎨 Design Features
+## Design Features
 
 - **Gradient Backgrounds**: Modern gradient overlays and effects
 - **Glass Morphism**: Frosted glass effects with backdrop blur
@@ -30,14 +28,14 @@ A stunning, modern portfolio website built with cutting-edge web technologies.
 - **Custom Animations**: Floating elements and glow effects
 - **Dark Theme**: Modern dark color scheme with blue/purple accents
 
-## 📱 Responsive Design
+## Responsive Design
 
 - Mobile-first approach
 - Tablet and desktop optimizations
 - Touch-friendly interactive elements
 - Adaptive layouts for all screen sizes
 
-## 🚀 Getting Started
+## Getting Started
 
 1. **Install Dependencies**
    ```bash
@@ -59,7 +57,7 @@ A stunning, modern portfolio website built with cutting-edge web technologies.
    npm run preview
    ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -75,7 +73,7 @@ src/
 └── index.css           # Global styles with Tailwind
 ```
 
-## 🎯 Key Improvements from Original
+## Key Improvements from Original
 
 - ✅ **Modern React Architecture**: Component-based, reusable code
 - ✅ **Interactive Buttons**: Replaced static hyperlinks with animated buttons
@@ -86,7 +84,7 @@ src/
 - ✅ **Type Safety**: TypeScript for better development experience
 - ✅ **Modern Styling**: Tailwind CSS for consistent, maintainable styles
 
-## 🌟 Live Features
+## Live Features
 
 - **Animated Navigation**: Smooth header with scroll effects
 - **Hero Section**: Eye-catching profile with floating animations
@@ -95,12 +93,10 @@ src/
 - **Social Links**: Integrated social media connections
 - **Scroll Effects**: Parallax and reveal animations
 
-## 📧 Contact
+## Contact
 
 - **Email**: jeffreytseng07@gmail.com
-- **Portfolio**: [Your Portfolio URL]
-- **LinkedIn**: [Your LinkedIn Profile]
+- **Portfolio**: [jtseng.org]
+- **LinkedIn**: [https://www.linkedin.com/in/jeffrey-tseng-9b3582261/]
 
 ---
-
-Built with ❤️ using modern web technologies
