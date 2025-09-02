@@ -54,7 +54,7 @@ const About: React.FC = () => {
             {/* Text Content */}
             <motion.div variants={itemVariants} className="space-y-6">
               <p className="text-xl text-gray-300 leading-relaxed">
-                Test Freshman at Purdue studying Computer Science and Math, with a 
+                Freshman at Purdue studying Computer Science and Math, with a 
                 concentration in Machine Learning. 
                 Bringing ideas to life through code.
               </p>
