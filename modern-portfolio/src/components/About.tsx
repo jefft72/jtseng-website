@@ -54,7 +54,7 @@ const About: React.FC = () => {
             {/* Text Content */}
             <motion.div variants={itemVariants} className="space-y-6">
               <p className="text-xl text-gray-300 leading-relaxed">
-                Freshman at Purdue studying Computer Science and Math, with a 
+                Test Freshman at Purdue studying Computer Science and Math, with a 
                 concentration in Machine Learning. 
                 Bringing ideas to life through code.
               </p>
@@ -92,12 +92,11 @@ const About: React.FC = () => {
           {/* Stats Section */}
           <motion.div
             variants={itemVariants}
-            className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-8"
           >
             {[
               { number: '50+', label: 'Projects Completed' },
               { number: '3+', label: 'Years of Coding Experience' },
-              //{ number: '100%', label: 'Client Satisfaction' },
               { number: '<24 Hours', label: 'Response Time' },
             ].map((stat) => (
               <motion.div
