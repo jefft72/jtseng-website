@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Download, Mail } from 'lucide-react';
-import profileImage from '../DSC08402.JPEG';
+import profileImage from '../assets/DSC08402.JPEG';
 
 const Hero: React.FC = () => {
   const scrollToSection = (href: string) => {
