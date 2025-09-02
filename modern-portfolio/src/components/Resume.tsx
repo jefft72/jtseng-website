@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, FileText, Eye, ExternalLink } from 'lucide-react';
+import { Download, Eye } from 'lucide-react';
 
 const Resume: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -82,7 +82,7 @@ const Resume: React.FC = () => {
       case 'experience':
         return (
           <div className="space-y-6">
-            {data.content.map((exp: any, index: number) => (
+            {(data.content as any[]).map((exp: any, index: number) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: -20 }}
@@ -104,7 +104,7 @@ const Resume: React.FC = () => {
       case 'skills':
         return (
           <div className="grid md:grid-cols-3 gap-6">
-            {data.content.map((skillGroup: any, index: number) => (
+            {(data.content as any[]).map((skillGroup: any, index: number) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -131,7 +131,7 @@ const Resume: React.FC = () => {
       case 'education':
         return (
           <div className="space-y-6">
-            {data.content.map((edu: any, index: number) => (
+            {(data.content as any[]).map((edu: any, index: number) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: -20 }}
@@ -154,7 +154,7 @@ const Resume: React.FC = () => {
             animate={{ opacity: 1 }}
             className="text-lg text-gray-300 leading-relaxed"
           >
-            {data.content}
+            {data.content as string}
           </motion.p>
         );
     }

@@ -71,7 +71,7 @@ const About: React.FC = () => {
 
             {/* Skills Grid */}
             <motion.div variants={itemVariants} className="grid grid-cols-2 gap-6">
-              {skills.map((skill, index) => (
+              {skills.map((skill) => (
                 <motion.div
                   key={skill.name}
                   whileHover={{ scale: 1.05, y: -5 }}
@@ -99,7 +99,7 @@ const About: React.FC = () => {
               { number: '3+', label: 'Years Experience' },
               { number: '100%', label: 'Client Satisfaction' },
               { number: '24/7', label: 'Learning Mode' },
-            ].map((stat, index) => (
+            ].map((stat) => (
               <motion.div
                 key={stat.label}
                 whileHover={{ scale: 1.05 }}
