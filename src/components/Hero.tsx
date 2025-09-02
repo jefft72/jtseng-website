@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Download, Mail } from 'lucide-react';
-//import profileImage from '/DSC08402.JPEG';
+import profileImage from '../DSC08402.JPEG';
 
 const Hero: React.FC = () => {
   const scrollToSection = (href: string) => {
@@ -36,7 +36,7 @@ const Hero: React.FC = () => {
           >
             <div className="relative inline-block">
               <motion.img
-                src="/DSC08402.JPEG"
+                src= {profileImage}
                 alt="Jeffrey Tseng"
                 onError={(e) => {
                   console.log('Image failed to load:', e.target.src);
