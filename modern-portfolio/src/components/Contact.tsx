@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Github, Linkedin, Instagram } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -43,8 +43,8 @@ const Contact: React.FC = () => {
     {
       icon: Phone,
       title: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567',
+      value: '+1 (650) 445-9079',
+      href: 'tel:+16504459079',
     },
     {
       icon: MapPin,
@@ -55,9 +55,9 @@ const Contact: React.FC = () => {
   ];
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
+    { icon: Github, href: 'https://github.com/jefft72', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/jeffrey-tseng-9b3582261/', label: 'LinkedIn' },
+    { icon: Instagram, href: 'https://www.instagram.com/jeffrey_tseng_/', label: 'Instagram' },
   ];
 
   const containerVariants = {

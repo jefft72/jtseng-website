@@ -54,18 +54,18 @@ const About: React.FC = () => {
             {/* Text Content */}
             <motion.div variants={itemVariants} className="space-y-6">
               <p className="text-xl text-gray-300 leading-relaxed">
-                I'm a passionate developer who loves creating beautiful, functional web experiences. 
-                With a keen eye for design and a strong foundation in modern web technologies, 
-                I bring ideas to life through code.
+                Freshman at Purdue studying Computer Science and Math, with a 
+                concentration in Machine Learning. 
+                Bringing ideas to life through code.
               </p>
               <p className="text-lg text-gray-400 leading-relaxed">
-                My journey in web development started with curiosity and has evolved into a 
-                deep passion for building applications that not only work flawlessly but also 
-                provide exceptional user experiences.
+                My interests are in software engineering, machine learning, and computer vision. 
+                My experience includes developing synthetic aperture radars, data analaysis in bioinformatics
+                through R, and autonomous vehicle development.
               </p>
               <p className="text-lg text-gray-400 leading-relaxed">
-                When I'm not coding, you can find me exploring new technologies, contributing 
-                to open-source projects, or sharing knowledge with the developer community.
+                When I'm not coding, you can find me exercising, reading, or socializing with friends.
+                Find my contact info in the contact section, and let's connect!
               </p>
             </motion.div>
 
@@ -96,9 +96,9 @@ const About: React.FC = () => {
           >
             {[
               { number: '50+', label: 'Projects Completed' },
-              { number: '3+', label: 'Years Experience' },
-              { number: '100%', label: 'Client Satisfaction' },
-              { number: '24/7', label: 'Learning Mode' },
+              { number: '3+', label: 'Years of Coding Experience' },
+              //{ number: '100%', label: 'Client Satisfaction' },
+              { number: '<24 Hours', label: 'Response Time' },
             ].map((stat) => (
               <motion.div
                 key={stat.label}
