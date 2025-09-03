@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Code, Zap, Users } from 'lucide-react';
+import { Code } from 'lucide-react';
 
 const About: React.FC = () => {
   const skills = [
-    { name: 'Frontend Development', icon: Code, description: 'React, TypeScript, Next.js' },
-    { name: 'Synthetic Aperture Radar Development', icon: Code, description: 'In collaboration with MIT\'s Lincoln Laboratories' },
-    { name: 'Driven', icon: Zap, description: 'Disciplined with a willingness to learn and grow in new environments' },
-    { name: 'Collaboration', icon: Users, description: 'Years of public speaking and leadership experience' },
+    { name: 'Website Development', icon: Code, description: 'React, TypeScript, Next.js, Tailwind' },
+    { name: 'Synthetic Aperture Radar Development', icon: Code, description: 'NumPy, SciPy, Matlab' },
+    { name: 'Bioinformatics Research', icon: Code, description: 'R, RStudio, Data Science' },
+    { name: 'Autonomous Systems', icon: Code, description: 'Gazebo, ROS, LIDAR' },
   ];
 
   const containerVariants = {

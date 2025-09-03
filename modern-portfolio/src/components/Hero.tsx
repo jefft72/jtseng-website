@@ -62,7 +62,7 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="text-xl md:text-2xl text-blue-200 mb-8 max-w-2xl mx-auto"
           >
-            Creative Developer & Problem Solver
+            Experienced developer seeking an internship for 2026 Fall, Spring, or Summer.
           </motion.p>
 
           <motion.p
@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="text-lg text-gray-300 mb-12 max-w-3xl mx-auto"
           >
-            Passionate about crafting innovative web experiences and solving complex challenges with modern technology.
+            Tackling complex challenges with modern technology.
           </motion.p>
 
           {/* Action Buttons */}
