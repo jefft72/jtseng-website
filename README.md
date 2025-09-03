@@ -35,28 +35,6 @@
 - Touch-friendly interactive elements
 - Adaptive layouts for all screen sizes
 
-## Getting Started
-
-1. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-
-2. **Start Development Server**
-   ```bash
-   npm run dev
-   ```
-
-3. **Build for Production**
-   ```bash
-   npm run build
-   ```
-
-4. **Preview Production Build**
-   ```bash
-   npm run preview
-   ```
-
 ## Project Structure
 
 ```
