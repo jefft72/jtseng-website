@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Heart, ArrowUp } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -22,11 +22,6 @@ const Footer: React.FC = () => {
             className="flex items-center gap-2 text-gray-400 mb-4 md:mb-0"
           >
             <span>© {currentYear} Jeffrey Tseng.</span>
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-            </motion.div>
           </motion.div>
 
           {/* Back to Top Button */}
