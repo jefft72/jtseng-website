@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Instagram } from 'lucide-react';
+import { Mail, MapPin, Send, Github, Linkedin, Instagram } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -39,12 +39,6 @@ const Contact: React.FC = () => {
       title: 'Email',
       value: 'jeffreytseng07@gmail.com',
       href: 'mailto:jeffreytseng07@gmail.com',
-    },
-    {
-      icon: Phone,
-      title: 'Phone',
-      value: '+1 (650) 445-9079',
-      href: 'tel:+16504459079',
     },
     {
       icon: MapPin,

@@ -21,14 +21,13 @@ const Footer: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="flex items-center gap-2 text-gray-400 mb-4 md:mb-0"
           >
-            <span>© {currentYear} Jeffrey Tseng. Made with</span>
+            <span>© {currentYear} Jeffrey Tseng.</span>
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
             >
               <Heart size={16} className="text-red-500 fill-current" />
             </motion.div>
-            <span>and modern web technologies.</span>
           </motion.div>
 
           {/* Back to Top Button */}

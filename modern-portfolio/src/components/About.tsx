@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Code, Palette, Zap, Users } from 'lucide-react';
+import { Code, Zap, Users } from 'lucide-react';
 
 const About: React.FC = () => {
   const skills = [
     { name: 'Frontend Development', icon: Code, description: 'React, TypeScript, Next.js' },
-    { name: 'UI/UX Design', icon: Palette, description: 'Modern, responsive designs' },
-    { name: 'Performance', icon: Zap, description: 'Optimized, fast applications' },
-    { name: 'Collaboration', icon: Users, description: 'Team player, great communicator' },
+    { name: 'Synthetic Aperture Radar Development', icon: Code, description: 'In collaboration with MIT\'s Lincoln Laboratories' },
+    { name: 'Driven', icon: Zap, description: 'Disciplined with a willingness to learn and grow in new environments' },
+    { name: 'Collaboration', icon: Users, description: 'Years of public speaking and leadership experience' },
   ];
 
   const containerVariants = {
@@ -95,8 +95,8 @@ const About: React.FC = () => {
             className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-8"
           >
             {[
-              { number: '50+', label: 'Projects Completed' },
-              { number: '3+', label: 'Years of Coding Experience' },
+              { number: '3', label: 'Software Engineering Internships' },
+              { number: '5+', label: 'Years of Coding Experience' },
               { number: '<24 Hours', label: 'Response Time' },
             ].map((stat) => (
               <motion.div
