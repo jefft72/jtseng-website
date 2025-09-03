@@ -37,9 +37,9 @@ const Resume: React.FC = () => {
     skills: {
       title: 'Technical Skills',
       content: [
-        { category: 'Languages', skills: ['Python', 'Java', 'C++', 'C', 'HTML/CSS'] },
-        { category: 'Libraries & Tools', skills: ['NumPy', 'SciPy', 'Matlab', 'R'] },
-        { category: 'Platforms & Systems', skills: ['ROS', 'Gazebo', 'Git', 'Vercel'] },
+        { category: 'Languages', skills: ['Python, ' + 'Java, ' + 'C++, ' + 'C, ' + 'HTML/CSS'] },
+        { category: 'Libraries & Tools', skills: ['NumPy, ' + 'SciPy, ' + 'Matlab, ' + 'R'] },
+        { category: 'Platforms & Systems', skills: ['ROS, ' + 'Gazebo, ' + 'Git, ' + 'Vercel'] },
       ],
     },
     education: {

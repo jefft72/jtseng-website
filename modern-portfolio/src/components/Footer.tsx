@@ -26,7 +26,6 @@ const Footer: React.FC = () => {
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
             >
-              <Heart size={16} className="text-red-500 fill-current" />
             </motion.div>
           </motion.div>
 
