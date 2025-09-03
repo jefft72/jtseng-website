@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Download, Mail } from 'lucide-react';
-import profileImage from '../assets/DSC08402.JPEG';
+import profileImage from '../assets/DSC08402.jpeg';
 
 const Hero: React.FC = () => {
   const scrollToSection = (href: string) => {
@@ -36,12 +36,8 @@ const Hero: React.FC = () => {
           >
             <div className="relative inline-block">
               <motion.img
-                src= {profileImage}
+                src={profileImage}
                 alt="Jeffrey Tseng"
-                onError={(e) => {
-                  console.log('Image failed to load:', e.target.src);
-                  e.target.style.display = 'none';
-                }}
                 className="w-48 h-48 rounded-full object-cover border-4 border-white/20 shadow-2xl mx-auto"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
