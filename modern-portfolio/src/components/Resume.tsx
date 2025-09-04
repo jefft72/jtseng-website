@@ -190,7 +190,7 @@ const Resume: React.FC = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full flex items-center gap-2 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                  className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full flex items-center gap-2 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
                 >
                   <Download size={20} />
                   Download Resume
@@ -209,7 +209,7 @@ const Resume: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2 md:px-6 md:py-3 rounded-full font-medium transition-all duration-300 text-sm md:text-base ${
+                  className={`px-6 py-3 md:px-8 md:py-4 rounded-full font-medium transition-all duration-300 text-sm md:text-base ${
                     activeTab === tab.id
                       ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                       : 'text-gray-400 hover:text-white hover:bg-slate-700/50'
@@ -241,3 +241,4 @@ const Resume: React.FC = () => {
 };
 
 export default Resume;
+

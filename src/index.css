@@ -96,7 +96,9 @@ html {
 .p-6 { padding: 1.5rem; }
 .p-8 { padding: 2rem; }
 .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.px-10 { padding-left: 2.5rem; padding-right: 2.5rem; }
 .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.py-5 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
 .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
 .mb-6 { margin-bottom: 1.5rem; }
 .mb-8 { margin-bottom: 2rem; }
@@ -153,6 +155,8 @@ html {
 .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
 .space-y-6 > * + * { margin-top: 1.5rem; }
 .space-y-8 > * + * { margin-top: 2rem; }
+.space-x-10 > * + * { margin-left: 2.5rem; }
+.space-x-12 > * + * { margin-left: 3rem; }
 .gap-4 { gap: 1rem; }
 .gap-6 { gap: 1.5rem; }
 .gap-8 { gap: 2rem; }

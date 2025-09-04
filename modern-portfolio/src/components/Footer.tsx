@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
             onClick={scrollToTop}
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className="group flex items-center gap-2 px-4 py-2 bg-slate-700/50 border border-slate-600/50 rounded-full text-gray-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
+            className="group flex items-center gap-2 px-6 py-3 bg-slate-700/50 border border-slate-600/50 rounded-full text-gray-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
           >
             <ArrowUp size={16} />
             <span className="text-sm font-medium">Back to Top</span>
@@ -54,3 +54,4 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+

@@ -89,7 +89,7 @@ const Hero: React.FC = () => {
               whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3)' }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('#resume')}
-              className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full overflow-hidden transition-all duration-300"
+              className="group relative px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full overflow-hidden transition-all duration-300"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <Download size={20} />
@@ -102,7 +102,7 @@ const Hero: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('#contact')}
-              className="group px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-full hover:border-blue-400 hover:bg-blue-400/10 transition-all duration-300 flex items-center gap-2"
+              className="group px-10 py-5 border-2 border-white/30 text-white font-semibold rounded-full hover:border-blue-400 hover:bg-blue-400/10 transition-all duration-300 flex items-center gap-2"
             >
               <Mail size={20} />
               Get In Touch
