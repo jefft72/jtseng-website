@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Download, Mail } from 'lucide-react';
-import profileImage from '../assets/DSC08402.jpeg';
+import profileImage from '/src/assets/DSC08402.jpeg';
 
 const Hero: React.FC = () => {
   const scrollToSection = (href: string) => {
@@ -69,7 +69,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-lg text-gray-300 mb-12 max-w-3xl mx-auto"
+            className="text-lg text-gray-300 mb-16 max-w-3xl mx-auto"
           >
             Tackling complex challenges with modern technology.
           </motion.p>
@@ -85,7 +85,7 @@ const Hero: React.FC = () => {
               whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3)' }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('#resume')}
-              className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full overflow-hidden transition-all duration-300"
+              className="group relative px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full overflow-hidden transition-all duration-300"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <Download size={20} />
@@ -98,7 +98,7 @@ const Hero: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('#contact')}
-              className="group px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-full hover:border-blue-400 hover:bg-blue-400/10 transition-all duration-300 flex items-center gap-2"
+              className="group px-10 py-5 bg-slate-900/30 border-2 border-slate-600 text-white font-semibold rounded-full hover:border-blue-500 hover:bg-slate-800/50 transition-all duration-300 flex items-center gap-2"
             >
               <Mail size={20} />
               Get In Touch
@@ -128,3 +128,4 @@ const Hero: React.FC = () => {
 };
 
 export default Hero;
+
