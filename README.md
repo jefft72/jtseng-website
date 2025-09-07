@@ -1,45 +1,26 @@
 # Jeffrey Tseng - Website Project
 
-## Features
-
-- **Modern Design**: Responsive design with smooth animations
-- **Interactive Components**: Engaging buttons + hover effects + transitions
-- **Smooth Animations**: Powered by Framer Motion for fluid user experience
-- **Mobile Responsive**: Optimized for all device sizes
-- **TypeScript**: Type-safe development with modern JavaScript features
-- **Tailwind CSS**: Utility-first CSS framework for rapid styling
-- **Performance Optimized**: Fast loading with Vite build tool
-
 ## Tech Stack
 
-- **React 18** - Modern React with hooks and functional components
-- **TypeScript** - Type-safe JavaScript development
-- **Vite** - Lightning-fast build tool and dev server
-- **Tailwind CSS** - Utility-first CSS framework
-- **Framer Motion** - Production-ready motion library for React
-- **Lucide React** - Beautiful, customizable SVG icons
+- **React 18**
+- **TypeScript** 
+- **Vite** 
+- **Tailwind CSS** 
+- **Framer Motion** 
+- **Lucide React** 
 
 ## Design Features
 
-- **Gradient Backgrounds**: Modern gradient overlays and effects
-- **Glass Morphism**: Frosted glass effects with backdrop blur
-- **Interactive Buttons**: Hover animations and click effects
-- **Smooth Scrolling**: Seamless navigation between sections
-- **Custom Animations**: Floating elements and glow effects
-- **Dark Theme**: Modern dark color scheme with blue/purple accents
-
-## Responsive Design
-
-- Mobile-first approach
-- Tablet and desktop optimizations
-- Touch-friendly interactive elements
-- Adaptive layouts for all screen sizes
+- **Gradient Backgrounds**
+- **Glass Morphism**
+- **Interactive Buttons**
+- **Smooth Scrolling**
 
 ## Project Structure
 
 ```
 src/
-├── components/          # React components
+├── components/         # React components
 │   ├── Header.tsx      # Navigation header
 │   ├── Hero.tsx        # Hero section with profile
 │   ├── About.tsx       # About section
@@ -50,18 +31,9 @@ src/
 ├── main.tsx            # App entry point
 └── index.css           # Global styles with Tailwind
 ```
-## Live Features
-
-- **Animated Navigation**: Smooth header with scroll effects
-- **Hero Section**: Eye-catching profile with floating animations
-- **Interactive Resume**: Tabbed interface with smooth transitions
-- **Contact Form**: Functional form with validation and animations
-- **Social Links**: Integrated social media connections
-- **Scroll Effects**: Parallax and reveal animations
 
 ## Contact
 
-- **Email**: jeffreytseng07@gmail.com
 - **Portfolio**: [jtseng.org]
 - **LinkedIn**: [https://www.linkedin.com/in/jeffrey-tseng-9b3582261/]
 
