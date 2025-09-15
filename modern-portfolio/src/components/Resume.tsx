@@ -5,7 +5,6 @@ import { Download } from 'lucide-react';
 const Resume: React.FC = () => {
   const [activeTab, setActiveTab] = useState('experience');
 
-  // Updated with your resume information
   const resumeData = {
     overview: {
       title: 'Professional Summary',
