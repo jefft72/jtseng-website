@@ -96,7 +96,8 @@ const Contact: React.FC = () => {
           variants={containerVariants}
           className="max-w-6xl mx-auto"
         >
-          {/* Section Header */}
+          {/* Section Header */} 
+          
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Get In Touch
