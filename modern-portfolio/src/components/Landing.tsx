@@ -2,9 +2,15 @@ import React from 'react';
 import profileImage from '/src/assets/DSC08402.jpeg';
 import Typewriter from './Typewriter';
 import GithubStats from './GithubStats.tsx';
+import { Linkedin, Github, Instagram } from 'lucide-react';
 
 const Landing: React.FC = () => {
-  const workingOn = 'Revolutionizing dining hall expereinces with UPlate; AI Generated Podcasts for the latest in tech; Building tech for non profits';
+  const workingOn = 'Revolutionizing dining hall experiences with UPlate; AI Generated Podcasts for the latest in tech; Building tech for non profits';
+  const SOCIALS = {
+    linkedin: 'https://www.linkedin.com/in/jeffreytseng', // update if different
+    github: 'https://github.com/jefft72',
+    instagram: 'https://www.instagram.com/', // update with your handle
+  };
   return (
     <section className="snap-section">
       <div className="container mx-auto px-6 h-screen flex items-center">
@@ -18,8 +24,21 @@ const Landing: React.FC = () => {
             />
           </div>
 
-          {/* Typewriter text */}
+          {/* Typewriter + socials */}
           <div className="flex flex-col items-start justify-center">
+            {/* Socials row */}
+            <div className="flex items-center gap-3 mb-3 text-gray-400">
+              <span className="text-sm">Find me on:</span>
+              <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-white transition">
+                <Linkedin size={20} />
+              </a>
+              <a href={SOCIALS.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-white transition">
+                <Github size={20} />
+              </a>
+              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-white transition">
+                <Instagram size={20} />
+              </a>
+            </div>
             <h1 className="text-5xl font-bold text-white mb-4">Jeffrey Tseng</h1>
             <Typewriter text="welcome to my portfolio" speed={40} className="text-xl text-baby" />
           </div>
