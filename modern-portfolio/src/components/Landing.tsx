@@ -7,9 +7,9 @@ import { Linkedin, Github, Instagram } from 'lucide-react';
 const Landing: React.FC = () => {
   const workingOn = 'Revolutionizing dining hall experiences with UPlate; AI Generated Podcasts for the latest in tech; Building tech for non profits';
   const SOCIALS = {
-    linkedin: 'https://www.linkedin.com/in/jeffreytseng', // update if different
+    linkedin: 'https://www.linkedin.com/in/jeffrey-tseng-9b3582261/',
     github: 'https://github.com/jefft72',
-    instagram: 'https://www.instagram.com/', // update with your handle
+    instagram: 'https://www.instagram.com/jeffrey_tseng_/', 
   };
   return (
     <section className="snap-section">
@@ -27,7 +27,7 @@ const Landing: React.FC = () => {
           {/* Typewriter + socials */}
           <div className="flex flex-col items-start justify-center">
             {/* Socials row */}
-            <div className="flex items-center gap-3 mb-3 text-gray-400">
+            <div className="flex items-center gap-6 mb-3 text-gray-400">
               <span className="text-sm">Find me on:</span>
               <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-white transition">
                 <Linkedin size={20} />
