@@ -14,7 +14,7 @@ const Landing: React.FC = () => {
   return (
     <section className="snap-section">
       <div className="container mx-auto px-6 h-screen flex items-center">
-        <div className="grid grid-cols-3 gap-8 w-full">
+        <div className="grid md:grid-cols-3 gap-6 w-full">
           {/* Avatar */}
           <div className="flex items-center justify-center">
             <img
@@ -39,16 +39,17 @@ const Landing: React.FC = () => {
                 <Instagram size={20} />
               </a>
             </div>
-            <h1 className="text-5xl font-bold text-white mb-4">Jeffrey Tseng</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Jeffrey Tseng</h1>
             <Typewriter text="welcome to my portfolio" speed={40} className="text-xl text-baby" />
           </div>
 
-          {/* Charts */}
-          <div className="flex items-center">
+          {/* Charts (hidden on mobile to avoid crowding) */}
+          <div className="hidden md:flex items-center">
             <div className="w-full">
               <div className="mb-4">
                 <div className="text-white font-semibold">Development activity</div>
                 <div className="text-gray-400 text-sm">Currently working on: <span className="text-baby">{workingOn}</span></div>
+                <div className="text-gray-400 text-sm mt-2">GitHub activity:</div>
               </div>
               <GithubStats variant="inline" />
             </div>
