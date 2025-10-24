@@ -92,28 +92,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
             </motion.div>
           </div>
 
-          {/* Stats Section */}
-          <motion.div
-            variants={itemVariants}
-            className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-8"
-          >
-            {[
-              { number: '3', label: 'Software Engineering Internships' },
-              { number: '5+', label: 'Years of Coding Experience' },
-              { number: '<24 Hours', label: 'Response Time' },
-            ].map((stat) => (
-              <motion.div
-                key={stat.label}
-                whileHover={{ scale: 1.05 }}
-                className="text-center p-6 panel"
-              >
-                <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-400 font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
+          {/* Stats section removed per request to keep layout minimal */}
         </motion.div>
       </div>
     </section>

@@ -4,7 +4,7 @@ import Typewriter from './Typewriter';
 import GithubStats from './GithubStats.tsx';
 
 const Landing: React.FC = () => {
-  const workingOn = 'Leading full-stack teams at Hack the Future';
+  const workingOn = 'Revolutionizing dining hall expereinces with UPlate; AI Generated Podcasts for the latest in tech; Building tech for non profits';
   return (
     <section className="snap-section">
       <div className="container mx-auto px-6 h-screen flex items-center">

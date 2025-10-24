@@ -183,16 +183,10 @@ const Resume: React.FC<Props> = ({ fullPage = false }) => {
                 className="p-6 panel"
               >
                 <h3 className="text-lg font-semibold text-white mb-4">{skillGroup.category}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {skillGroup.skills.map((skill: string, skillIndex: number) => (
-                    <div
-                      key={skillIndex}
-                      className="px-3 py-1 chip-blue text-blue-300 rounded-full text-sm font-medium"
-                    >
-                      {skill}
-                    </div>
-                  ))}
-                </div>
+                {/* Minimal inline list without bubble chips */}
+                <p className="text-gray-300 leading-relaxed">
+                  {skillGroup.skills.join(' • ')}
+                </p>
               </motion.div>
             ))}
           </div>
