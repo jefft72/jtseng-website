@@ -226,13 +226,13 @@ const Resume: React.FC<Props> = ({ fullPage = false }) => {
 
   return (
     <section id="resume" className={fullPage ? 'snap-section' : 'section'}>
-      <div className={`container mx-auto px-6 ${fullPage ? 'md:h-screen md:flex md:items-center' : ''}`}>
+      <div className={`container mx-auto px-6 ${fullPage ? 'h-screen flex flex-col justify-end pb-12' : ''}`}>
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
-          className="max-w-6xl mx-auto"
+          className="max-w-6xl mx-auto w-full"
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-12">

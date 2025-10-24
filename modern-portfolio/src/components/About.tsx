@@ -34,13 +34,13 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
 
   return (
   <section id="about" className={fullPage ? 'snap-section snap-center' : 'section'}>
-  <div className={`container mx-auto px-6 ${fullPage ? 'md:h-screen md:flex md:flex-col md:justify-center' : ''}`}>
+  <div className={`container mx-auto px-6 ${fullPage ? 'h-screen flex flex-col justify-center items-center' : ''}`}>
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
-          className="max-w-6xl mx-auto md:my-auto"
+          className="max-w-6xl w-full"
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-6">
