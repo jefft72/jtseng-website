@@ -33,27 +33,27 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
   };
 
   return (
-    <section id="about" className={fullPage ? 'snap-section' : 'section'}>
-      <div className={`container mx-auto px-6 ${fullPage ? 'h-screen flex items-center' : ''}`}>
+  <section id="about" className={fullPage ? 'snap-section snap-center' : 'section'}>
+  <div className={`container mx-auto px-6 ${fullPage ? 'md:h-screen md:flex md:flex-col md:justify-center' : ''}`}>
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
-          className="max-w-6xl mx-auto"
+          className="max-w-6xl mx-auto md:my-auto"
         >
           {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <motion.div variants={itemVariants} className="text-center mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               About Me
             </h2>
             <div className="w-24 h-1 bg-blue-600 mx-auto rounded-md"></div>
           </motion.div>
 
           {/* Main Content */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Text Content */}
-            <motion.div variants={itemVariants} className="space-y-6">
+            <motion.div variants={itemVariants} className="space-y-4">
               <p className="text-xl text-gray-300 leading-relaxed">
                 Full stack developer with hands‑on experience leading and developing user‑first apps and websites,
                 RAG backends, and defensive backend radar systems.
@@ -62,7 +62,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
                 Currently a CS + Math student at Purdue (GPA 4.0/4.0), seeking a 2026 software engineering internship.
               </p>
               <div className="text-gray-400">
-                <div className="font-semibold text-white mb-2">Relevant courses</div>
+                <div className="font-semibold text-white mb-1">Relevant courses</div>
                 <ul className="space-y-1">
                   <li>CS390: Web Applications Programming</li>
                   <li>CS193: Computer Science Tools</li>
@@ -73,12 +73,12 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
             </motion.div>
 
             {/* Skills Grid */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-6">
+            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
               {skills.map((skill) => (
                 <motion.div
                   key={skill.name}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="group p-6 panel hover:border-blue-500 transition-all duration-300"
+                  className="group p-4 panel hover:border-blue-500 transition-all duration-300"
                 >
                   <div className="flex flex-col items-center text-center space-y-3">
                     <div className="p-3 chip-blue">
@@ -92,7 +92,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
             </motion.div>
           </div>
 
-          {/* Stats section removed per request to keep layout minimal */}
+          {/**/}
         </motion.div>
       </div>
     </section>

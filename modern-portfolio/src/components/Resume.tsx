@@ -226,7 +226,7 @@ const Resume: React.FC<Props> = ({ fullPage = false }) => {
 
   return (
     <section id="resume" className={fullPage ? 'snap-section' : 'section'}>
-      <div className={`container mx-auto px-6 ${fullPage ? 'h-screen flex items-center' : ''}`}>
+      <div className={`container mx-auto px-6 ${fullPage ? 'md:h-screen md:flex md:items-center' : ''}`}>
         <motion.div
           initial="hidden"
           whileInView="visible"
