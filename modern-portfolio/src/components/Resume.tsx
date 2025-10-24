@@ -2,52 +2,86 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download } from 'lucide-react';
 
-const Resume: React.FC = () => {
+type Props = { fullPage?: boolean };
+
+const Resume: React.FC<Props> = ({ fullPage = false }) => {
   const [activeTab, setActiveTab] = useState('experience');
 
   const resumeData = {
     overview: {
       title: 'Professional Summary',
-      content: 'First-year Computer Science and Mathematics student at Purdue with research experience in radar imaging, bioinformatics, and autonomous systems seeking a 2026 software engineering internship.',
+      content:
+        'Full stack developer with hands-on experience leading and developing user-first apps and websites, RAG backends, and defensive backend radar systems. Seeking a 2026 software engineering internship.',
     },
     experience: {
       title: 'Experience',
       content: [
         {
-          title: 'Student, Synthetic Aperture Radar (SAR)',
-          company: 'MIT Beaver Works',
-          period: 'July 2024 – August 2024',
-          description: 'Developed SAR applications with MIT Lincoln Labs and the DoD. Created radar imaging algorithms in Python/C++ to identify objects through foliage, and built an F550 Hexacopter with a PulsOn 440 radar.',
+          title: 'Team Lead',
+          company: 'Hack the Future, Purdue University',
+          period: 'Oct 2025 – Present',
+          bullets: [
+            'Led cross-functional teams of 10+ student engineers to design and deploy full-stack applications for local nonprofits',
+            'Integrated React, Node.js/FastAPI, and MongoDB; performed code reviews and Git workflow management',
+            'Collaborated with nonprofit clients to implement user-centric solutions',
+          ],
         },
         {
-          title: 'Researcher, Idiopathic Pulmonary Fibrosis',
-          company: 'Stanford University',
-          period: 'June 2023 – October 2023',
-          description: 'Performed bulk and single-cell RNA sequencing using R. Conducted wet lab experiments on human lung fibroblasts and gained experience in DNA/RNA isolation, PCR, and ELISA.',
+          title: 'Technical Teaching Assistant',
+          company: 'Google Developer Groups, Purdue University',
+          period: 'Aug 2025 – Present',
+          bullets: [
+            'Designed and deployed take-home projects for 300+ students covering React, Google Cloud, Vertex AI, and TensorFlow',
+            'Mentored 150+ developer students on Flutter, Firebase, and full-stack projects',
+            'Selected as 1 of 2 technical mentors from 250+ applicants',
+          ],
         },
         {
-          title: 'Competitor and Alumni',
-          company: 'UC Berkeley ROAR Program',
-          period: 'July 2022 – December 2022',
-          description: 'Engineered ROS-based systems for autonomous vehicles. Designed and tested simulations in Gazebo, applying machine learning and advanced control algorithms for path planning.',
+          title: 'Synthetic Aperture Radar Developer',
+          company: 'MIT Beaver Works, Cambridge, MA',
+          period: 'Jul 2024 – Aug 2024',
+          bullets: [
+            'Developed back-projection imaging algorithms in Python and C++ using NumPy/SciPy/Matlab',
+            'Processed radar data enabling high-resolution imaging of 2.6 in. soda cans across 10×10 meters',
+            'Built an F550 Hexacopter; integrated a PulsOn 440 radar with Raspberry Pi via socket programming for live telemetry',
+          ],
+        },
+      ],
+    },
+    projects: {
+      title: 'Projects',
+      content: [
+        {
+          name: 'UPlate',
+          details: [
+            'AI-powered meal planner integrating Google Gemini Generative AI API',
+            'Flutter UI with multi-page onboarding and offline-first SQLite; async sync to Firestore',
+          ],
+        },
+        {
+          name: 'jtseng.org',
+          details: [
+            'Dynamic, full-stack personal portfolio website',
+            'Frontend in React + TypeScript; Node.js backend for APIs and project data',
+          ],
         },
       ],
     },
     skills: {
       title: 'Technical Skills',
       content: [
-        { category: 'Languages', skills: ['Python, ' + 'Java, ' + 'C++, ' + 'C, ' + 'HTML/CSS'] },
-        { category: 'Libraries & Tools', skills: ['NumPy, ' + 'SciPy, ' + 'Matlab, ' + 'R'] },
-        { category: 'Platforms & Systems', skills: ['ROS, ' + 'Gazebo, ' + 'Git, ' + 'Vercel'] },
+        { category: 'Languages', skills: ['Python', 'Java', 'HTML', 'CSS', 'C++', 'C', 'TypeScript'] },
+        { category: 'Libraries & Tools', skills: ['NumPy', 'SciPy', 'Matlab', 'Gazebo', 'ROS', 'Node', 'React', 'Tailwind'] },
+        { category: 'Relevant Courses', skills: ['CS390 Web Apps', 'CS193 Tools', 'CS180 OOP', 'MA261 Multivariable Calculus'] },
       ],
     },
     education: {
       title: 'Education',
       content: [
         {
-          degree: 'Bachelor of Science in Computer Science & Mathematics',
+          degree: 'B.S. in Computer Science & Mathematics',
           school: 'Purdue University, West Lafayette, IN',
-          year: 'Expected Graduation: May 2029',
+          year: 'Graduation: May 2029 | GPA: 4.0/4.0',
         },
       ],
     },
@@ -55,8 +89,9 @@ const Resume: React.FC = () => {
 
   const tabs = [
     { id: 'experience', label: 'Experience' },
-    { id: 'education', label: 'Education' },
+    { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
+    { id: 'education', label: 'Education' },
     { id: 'overview', label: 'Overview' },
   ];
 
@@ -94,14 +129,43 @@ const Resume: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="p-6 bg-slate-700/30 rounded-xl border border-slate-600/30 hover:border-blue-500/50 transition-all duration-300 text-left"
+                className="p-6 panel hover:border-blue-500 transition-all duration-300 text-left"
               >
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
                   <h3 className="text-xl font-semibold text-white">{exp.title}</h3>
                   <span className="text-blue-400 font-medium">{exp.period}</span>
                 </div>
                 <p className="text-blue-300 font-medium mb-2">{exp.company}</p>
-                <p className="text-gray-300">{exp.description}</p>
+                {exp.bullets ? (
+                  <ul className="list-disc pl-5 space-y-1 text-gray-300">
+                    {exp.bullets.map((b: string, i: number) => (
+                      <li key={i}>{b}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-300">{exp.description}</p>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        );
+      case 'projects':
+        return (
+          <div className="space-y-6">
+            {(data.content as any[]).map((p: any, index: number) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="p-6 panel text-left"
+              >
+                <h3 className="text-xl font-semibold text-white mb-2">{p.name}</h3>
+                <ul className="list-disc pl-5 space-y-1 text-gray-300">
+                  {p.details.map((d: string, di: number) => (
+                    <li key={di}>{d}</li>
+                  ))}
+                </ul>
               </motion.div>
             ))}
           </div>
@@ -116,14 +180,14 @@ const Resume: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="p-6 bg-slate-700/30 rounded-xl border border-slate-600/30"
+                className="p-6 panel"
               >
                 <h3 className="text-lg font-semibold text-white mb-4">{skillGroup.category}</h3>
                 <div className="flex flex-wrap gap-2">
                   {skillGroup.skills.map((skill: string, skillIndex: number) => (
                     <div
                       key={skillIndex}
-                      className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium"
+                      className="px-3 py-1 chip-blue text-blue-300 rounded-full text-sm font-medium"
                     >
                       {skill}
                     </div>
@@ -143,7 +207,7 @@ const Resume: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="p-6 bg-slate-700/30 rounded-xl border border-slate-600/30 text-left"
+                className="p-6 panel text-left"
               >
                 <h3 className="text-xl font-semibold text-white mb-2">{edu.degree}</h3>
                 <p className="text-blue-300 font-medium mb-1">{edu.school}</p>
@@ -167,8 +231,8 @@ const Resume: React.FC = () => {
   };
 
   return (
-    <section id="resume" className="py-20 bg-slate-900/50">
-      <div className="container mx-auto px-6">
+    <section id="resume" className={fullPage ? 'snap-section' : 'section'}>
+      <div className={`container mx-auto px-6 ${fullPage ? 'h-screen flex items-center' : ''}`}>
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -177,19 +241,28 @@ const Resume: React.FC = () => {
           className="max-w-6xl mx-auto"
         >
           {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
+          <motion.div variants={itemVariants} className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Resume
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-8"></div>
+            <div className="w-24 h-1 bg-blue-600 mx-auto rounded-md mb-8"></div>
             
-            {/* Download Button */}
-            <div className="flex justify-center">
+            {/* View/Download Buttons */}
+            <div className="flex justify-center gap-3">
+              <a href="/JeffreyTsengResume.pdf" target="_blank" rel="noopener noreferrer">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="btn btn-outline"
+                >
+                  View PDF
+                </motion.button>
+              </a>
               <a href="/JeffreyTsengResume.pdf" download="JeffreyTsengResume.pdf">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full flex items-center gap-2 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                  className="btn btn-primary"
                 >
                   <Download size={20} />
                   Download Resume
@@ -199,7 +272,7 @@ const Resume: React.FC = () => {
           </motion.div>
 
           {/* Interactive Resume Content */}
-          <motion.div variants={itemVariants} className="bg-slate-800/50 rounded-2xl p-4 md:p-8 border border-slate-700/50">
+          <motion.div variants={itemVariants} className="panel p-8">
             {/* Tab Navigation */}
             <div className="flex flex-wrap justify-center gap-2 mb-8">
               {tabs.map((tab) => (
@@ -208,11 +281,7 @@ const Resume: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 md:px-8 md:py-4 rounded-full font-medium transition-all duration-300 text-sm md:text-base ${
-                    activeTab === tab.id
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                      : 'text-gray-400 hover:text-white hover:bg-slate-700/50'
-                  }`}
+                  className={`tab ${activeTab === tab.id ? 'tab-active' : ''}`}
                 >
                   {tab.label}
                 </motion.button>

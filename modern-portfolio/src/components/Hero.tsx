@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, Download, Mail } from 'lucide-react';
+import { ChevronDown, Download, Github } from 'lucide-react';
 import profileImage from '/src/assets/DSC08402.jpeg';
 
 const Hero: React.FC = () => {
@@ -12,14 +12,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20"></div>
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
-      </div>
-
+    <section id="hero" className="min-h-screen flex items-center justify-center relative">
       <div className="container mx-auto px-6 text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -38,11 +31,10 @@ const Hero: React.FC = () => {
               <motion.img
                 src={profileImage}
                 alt="Jeffrey Tseng"
-                className="w-48 h-48 rounded-full object-cover border-4 border-white/20 shadow-2xl mx-auto"
+                className="w-48 h-48 rounded-md object-cover border border-slate-600 shadow-2xl mx-auto"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               />
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 animate-glow"></div>
             </div>
           </motion.div>
 
@@ -82,27 +74,24 @@ const Hero: React.FC = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3)' }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => scrollToSection('#resume')}
-              className="group relative px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full overflow-hidden transition-all duration-300"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                <Download size={20} />
-                View Resume
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </motion.button>
-
-            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => scrollToSection('#contact')}
-              className="group px-10 py-5 bg-slate-900/30 border-2 border-slate-600 text-white font-semibold rounded-full hover:border-blue-500 hover:bg-slate-800/50 transition-all duration-300 flex items-center gap-2"
+              onClick={() => scrollToSection('#resume')}
+              className="btn btn-primary"
             >
-              <Mail size={20} />
-              Get In Touch
+              <Download size={20} />
+              <span>View Resume</span>
             </motion.button>
+
+            <a
+              href="https://github.com/jefft72"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline"
+            >
+              <Github size={20} />
+              <span>View GitHub</span>
+            </a>
           </motion.div>
         </motion.div>
 
@@ -111,13 +100,14 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          className="absolute"
+          style={{ bottom: '2rem', left: '50%', transform: 'translateX(-50%)' }}
         >
           <motion.button
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
             onClick={() => scrollToSection('#about')}
-            className="text-white/60 hover:text-white transition-colors duration-300"
+            className="text-gray-400 hover:text-white transition-colors duration-300"
           >
             <ChevronDown size={32} />
           </motion.button>

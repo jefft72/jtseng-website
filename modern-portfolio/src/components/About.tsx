@@ -1,13 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Code } from 'lucide-react';
+type Props = { fullPage?: boolean };
 
-const About: React.FC = () => {
+const About: React.FC<Props> = ({ fullPage = false }) => {
   const skills = [
-    { name: 'Website Development', icon: Code, description: 'React, TypeScript, Next.js, Tailwind' },
-    { name: 'Synthetic Aperture Radar Development', icon: Code, description: 'NumPy, SciPy, Matlab' },
-    { name: 'Bioinformatics Research', icon: Code, description: 'R, RStudio, Data Science' },
-    { name: 'Autonomous Systems', icon: Code, description: 'Gazebo, ROS, LIDAR' },
+    { name: 'Full‑Stack Web', icon: Code, description: 'React, TypeScript, Node.js/FastAPI' },
+    { name: 'Radar Systems (SAR)', icon: Code, description: 'Python/C++, NumPy, SciPy, Matlab' },
+    { name: 'Mobile + AI', icon: Code, description: 'Flutter, Firebase, TensorFlow, Vertex AI' },
+    { name: 'Leadership & Teaching', icon: Code, description: 'Code reviews, Git workflow, Mentoring' },
   ];
 
   const containerVariants = {
@@ -32,8 +33,8 @@ const About: React.FC = () => {
   };
 
   return (
-    <section id="about" className="py-20 bg-slate-800/50 backdrop-blur-sm">
-      <div className="container mx-auto px-6">
+    <section id="about" className={fullPage ? 'snap-section' : 'section'}>
+      <div className={`container mx-auto px-6 ${fullPage ? 'h-screen flex items-center' : ''}`}>
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -42,11 +43,11 @@ const About: React.FC = () => {
           className="max-w-6xl mx-auto"
         >
           {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
+          <motion.div variants={itemVariants} className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               About Me
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+            <div className="w-24 h-1 bg-blue-600 mx-auto rounded-md"></div>
           </motion.div>
 
           {/* Main Content */}
@@ -54,19 +55,21 @@ const About: React.FC = () => {
             {/* Text Content */}
             <motion.div variants={itemVariants} className="space-y-6">
               <p className="text-xl text-gray-300 leading-relaxed">
-                Freshman at Purdue studying Computer Science and Math, with a 
-                concentration in Machine Learning. 
-                Bringing ideas to life through code.
+                Full stack developer with hands‑on experience leading and developing user‑first apps and websites,
+                RAG backends, and defensive backend radar systems.
               </p>
               <p className="text-lg text-gray-400 leading-relaxed">
-                My interests are in software engineering, machine learning, and computer vision. 
-                My experience includes developing synthetic aperture radars, data analaysis in bioinformatics
-                through R, and autonomous vehicle development.
+                Currently a CS + Math student at Purdue (GPA 4.0/4.0), seeking a 2026 software engineering internship.
               </p>
-              <p className="text-lg text-gray-400 leading-relaxed">
-                When I'm not coding, you can find me exercising, reading, or socializing with friends.
-                Find my contact info in the contact section, and let's connect!
-              </p>
+              <div className="text-gray-400">
+                <div className="font-semibold text-white mb-2">Relevant courses</div>
+                <ul className="space-y-1">
+                  <li>CS390: Web Applications Programming</li>
+                  <li>CS193: Computer Science Tools</li>
+                  <li>CS180: Problem Solving & OOP</li>
+                  <li>MA261: Multivariable Calculus</li>
+                </ul>
+              </div>
             </motion.div>
 
             {/* Skills Grid */}
@@ -75,10 +78,10 @@ const About: React.FC = () => {
                 <motion.div
                   key={skill.name}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="group p-6 bg-slate-700/50 rounded-xl border border-slate-600/50 hover:border-blue-500/50 transition-all duration-300"
+                  className="group p-6 panel hover:border-blue-500 transition-all duration-300"
                 >
                   <div className="flex flex-col items-center text-center space-y-3">
-                    <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg group-hover:shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
+                    <div className="p-3 chip-blue">
                       <skill.icon size={24} className="text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">{skill.name}</h3>
@@ -102,9 +105,9 @@ const About: React.FC = () => {
               <motion.div
                 key={stat.label}
                 whileHover={{ scale: 1.05 }}
-                className="text-center p-6 bg-slate-700/30 rounded-xl border border-slate-600/30"
+                className="text-center p-6 panel"
               >
-                <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
+                <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">
                   {stat.number}
                 </div>
                 <div className="text-gray-400 font-medium">{stat.label}</div>

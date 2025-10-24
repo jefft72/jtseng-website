@@ -18,7 +18,6 @@ const Header: React.FC = () => {
   const navItems = [
     { name: 'About', href: '#about' },
     { name: 'Resume', href: '#resume' },
-    { name: 'Contact', href: '#contact' },
   ];
 
   const scrollToSection = (href: string) => {
@@ -34,38 +33,34 @@ const Header: React.FC = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-slate-900/95 backdrop-blur-md shadow-lg'
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-lg' : ''}`}
+      style={{ background: isScrolled ? 'rgba(15,23,42,0.95)' : 'transparent', backdropFilter: isScrolled ? 'blur(12px)' as any : undefined }}
     >
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="text-2xl font-bold text-white cursor-pointer"
+            className="text-xl font-bold text-white cursor-pointer"
             onClick={() => scrollToSection('#hero')}
           >
             Jeffrey Tseng
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center gap-3">
             {navItems.map((item, index) => (
               <motion.button
                 key={item.name}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => scrollToSection(item.href)}
-                className="text-white hover:text-blue-400 transition-colors duration-200 font-medium relative group"
+                className="btn btn-outline text-baby"
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
               </motion.button>
             ))}
           </div>
@@ -90,7 +85,7 @@ const Header: React.FC = () => {
           transition={{ duration: 0.3 }}
           className="md:hidden overflow-hidden"
         >
-          <div className="py-4 space-y-4">
+          <div className="py-4 space-y-6">
             {navItems.map((item, index) => (
               <motion.button
                 key={item.name}
@@ -98,7 +93,7 @@ const Header: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => scrollToSection(item.href)}
-                className="block w-full text-left text-white hover:text-blue-400 transition-colors duration-200 font-medium py-2"
+                className="block w-full text-left btn btn-outline"
               >
                 {item.name}
               </motion.button>
