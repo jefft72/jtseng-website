@@ -12,8 +12,8 @@ const Landing: React.FC = () => {
     instagram: 'https://www.instagram.com/jeffrey_tseng_/', 
   };
   return (
-    <section className="snap-section">
-      <div className="container mx-auto px-6 h-screen flex items-center">
+    <section id="hero" className="snap-section">
+      <div className="container mx-auto px-6 flex items-center">
         <div className="grid md:grid-cols-3 gap-6 w-full">
           {/* Avatar */}
           <div className="flex items-center justify-center">
@@ -45,7 +45,7 @@ const Landing: React.FC = () => {
 
           {/* Charts (hidden on mobile to avoid crowding) */}
           <div className="hidden md:flex items-center">
-            <div className="w-full">
+            <div className="w-full" style={{ paddingRight: '10rem' }}>
               <div className="mb-4">
                 <div className="text-white font-semibold">Development activity</div>
                 <div className="text-gray-400 text-sm">Currently working on: <span className="text-baby">{workingOn}</span></div>

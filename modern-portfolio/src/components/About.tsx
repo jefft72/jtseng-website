@@ -33,8 +33,8 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
   };
 
   return (
-    <section id="about" className={fullPage ? 'snap-section snap-center' : 'section'}>
-      <div className="container mx-auto px-6 py-8 md:py-0 flex items-center justify-center min-h-screen">
+  <section id="about" className={fullPage ? 'snap-section' : 'section'}>
+      <div className="container mx-auto px-6 py-8 md:py-0 flex items-center justify-center">
         <motion.div
           initial="hidden"
           whileInView="visible"

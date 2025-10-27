@@ -4,15 +4,17 @@ import About from './components/About.tsx';
 import Resume from './components/Resume.tsx';
 import Footer from './components/Footer';
 import { useRef } from 'react';
+import SpiderWebBackground from './components/SpiderWebBackground';
 
 function App() {
   const containerRef = useRef<HTMLDivElement>(null);
-  // Rely solely on native CSS scroll-snap for consistent behavior across devices
+  // Regular scrolling (no snap)
 
   return (
     <div className="min-h-screen" style={{ background: '#000' }}>
+      <SpiderWebBackground />
       <Header />
-      <main ref={containerRef} className="snap-container">
+  <main ref={containerRef}>
         <Landing />
         <About fullPage />
         <Resume fullPage />

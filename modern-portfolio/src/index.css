@@ -36,21 +36,17 @@ body {
 }
 
 /* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Hide scrollbars globally (still scrollable) */
+html, body, .snap-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;   /* Firefox */
 }
-
-::-webkit-scrollbar-track {
-  background: #1e293b;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #3b82f6;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #2563eb;
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.snap-container::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none;
 }
 
 /* Smooth scrolling */
@@ -201,32 +197,29 @@ html {
 .animate-spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Fullpage snap scrolling */
+/* Regular scrolling (snap removed) */
 .snap-container {
-  height: 100vh;
-  overflow-y: scroll;
+  /* Let the document/body handle scrolling naturally */
   overflow-x: hidden;
   max-width: 100vw;
-  /* Proximity reduces over-snapping sensitivity and feels more natural on trackpads */
-  scroll-snap-type: y proximity;
-  scroll-behavior: smooth;
 }
+/* Each page-section fills the viewport and centers its content */
 .snap-section {
-  /* Allow sections to grow taller than the viewport on small screens */
-  min-height: 100vh;
-  height: auto;
-  scroll-snap-align: start;
+  min-height: 100vh;              /* ensure one page per viewport */
+  display: flex;                  /* enable vertical centering */
+  align-items: center;            /* center content vertically */
+  padding-top: 5rem;              /* offset for fixed header */
+  padding-bottom: 4rem;           /* breathing room at bottom */
+  scroll-margin-top: 5rem;        /* anchor links account for header */
 }
 
-/* Utility to center a snap section within the viewport */
-.snap-center {
-  scroll-snap-align: center;
-}
+/* snap-center no longer needed once snap is removed */
 
-/* On laptop/desktop, restore exact full-height sections for classic spacing */
+/* Slightly larger padding on wider screens for breathing room */
 @media (min-width: 768px) {
   .snap-section {
-    height: 100vh;
+    padding-top: 6rem;            /* a touch more room on desktop */
+    padding-bottom: 6rem;
   }
 }
 
