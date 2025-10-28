@@ -41,8 +41,7 @@ const SpiderWebBackground: React.FC = () => {
       canvas.style.height = h + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Re-create nodes with density based on area (clamped)
-      const density = 0.00012; // nodes per px^2 (tweakable)
+      const density = 0.00012; // nodes per px^2
       const target = clamp(Math.floor(w * h * density), 40, 120);
       nodesRef.current = new Array(target).fill(0).map(() => ({
         x: Math.random() * w,
@@ -83,11 +82,11 @@ const SpiderWebBackground: React.FC = () => {
       return val || '#8ecaff';
     };
 
-  const linkDist = 150; // max distance for a line (slightly more dynamic)
-  const revealR = 180;  // inner reveal radius (fully visible)
+  const linkDist = 150; // max distance for a line 
+  const revealR = 180;  // inner reveal radius 
   const revealSoft = 140; // soft falloff outside inner radius
   const magnetRadius = 140; // cursor attraction radius
-  const magnetFollow = 0.28; // a touch snappier follow
+  const magnetFollow = 0.28; // snappier follow
   const driftFriction = 0.995; // retain a bit more velocity for liveliness
 
     const frame = () => {
