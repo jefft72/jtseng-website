@@ -81,9 +81,9 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
                   className="group p-4 panel hover:border-blue-500 transition-all duration-300"
                 >
                   <div className="flex flex-col items-center text-center space-y-3">
-                    <div className="p-3 chip-blue">
-                      <skill.icon size={24} className="text-white" />
-                    </div>
+                    <div className="w-16 h-12 flex items-center justify-center chip-blue">
+                        <skill.icon size={20} className="text-white" />
+                      </div>
                     <h3 className="text-lg font-semibold text-white">{skill.name}</h3>
                     <p className="text-sm text-gray-400">{skill.description}</p>
                   </div>
