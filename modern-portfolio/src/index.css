@@ -297,3 +297,33 @@ html {
   .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+/* Project card flip styles */
+.project-card { perspective: 1000px; }
+.project-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
+}
+.project-card-inner.is-flipped { transform: rotateY(180deg); }
+.project-card-front,
+.project-card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 0.5rem;
+}
+.project-card-front { transform: rotateY(0deg); }
+.project-card-back { transform: rotateY(180deg); display:flex; flex-direction:column; justify-content:space-between; }
+
+/* Wrapper for responsive behavior: scrollable on small screens, grid on md+ */
+.project-grid-scroll { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.5rem; }
+.project-card-wrapper { min-width: 260px; width: 260px; height: 320px; flex: 0 0 auto; }
+
+@media (min-width: 768px) {
+  .project-card-wrapper { min-width: auto; width: 100%; height: 320px; }
+  .project-grid-scroll { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; overflow: visible; }
+}
