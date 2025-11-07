@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import ProjectCard from './ProjectCard';
+import ProjectCard, { type Project } from './ProjectCard';
+import ProjectOverlay from './ProjectOverlay';
 type Props = { fullPage?: boolean };
 
 const About: React.FC<Props> = ({ fullPage = false }) => {
@@ -25,23 +26,23 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
     },
   };
 
-  // Example projects — replace with real repo data or CMS later
-  const projects = [
+  // project flipping page
+  const projects: Project[] = [
     {
       title: 'UPlate',
       short: 'AI meal planner & dining engagement app.',
       long: 'AI-powered meal planner integrating Generative APIs, Flutter frontend with offline-first sync and Firestore backend.',
       tech: ['Flutter', 'Firebase', 'Vertex AI'],
-      repoUrl: 'https://github.com/jefft72/uplate',
+      repoUrl: 'https://jefft72.github.io/UPlate/',
       liveUrl: '',
-      image: '/src/assets/uplate-thumb.jpg',
+      image: '/src/assets/UPlateThumbnail.png',
     },
     {
       title: 'jtseng.org',
-      short: 'Personal portfolio engine and CMS.',
+      short: 'Personal portfolio engine.',
       long: 'Dynamic full-stack personal portfolio with React + TypeScript frontend and Node APIs.',
       tech: ['React', 'TypeScript', 'Node'],
-      repoUrl: 'https://github.com/jefft72/jtseng.org',
+      repoUrl: 'https://github.com/jefft72/jtseng-website',
       liveUrl: '/',
       image: '/src/assets/site-thumb.jpg',
     },
@@ -49,12 +50,14 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
       title: 'AI Podcasts',
       short: 'Auto-generated podcast pipeline for tech topics.',
       long: 'Pipeline that produces short AI-generated podcast episodes using LLMs and TTS, with automated publishing.',
-      tech: ['Python', 'LLMs', 'GCP'],
-      repoUrl: '',
+      tech: ['JavaScript', 'LLMs', 'APIs', 'TTS'],
+      repoUrl: 'https://github.com/jefft72/AI-Podcast-Generator-Project',
       liveUrl: '',
-      image: '/src/assets/podcast-thumb.jpg',
+      image: '/src/assets/podcasts-thumb.jpg',
     },
   ];
+
+  const [active, setActive] = useState<Project | null>(null);
 
   return (
     <section id="about" className={fullPage ? 'snap-section' : 'section'}>
@@ -76,12 +79,13 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
           <motion.div variants={itemVariants} className="project-grid-scroll mt-6">
             {projects.map((p) => (
               <div key={p.title} className="project-card-wrapper">
-                <ProjectCard project={p} />
+                <ProjectCard project={p} onOpen={() => setActive(p)} />
               </div>
             ))}
           </motion.div>
         </motion.div>
       </div>
+      <ProjectOverlay project={active} onClose={() => setActive(null)} />
     </section>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-type Project = {
+export type Project = {
   title: string;
   short: string;
   long?: string;
@@ -10,7 +10,7 @@ type Project = {
   image?: string; // optional thumbnail
 };
 
-const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
+const ProjectCard: React.FC<{ project: Project; onOpen?: () => void }> = ({ project, onOpen }) => {
   const [flipped, setFlipped] = useState(false);
 
   const onToggle = () => setFlipped((s) => !s);
@@ -26,16 +26,13 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
       aria-pressed={flipped}
     >
       <div className={`project-card-inner ${flipped ? 'is-flipped' : ''}`}>
-        <div className="project-card-front panel p-4 flex flex-col">
+        <div className="project-card-front panel overflow-hidden p-0">
           {project.image ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={project.image} alt={`${project.title} thumbnail`} className="w-full h-36 object-cover rounded-md mb-4" />
+            <img src={project.image} alt={`${project.title} thumbnail`} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-36 bg-slate-800 rounded-md mb-4" />
+            <div className="w-full h-full bg-slate-800" />
           )}
-
-          <h3 className="text-lg font-semibold text-white mb-2">{project.title}</h3>
-          <p className="text-gray-300 text-sm flex-grow">{project.short}</p>
         </div>
 
         <div className="project-card-back panel p-4 flex flex-col justify-between">
@@ -57,6 +54,11 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
               <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
                 Repo
               </a>
+            )}
+            {onOpen && (
+              <button className="btn btn-primary" onClick={(e) => { e.stopPropagation(); onOpen(); }}>
+                More details
+              </button>
             )}
           </div>
         </div>
