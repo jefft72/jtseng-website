@@ -38,7 +38,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
       image: '/src/assets/UPlateThumbnail.png',
     },
     {
-      title: 'jtseng.org',
+      title: 'Hack the Future',
       short: 'Personal portfolio engine.',
       long: 'Dynamic full-stack personal portfolio with React + TypeScript frontend and Node APIs.',
       tech: ['React', 'TypeScript', 'Node'],
@@ -54,6 +54,15 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
       repoUrl: 'https://github.com/jefft72/AI-Podcast-Generator-Project',
       liveUrl: '',
       image: '/src/assets/podcasts-thumb.jpg',
+    },
+    {
+      title: 'Crcle.ai',
+      short: 'Collaborative AI workspace concept.',
+      long: 'Early-stage platform for AI-assisted team knowledge sharing and workflow acceleration.',
+      tech: ['TypeScript', 'React', 'AI'],
+      repoUrl: '',
+      liveUrl: '',
+      image: '/src/assets/crcle-thumb.jpg',
     },
   ];
 

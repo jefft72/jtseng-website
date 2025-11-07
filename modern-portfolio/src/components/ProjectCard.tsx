@@ -26,10 +26,10 @@ const ProjectCard: React.FC<{ project: Project; onOpen?: () => void }> = ({ proj
       aria-pressed={flipped}
     >
       <div className={`project-card-inner ${flipped ? 'is-flipped' : ''}`}>
-        <div className="project-card-front panel overflow-hidden p-0">
+        <div className="project-card-front panel overflow-hidden p-0 thumb-wrapper">
           {project.image ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={project.image} alt={`${project.title} thumbnail`} className="w-full h-full object-cover" />
+            <img src={project.image} alt={`${project.title} thumbnail`} className="thumb-img" />
           ) : (
             <div className="w-full h-full bg-slate-800" />
           )}
