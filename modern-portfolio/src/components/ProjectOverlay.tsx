@@ -4,9 +4,10 @@ import type { Project } from './ProjectCard';
 
 const ProjectOverlay: React.FC<{ project: Project | null; onClose: () => void }> = ({ project, onClose }) => {
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {project && (
         <motion.div
+          key={project.title}
           className="project-overlay-backdrop"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -15,10 +16,14 @@ const ProjectOverlay: React.FC<{ project: Project | null; onClose: () => void }>
         >
           <motion.div
             className="project-overlay"
-            initial={{ scale: 0.9, rotateY: 90, opacity: 0 }}
+            initial={{ scale: 0.2, rotateY: 90, opacity: 0 }}
             animate={{ scale: 1, rotateY: 0, opacity: 1 }}
-            exit={{ scale: 0.95, rotateY: -90, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 220, damping: 20 }}
+            exit={{ scale: 0.95, rotateY: -45, opacity: 0 }}
+            transition={{ 
+              scale: { type: 'spring', stiffness: 200, damping: 22 },
+              rotateY: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
+              opacity: { duration: 0.4 }
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <button className="btn btn-outline project-overlay-close" onClick={onClose}>Close</button>

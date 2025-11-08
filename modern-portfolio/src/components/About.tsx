@@ -36,37 +36,53 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
       repoUrl: 'https://jefft72.github.io/UPlate/',
       liveUrl: '',
       image: '/src/assets/UPlateThumbnail.png',
+      fit: 'contain',
+      position: 'center',
+      scale: 0.85,
     },
     {
       title: 'Hack the Future',
-      short: 'Helping nonprofits build tech solutions.',
-      long: 'Coming soon.',
+      short: '',
+      long: 'Helping nonprofits build tech solutions.',
       tech: ['React', 'TypeScript', 'Node'],
       repoUrl: '',
       liveUrl: '/',
       image: '/src/assets/HTFThumbnail.png',
+      fit: 'cover',
+      position: 'center',
     },
     {
       title: 'Google\'s Developer Group',
-      short: 'Developing workshops teaching Google and AI tools.',
-      long: 'Mentoring 150+ students, providing technical assistance on Flutter, Firebase, and AI projects.',
+      short: '',
+      long: 'Developing workshops teaching Google and AI tools. Mentoring 150+ students, providing technical assistance on Flutter, Firebase, and AI projects.',
       tech: ['JavaScript', 'LLMs', 'APIs', 'TTS'],
       repoUrl: '',
       liveUrl: '',
-      image: '/src/assets/podcasts-thumb.jpg',
+      image: '/src/assets/GDGThumbnail.png',
+      fit: 'contain',
+      position: 'center',
+      scale: 0.7,
     },
     {
       title: 'Crcle.ai',
-      short: 'Cutting edge AI startup supercharging intelligence.',
-      long: 'Coming soon.',
+      short: '',
+      long: 'Cutting edge AI startup supercharging intelligence.',
       tech: ['TypeScript', 'React', 'AI'],
       repoUrl: '',
       liveUrl: '',
-      image: '/src/assets/crcle-thumb.jpg',
+      image: '/src/assets/CrclThumbnail.png',
+      fit: 'contain',
+      position: 'center',
     },
   ];
 
   const [active, setActive] = useState<Project | null>(null);
+  const [overlayKey, setOverlayKey] = useState(0);
+
+  const handleOpen = (project: Project) => {
+    setActive(project);
+    setOverlayKey((k) => k + 1); // Force remount for fresh animation
+  };
 
   return (
     <section id="about" className={fullPage ? 'snap-section' : 'section'}>
@@ -88,13 +104,13 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
           <motion.div variants={itemVariants} className="project-grid-scroll mt-6">
             {projects.map((p) => (
               <div key={p.title} className="project-card-wrapper">
-                <ProjectCard project={p} onOpen={() => setActive(p)} />
+                <ProjectCard project={p} onOpen={() => handleOpen(p)} />
               </div>
             ))}
           </motion.div>
         </motion.div>
       </div>
-      <ProjectOverlay project={active} onClose={() => setActive(null)} />
+      <ProjectOverlay key={overlayKey} project={active} onClose={() => setActive(null)} />
     </section>
   );
 };
