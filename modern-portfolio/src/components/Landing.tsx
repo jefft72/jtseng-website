@@ -5,7 +5,6 @@ import GithubStats from './GithubStats.tsx';
 import { Linkedin, Github, Instagram } from 'lucide-react';
 
 const Landing: React.FC = () => {
-  const workingOn = 'Revolutionizing dining hall experiences with UPlate; AI Generated Podcasts for the latest in tech; Building tech for non profits';
   const SOCIALS = {
     linkedin: 'https://www.linkedin.com/in/jeffrey-tseng-9b3582261/',
     github: 'https://github.com/jefft72',
@@ -13,44 +12,38 @@ const Landing: React.FC = () => {
   };
   return (
     <section id="hero" className="snap-section">
-      <div className="container mx-auto px-6 flex items-center">
-        <div className="grid md:grid-cols-3 gap-6 w-full">
-          {/* Avatar */}
-          <div className="flex items-center justify-center">
+      <div className="container mx-auto px-6">
+  <div className="flex flex-col md:flex-row items-center md:items-start justify-center max-w-7xl mx-auto" style={{ gap: '6rem' }}>
+          {/* Left Column: Avatar + Name + Typewriter + Socials */}
+          <div className="flex flex-col items-center md:items-start flex-shrink-0" style={{ gap: '2.5rem', minWidth: '260px' }}>
             <img
               src={profileImage}
-              alt="Avatar"
+              alt="Jeffrey Tseng"
               className="w-48 h-48 rounded-md object-cover border border-slate-600 shadow-2xl"
             />
-          </div>
-
-          {/* Typewriter + socials */}
-          <div className="flex flex-col items-start justify-center">
-            {/* Socials row */}
-            <div className="flex items-center gap-6 mb-3 text-gray-400">
-              <span className="text-sm">Find me on:</span>
-              <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-white transition">
-                <Linkedin size={20} />
-              </a>
-              <a href={SOCIALS.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-white transition">
-                <Github size={20} />
-              </a>
-              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-white transition">
-                <Instagram size={20} />
-              </a>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Jeffrey Tseng</h1>
-            <Typewriter text="welcome to my portfolio" speed={40} className="text-xl text-baby" />
-          </div>
-
-          {/* Charts (hidden on mobile to avoid crowding) */}
-          <div className="hidden md:flex items-center">
-            <div className="w-full" style={{ paddingRight: '10rem' }}>
-              <div className="mb-4">
-                <div className="text-white font-semibold">Development activity</div>
-                <div className="text-gray-400 text-sm">Currently working on: <span className="text-baby">{workingOn}</span></div>
-                <div className="text-gray-400 text-sm mt-2">GitHub activity:</div>
+            
+            <div className="flex flex-col items-center md:items-start" style={{ gap: '1.25rem' }}>
+              <h1 className="text-4xl md:text-5xl font-bold text-white whitespace-nowrap">Jeffrey Tseng</h1>
+              <Typewriter text="welcome to my portfolio" speed={40} className="text-xl text-baby" />
+              
+              {/* Socials row */}
+              <div className="flex items-center gap-4 text-gray-400">
+                <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-baby transition">
+                  <Linkedin size={24} />
+                </a>
+                <a href={SOCIALS.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-baby transition">
+                  <Github size={24} />
+                </a>
+                <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-baby transition">
+                  <Instagram size={24} />
+                </a>
               </div>
+            </div>
+          </div>
+
+          {/* Right Column: GitHub contributions */}
+          <div className="w-full flex flex-1 justify-center md:justify-start" style={{ maxWidth: '52rem' }}>
+            <div style={{ width: '100%' }}>
               <GithubStats variant="inline" />
             </div>
           </div>
