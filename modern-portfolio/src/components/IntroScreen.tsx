@@ -74,17 +74,7 @@ const IntroScreen: React.FC<Props> = ({ onEnter }) => {
               textShadow: '0 0 20px rgba(142, 202, 255, 0.5), 0 0 40px rgba(142, 202, 255, 0.3)',
             }}
           >
-            <p
-              className="text-4xl md:text-5xl font-light tracking-widest"
-              style={{
-                fontFamily: "'Outfit', monospace",
-                color: '#8ecaff',
-                letterSpacing: '0.5em',
-                imageRendering: 'pixelated',
-              }}
-            >
-              PRESS ENTER
-            </p>
+            {/* Removed middle 'press enter' text */}
           </motion.div>
         )}
       </AnimatePresence>
@@ -106,6 +96,29 @@ const IntroScreen: React.FC<Props> = ({ onEnter }) => {
           imageRendering: 'pixelated',
         }}
       />
+
+      <div style={{ position: 'absolute', bottom: '1.25rem', right: '1.25rem', zIndex: 11, textAlign: 'right' }}>
+        <motion.p
+          className="pixel-text intro-press"
+          style={{
+            color: '#8ecaff',
+            textTransform: 'lowercase',
+            fontSize: '2rem', /* Bigger text */
+            fontFamily: "monospace",
+            imageRendering: 'pixelated', /* Ensure pixelation */
+            textShadow: '0 0 1px #000, 0 0 2px #000', /* Stronger pixel effect */
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0.7, 1, 0.7, 1] }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        >
+          press enter
+        </motion.p>
+      </div>
     </motion.div>
   );
 };

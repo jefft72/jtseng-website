@@ -282,6 +282,21 @@ html {
 .tab:hover { color: #ffffff; border-color: var(--border); }
 .tab-active { color: #000; border-color: var(--blue-strong); background: var(--blue); }
 
+/* Pixel-style text used in the intro */
+.pixel-text {
+  font-family: monospace;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  image-rendering: pixelated; /* best-effort for bitmap-like rendering */
+  text-shadow: 0 0 6px rgba(0,0,0,0.3);
+  letter-spacing: 0.12em;
+}
+.intro-press {
+  font-size: 0.95rem; /* slightly smaller */
+  padding: 0.25rem 0.5rem;
+  color: var(--blue);
+}
+
 /* Responsive utilities */
 @media (min-width: 640px) {
   .sm\:flex-row { flex-direction: row; }
