@@ -49,6 +49,13 @@ body::-webkit-scrollbar,
   display: none;
 }
 
+/* Pixelated rendering for retro space theme */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
