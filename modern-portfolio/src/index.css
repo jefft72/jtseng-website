@@ -6,7 +6,7 @@
   --border: #1f2937;
   --blue: #8ecaff; /* baby blue */
   --blue-strong: #60a5fa; /* accent hover */
-  --text: var(--blue);
+  --text: #ffffff;
 
   font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   line-height: 1.5;

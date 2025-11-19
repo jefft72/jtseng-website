@@ -232,7 +232,7 @@ const SpiderWebBackground: React.FC = () => {
         inset: 0,
         width: '100%',
         height: '100%',
-        zIndex: 0,
+        zIndex: 2,
         pointerEvents: 'none',
         background: 'transparent',
       }}

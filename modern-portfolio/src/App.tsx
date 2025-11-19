@@ -30,13 +30,15 @@ function App() {
         <>
           <PixelatedSpaceBackground />
           <SpiderWebBackground />
-          <Header />
-          <main ref={containerRef}>
-            <Landing />
-            <About fullPage />
-            <Resume fullPage />
-          </main>
-          <Footer />
+          <div style={{ position: 'relative', zIndex: 10 }}>
+            <Header />
+            <main ref={containerRef}>
+              <Landing />
+              <About fullPage />
+              <Resume fullPage />
+            </main>
+            <Footer />
+          </div>
         </>
       )}
     </div>
