@@ -23,7 +23,7 @@ const GITHUB_USER = 'jefft72';
 const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [latestCommit, setLatestCommit] = useState<CommitInfo | null>(null);
-  const [recentRepos, setRecentRepos] = useState<any[]>([]);
+  // const [recentRepos, setRecentRepos] = useState<any[]>([]); // Unused
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [calendarWeeks, setCalendarWeeks] = useState<Array<Array<{ date: string; count: number }>> | null>(null);
@@ -281,7 +281,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
   const totalContrib = useMemo(() => contributionWeeks.flat().reduce((a, d) => a + d.count, 0), [contributionWeeks]);
   
   const gridRef = useRef<HTMLDivElement>(null);
-  const [cellSize, setCellSize] = useState<number>(14);
+  const cellSize = 15;
 
   // Tooltip state
   const [hovered, setHovered] = useState<{ date: string; count: number } | null>(null);
@@ -295,23 +295,6 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
       return iso;
     }
   };
-
-  // Fit 52-53 weeks into available width without overflow
-  useEffect(() => {
-    const recalc = () => {
-      const el = gridRef.current;
-      if (!el) return;
-      const weeks = Math.max(1, contributionWeeks.length || 22);
-      const gap = 6; // px
-      const width = el.clientWidth || 640;
-      const size = Math.floor((width - (weeks - 1) * gap) / weeks);
-      const clamped = Math.max(10, Math.min(16, size));
-      setCellSize(clamped);
-    };
-    recalc();
-    window.addEventListener('resize', recalc);
-    return () => window.removeEventListener('resize', recalc);
-  }, [contributionWeeks]);
 
   // Month labels aligned to weeks (label when a week contains the first of a month)
   const monthLabels = useMemo(() => {
@@ -339,16 +322,16 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     console.log('GithubStats - Events loaded:', events.length);
     
     return (
-    <div className="panel p-4">
+    <div className="panel p-4 ml-auto w-fit">
       {loading && <div className="text-gray-400">Loading…</div>}
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left Side: Heatmap & Header (70%) */}
-            <div className="flex-1 lg:w-[70%]">
+          <div className="flex flex-col gap-8">
+            {/* Heatmap & Header */}
+            <div className="w-full">
               {/* Header row: title left, latest commit right */}
-              <div className="flex items-baseline justify-between mb-4">
+              <div className="flex items-baseline justify-between mb-4 gap-8">
                 <div>
                   <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
                   <div className="text-xs text-gray-400">{sinceLabel}</div>
@@ -443,27 +426,6 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                   </div>
                 )}
               </div>
-            </div>
-
-            {/* Right Side: Buttons (30%) */}
-            <div className="lg:w-[30%] flex flex-col gap-2 justify-center">
-              {recentRepos.slice(0, 4).map((repo) => (
-                <a 
-                  key={repo.nameWithOwner} 
-                  href={repo.isPrivate ? undefined : repo.url} 
-                  target={repo.isPrivate ? undefined : "_blank"}
-                  rel={repo.isPrivate ? undefined : "noopener noreferrer"}
-                  className={`btn ${repo.isPrivate ? 'btn-outline opacity-50 cursor-not-allowed' : 'btn-primary'} w-full flex items-center justify-center gap-2 !py-3`}
-                  title={repo.description || 'No description'}
-                >
-                  <span>{repo.isPrivate ? 'Private Repo' : repo.name}</span>
-                  {!repo.isPrivate && (
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  )}
-                </a>
-              ))}
             </div>
           </div>
 
