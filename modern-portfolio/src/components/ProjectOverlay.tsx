@@ -49,7 +49,11 @@ const ProjectOverlay: React.FC<{ project: Project | null; onClose: () => void }>
                   <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">View</a>
                 )}
                 {project.repoUrl && (
-                  <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">Repo</a>
+                  project.repoUrl === 'Private Repo' ? (
+                    <span className="btn btn-primary opacity-50 cursor-not-allowed">Private Repo</span>
+                  ) : (
+                    <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">View Here</a>
+                  )
                 )}
               </div>
             </div>

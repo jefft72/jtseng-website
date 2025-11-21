@@ -29,7 +29,8 @@ const IntroScreen: React.FC<Props> = ({ onEnter }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center cursor-pointer"
+      onClick={onEnter}
       style={{
         background: '#000',
         overflow: 'hidden',
@@ -116,7 +117,7 @@ const IntroScreen: React.FC<Props> = ({ onEnter }) => {
             ease: 'easeInOut',
           }}
         >
-          press enter
+          press enter / tap
         </motion.p>
       </div>
     </motion.div>

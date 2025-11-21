@@ -23,12 +23,10 @@ const GITHUB_USER = 'jefft72';
 const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [latestCommit, setLatestCommit] = useState<CommitInfo | null>(null);
+  const [recentRepos, setRecentRepos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // If we can fetch the real contribution calendar via GraphQL, store it here
   const [calendarWeeks, setCalendarWeeks] = useState<Array<Array<{ date: string; count: number }>> | null>(null);
-  // Removed calendarMax usage (was for full-year scaling). We'll derive max from filtered counts instead.
-  // If reintroducing a full-year view, re-add this state.
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -51,9 +49,13 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                       }
                     }
                   }
-                  repositories(first: 10, orderBy: {field: PUSHED_AT, direction: DESC}, privacy: PUBLIC) {
+                  repositories(first: 6, orderBy: {field: PUSHED_AT, direction: DESC}) {
                     nodes {
+                      name
                       nameWithOwner
+                      isPrivate
+                      url
+                      description
                       pushedAt
                       defaultBranchRef {
                         target {
@@ -95,9 +97,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                   console.error('Error details:', err.message, err.type, err.path);
                 });
               }
-              
-              console.log('Calendar weeks:', json?.data?.user?.contributionsCollection?.contributionCalendar?.weeks);
-              
+
               const weeks = json?.data?.user?.contributionsCollection?.contributionCalendar?.weeks as Array<{ contributionDays: Array<{ date: string; contributionCount: number }> }> | undefined;
               if (weeks && Array.isArray(weeks)) {
                 const parsed: Array<Array<{ date: string; count: number }>> = weeks.map(w =>
@@ -110,6 +110,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
               const repos = json?.data?.user?.repositories?.nodes as Array<any> | undefined;
               console.log('Repositories found:', repos?.length);
               if (repos && Array.isArray(repos)) {
+                setRecentRepos(repos);
                 let mostRecent: { message: string; committedDate: string } | null = null;
                 for (const repo of repos) {
                   const commits = repo?.defaultBranchRef?.target?.history?.nodes;
@@ -148,7 +149,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
           allEvents = [...allEvents, ...data];
         }
         
-  setEvents(allEvents);
+        setEvents(allEvents);
         
         // Fallback: use events if GraphQL didn't populate latestCommit
         if (!latestCommit) {
@@ -160,14 +161,16 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
               timestamp: pushEvent.created_at,
               isPrivate: false
             });
-          } else {
+          } else if (allEvents.length > 0) {
             // No public push events; infer last activity time from most recent event
-            const fallbackTs = allEvents[0]?.created_at || new Date().toISOString();
-            setLatestCommit({
-              message: 'Recent activity is private',
-              timestamp: fallbackTs,
-              isPrivate: true
-            });
+            const fallbackTs = allEvents[0]?.created_at;
+            if (fallbackTs) {
+              setLatestCommit({
+                message: 'Recent activity is private',
+                timestamp: fallbackTs,
+                isPrivate: true
+              });
+            }
           }
         }
       } catch (e: any) {
@@ -260,13 +263,20 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     return `${months}mo ago`;
   };
 
+  const formatDateTime = (iso: string) => {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, {
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: 'numeric', minute: '2-digit'
+      });
+    } catch {
+      return iso;
+    }
+  };
+
   const totalContrib = useMemo(() => contributionWeeks.flat().reduce((a, d) => a + d.count, 0), [contributionWeeks]);
   
-  // Weekly aggregated trend for sparkline graph
-  const weeklyTrend = useMemo(() => {
-    return contributionWeeks.map(week => week.reduce((sum, day) => sum + day.count, 0));
-  }, [contributionWeeks]);
-
   const gridRef = useRef<HTMLDivElement>(null);
   const [cellSize, setCellSize] = useState<number>(14);
 
@@ -278,18 +288,6 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     try {
       const d = new Date(iso);
       return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-    } catch {
-      return iso;
-    }
-  };
-
-  const formatDateTime = (iso: string) => {
-    try {
-      const d = new Date(iso);
-      return d.toLocaleString(undefined, {
-        month: 'short', day: 'numeric', year: 'numeric',
-        hour: 'numeric', minute: '2-digit'
-      });
     } catch {
       return iso;
     }
@@ -336,29 +334,22 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
 
   const Chart: React.FC = () => {
     console.log('GithubStats - Events loaded:', events.length);
-    console.log('GithubStats - Contribution weeks:', contributionWeeks.length);
-    console.log('GithubStats - Max contributions:', maxContributions);
     
     return (
     <div className="panel p-4">
       {loading && <div className="text-gray-400">Loading…</div>}
       {error && <div className="text-gray-400">Error: {error}</div>}
-      {!loading && !error && contributionWeeks.length === 0 && (
-        <div className="text-gray-400 text-sm">
-          No contribution data found. Token status: {(import.meta as any).env?.VITE_GITHUB_TOKEN ? '✓ Present' : '✗ Missing'}
-        </div>
-      )}
-      {!loading && !error && contributionWeeks.length > 0 && (
+      {!loading && !error && (
         <>
           {/* Header row: title left, latest commit right */}
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-3 gap-4">
             <div className="flex items-baseline gap-6">
               <div>
                 <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
                 <div className="text-xs text-gray-400">{sinceLabel}</div>
               </div>
               {latestCommit && latestCommit.message && (
-                <div className="text-right">
+                <div className="text-left md:text-right">
                   <div className="text-[11px] text-gray-400">Latest commit</div>
                   <div className="text-[13px] text-white font-medium truncate max-w-[20rem]">
                     {latestCommit.isPrivate ? (
@@ -373,41 +364,26 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                 </div>
               )}
             </div>
-            {/* Mini trend sparkline */}
-            {weeklyTrend.length > 0 && (
-              <svg width="280" height="110" className="flex-shrink-0" style={{ paddingTop: '10px', paddingBottom: '5px' }}>
-                {/* Draw piecewise line graph */}
-                <polyline
-                  points={weeklyTrend.map((count, i) => {
-                    const maxWeek = Math.max(1, ...weeklyTrend);
-                    const x = (i / (weeklyTrend.length - 1)) * 280;
-                    const y = 95 - (count / maxWeek) * 80;
-                    return `${x},${y}`;
-                  }).join(' ')}
-                  fill="none"
-                  stroke="#5b8fd9"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                {/* Draw points at each week */}
-                {weeklyTrend.map((count, i) => {
-                  const maxWeek = Math.max(1, ...weeklyTrend);
-                  const x = (i / (weeklyTrend.length - 1)) * 280;
-                  const y = 95 - (count / maxWeek) * 80;
-                  return (
-                    <circle
-                      key={i}
-                      cx={x}
-                      cy={y}
-                      r="3"
-                      fill="#6fa8dc"
-                      opacity={0.9}
-                    />
-                  );
-                })}
-              </svg>
-            )}
+
+            {/* Repo List (Buttons) */}
+            <div className="flex flex-wrap gap-2 justify-start md:justify-end max-w-md">
+              {recentRepos.slice(0, 4).map((repo) => (
+                <a 
+                  key={repo.nameWithOwner} 
+                  href={repo.isPrivate ? undefined : repo.url} 
+                  target={repo.isPrivate ? undefined : "_blank"}
+                  rel={repo.isPrivate ? undefined : "noopener noreferrer"}
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                    repo.isPrivate 
+                      ? 'bg-gray-800 border-gray-700 text-gray-400 cursor-default' 
+                      : 'bg-[#161b22] border-[#30363d] text-[#58a6ff] hover:border-[#8b949e] hover:bg-[#1c2128]'
+                  }`}
+                  title={repo.description || 'No description'}
+                >
+                  {repo.isPrivate ? 'Private Repo' : repo.name}
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* GitHub-style contribution heatmap */}
