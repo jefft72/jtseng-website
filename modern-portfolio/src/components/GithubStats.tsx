@@ -34,6 +34,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
         setLoading(true);
         setError(null);
         const token = (import.meta as any).env?.VITE_GITHUB_TOKEN as string | undefined;
+        let foundCommit = false;
 
         // If token exists, try GraphQL for accurate daily history + latest commit
         if (token) {
@@ -110,7 +111,6 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
               const repos = json?.data?.user?.repositories?.nodes as Array<any> | undefined;
               console.log('Repositories found:', repos?.length);
               if (repos && Array.isArray(repos)) {
-                setRecentRepos(repos);
                 let mostRecent: { message: string; committedDate: string } | null = null;
                 for (const repo of repos) {
                   const commits = repo?.defaultBranchRef?.target?.history?.nodes;
@@ -129,6 +129,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                     timestamp: mostRecent.committedDate,
                     isPrivate: false
                   });
+                  foundCommit = true;
                 }
               }
             }
@@ -152,7 +153,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
         setEvents(allEvents);
         
         // Fallback: use events if GraphQL didn't populate latestCommit
-        if (!latestCommit) {
+        if (!foundCommit) {
           const pushEvent = allEvents.find((e: EventItem) => e.type === 'PushEvent');
           if (pushEvent && pushEvent.payload?.commits?.length > 0) {
             const commit = pushEvent.payload.commits[0];
@@ -220,11 +221,9 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     let currentWeek: Array<{ date: string; count: number }> = [];
     let currentDate = new Date(startDate);
     
-    // Generate approx 22 weeks for 5 months
-    while (weeks.length < 22) {
+    // Generate weeks from start date through today
+    while (currentDate <= today) {
       const dateKey = currentDate.toISOString().slice(0, 10);
-      // Only add days up to today, fill rest with null/empty if needed, but GitHub usually shows full weeks
-      // We'll just show empty squares for future days in the current week
       currentWeek.push({ date: dateKey, count: counts[dateKey] || 0 });
       
       if (currentWeek.length === 7) {
@@ -232,6 +231,11 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
         currentWeek = [];
       }
       currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    // Push any remaining partial week
+    if (currentWeek.length > 0) {
+      weeks.push(currentWeek);
     }
 
     const max = Math.max(1, ...Object.keys(counts).map(k => counts[k]));
@@ -327,34 +331,20 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-2">
             {/* Heatmap & Header */}
             <div className="w-full">
-              {/* Header row: title left, latest commit right */}
+              {/* Header row: title left */}
               <div className="flex items-baseline justify-between mb-4 gap-8">
                 <div>
                   <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
                   <div className="text-xs text-gray-400">{sinceLabel}</div>
                 </div>
-                {latestCommit && latestCommit.message && (
-                  <div className="text-right">
-                    <div className="text-[11px] text-gray-400">Latest commit</div>
-                    <div className="text-[13px] text-white font-medium truncate max-w-[20rem]">
-                      {latestCommit.isPrivate ? (
-                        <span className="text-gray-300">{latestCommit.message}</span>
-                      ) : (
-                        <span className="text-baby">{latestCommit.message}</span>
-                      )}
-                    </div>
-                    {latestCommit.timestamp && (
-                      <div className="text-[10px] text-gray-500">{formatDateTime(latestCommit.timestamp)} · {formatTimeAgo(latestCommit.timestamp)}</div>
-                    )}
-                  </div>
-                )}
               </div>
 
-              {/* GitHub-style contribution heatmap */}
-              <div className="pb-2 relative mt-8" ref={gridRef} style={{ overflow: 'visible' }}>
+              <div className="flex gap-4 items-end mt-2">
+                {/* GitHub-style contribution heatmap */}
+                <div className="pb-2 relative" ref={gridRef} style={{ overflow: 'visible' }}>
                 {/* Month labels row */}
                 {contributionWeeks.length > 0 && (
                   <div className="inline-flex mb-6" style={{ gap: '6px' }}>
@@ -425,6 +415,27 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                     </div>
                   </div>
                 )}
+              </div>
+
+              <div className="pb-2 min-w-[200px] mt-2">
+                <div className="text-[11px] text-gray-400 mb-1">Latest commit</div>
+                {latestCommit ? (
+                  <>
+                    <div className="text-[13px] text-white font-medium truncate max-w-[20rem]">
+                      {latestCommit.isPrivate ? (
+                        <span className="text-gray-300">{latestCommit.message}</span>
+                      ) : (
+                        <span className="text-blue-300">{latestCommit.message}</span>
+                      )}
+                    </div>
+                    <div className="text-[10px] text-gray-500 mt-0.5">
+                      {formatDateTime(latestCommit.timestamp)} · {formatTimeAgo(latestCommit.timestamp)}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-[13px] text-gray-500 italic">No recent public activity</div>
+                )}
+              </div>
               </div>
             </div>
           </div>
