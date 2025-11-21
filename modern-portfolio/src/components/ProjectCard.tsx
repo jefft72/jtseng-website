@@ -17,8 +17,12 @@ const ProjectCard: React.FC<{ project: Project; onOpen?: () => void }> = ({ proj
   return (
     <div
       className="project-card project-card-wrapper cursor-pointer"
-      onMouseEnter={() => onOpen && onOpen()}
-      onClick={() => onOpen && onOpen()}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onOpen?.();
+        }
+      }}
       role="button"
       tabIndex={0}
     >

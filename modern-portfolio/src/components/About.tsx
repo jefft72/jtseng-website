@@ -97,7 +97,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-6">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">What I'm currently working on</h2>
-            <div className="w-24 h-1 bg-blue-600 mx-auto rounded-md"></div>
+            {/*<div className="w-24 h-1 bg-blue-600 mx-auto rounded-md mt-20"></div>*/}
           </motion.div>
 
           {/* Projects gallery: scrollable on small screens, grid on md+ */}
