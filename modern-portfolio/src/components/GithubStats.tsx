@@ -182,26 +182,26 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     fetchEvents();
   }, []);
 
-  // Build GitHub-style contribution heatmap (from July 1 onward)
+  // Build GitHub-style contribution heatmap (last 5 months ending today)
   const { contributionWeeks, maxContributions, sinceLabel } = useMemo(() => {
     const today = new Date();
-    // Determine start: July 1 of current year if we're in/after July, else July 1 of previous year
-    const startYear = today.getMonth() >= 6 ? today.getFullYear() : today.getFullYear() - 1; // month is 0-based; 6 => July
-    const julyFirst = new Date(startYear, 6, 1);
-    const sinceLabel = `Since Jul 1, ${startYear}`;
-
-    // Align to the previous Sunday for column alignment
-    const startDate = new Date(julyFirst);
+    // Calculate start date as 5 months ago
+    const startDate = new Date(today);
+    startDate.setMonth(today.getMonth() - 5);
+    
+    // Align start date to the previous Sunday
     while (startDate.getDay() !== 0) {
       startDate.setDate(startDate.getDate() - 1);
     }
+
+    const sinceLabel = `Last 5 months`;
 
     // Build a map of date -> count using GraphQL calendar when available; otherwise from events
     const counts: Record<string, number> = {};
     if (calendarWeeks && calendarWeeks.length) {
       for (const week of calendarWeeks) {
         for (const day of week) {
-          if (day.date >= julyFirst.toISOString().slice(0, 10)) {
+          if (day.date >= startDate.toISOString().slice(0, 10)) {
             counts[day.date] = (counts[day.date] || 0) + day.count;
           }
         }
@@ -209,7 +209,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     } else {
       for (const ev of events) {
         const day = ev.created_at?.slice(0, 10);
-        if (day && day >= julyFirst.toISOString().slice(0, 10)) {
+        if (day && day >= startDate.toISOString().slice(0, 10)) {
           counts[day] = (counts[day] || 0) + 1;
         }
       }
@@ -219,17 +219,20 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     const weeks: Array<Array<{ date: string; count: number }>> = [];
     let currentWeek: Array<{ date: string; count: number }> = [];
     let currentDate = new Date(startDate);
-    const todayDateKey = today.toISOString().slice(0, 10);
-    while (currentDate.toISOString().slice(0, 10) <= todayDateKey) {
+    
+    // Generate approx 22 weeks for 5 months
+    while (weeks.length < 22) {
       const dateKey = currentDate.toISOString().slice(0, 10);
+      // Only add days up to today, fill rest with null/empty if needed, but GitHub usually shows full weeks
+      // We'll just show empty squares for future days in the current week
       currentWeek.push({ date: dateKey, count: counts[dateKey] || 0 });
+      
       if (currentWeek.length === 7) {
         weeks.push(currentWeek);
         currentWeek = [];
       }
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    if (currentWeek.length > 0) weeks.push(currentWeek);
 
     const max = Math.max(1, ...Object.keys(counts).map(k => counts[k]));
     return { contributionWeeks: weeks, maxContributions: max, sinceLabel };
@@ -298,7 +301,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     const recalc = () => {
       const el = gridRef.current;
       if (!el) return;
-      const weeks = Math.max(1, contributionWeeks.length || 52);
+      const weeks = Math.max(1, contributionWeeks.length || 22);
       const gap = 6; // px
       const width = el.clientWidth || 640;
       const size = Math.floor((width - (weeks - 1) * gap) / weeks);
@@ -341,123 +344,127 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          {/* Header row: title left, latest commit right */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-3 gap-4">
-            <div className="flex items-baseline gap-6">
-              <div>
-                <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
-                <div className="text-xs text-gray-400">{sinceLabel}</div>
-              </div>
-              {latestCommit && latestCommit.message && (
-                <div className="text-left md:text-right">
-                  <div className="text-[11px] text-gray-400">Latest commit</div>
-                  <div className="text-[13px] text-white font-medium truncate max-w-[20rem]">
-                    {latestCommit.isPrivate ? (
-                      <span className="text-gray-300">{latestCommit.message}</span>
-                    ) : (
-                      <span className="text-baby">{latestCommit.message}</span>
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Left Side: Heatmap & Header (70%) */}
+            <div className="flex-1 lg:w-[70%]">
+              {/* Header row: title left, latest commit right */}
+              <div className="flex items-baseline justify-between mb-4">
+                <div>
+                  <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
+                  <div className="text-xs text-gray-400">{sinceLabel}</div>
+                </div>
+                {latestCommit && latestCommit.message && (
+                  <div className="text-right">
+                    <div className="text-[11px] text-gray-400">Latest commit</div>
+                    <div className="text-[13px] text-white font-medium truncate max-w-[20rem]">
+                      {latestCommit.isPrivate ? (
+                        <span className="text-gray-300">{latestCommit.message}</span>
+                      ) : (
+                        <span className="text-baby">{latestCommit.message}</span>
+                      )}
+                    </div>
+                    {latestCommit.timestamp && (
+                      <div className="text-[10px] text-gray-500">{formatDateTime(latestCommit.timestamp)} · {formatTimeAgo(latestCommit.timestamp)}</div>
                     )}
                   </div>
-                  {latestCommit.timestamp && (
-                    <div className="text-[10px] text-gray-500">{formatDateTime(latestCommit.timestamp)} · {formatTimeAgo(latestCommit.timestamp)}</div>
+                )}
+              </div>
+
+              {/* GitHub-style contribution heatmap */}
+              <div className="pb-2 relative mt-8" ref={gridRef} style={{ overflow: 'visible' }}>
+                {/* Month labels row */}
+                {contributionWeeks.length > 0 && (
+                  <div className="inline-flex mb-6" style={{ gap: '6px' }}>
+                    {monthLabels.map((m, i) => (
+                      <div key={i} style={{ width: cellSize, height: 10 }} className="text-xs text-gray-400 whitespace-nowrap">
+                        {m}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="inline-flex" style={{ gap: '6px' }}>
+                  {totalContrib > 0 ? contributionWeeks.map((week, weekIndex) => (
+                    <div key={weekIndex} className="flex flex-col" style={{ gap: '6px', width: cellSize }}>
+                      {week.map((day) => {
+                        return (
+                          <div
+                            key={day.date}
+                            className="relative"
+                            onMouseEnter={(e) => {
+                              const grid = gridRef.current;
+                              if (!grid) return;
+                              const gridRect = grid.getBoundingClientRect();
+                              const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+                              const x = rect.left - gridRect.left + rect.width / 2;
+                              const maxX = grid.clientWidth - 8;
+                              const minX = 8;
+                              setTooltipPos({ x: Math.max(minX, Math.min(maxX, x)), y: rect.top - gridRect.top - 8 });
+                              setHovered({ date: day.date, count: day.count });
+                            }}
+                            onMouseMove={(e) => {
+                              const grid = gridRef.current;
+                              if (!grid) return;
+                              const gridRect = grid.getBoundingClientRect();
+                              const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+                              const x = rect.left - gridRect.left + rect.width / 2;
+                              const maxX = grid.clientWidth - 8;
+                              const minX = 8;
+                              setTooltipPos({ x: Math.max(minX, Math.min(maxX, x)), y: rect.top - gridRect.top - 8 });
+                            }}
+                            onMouseLeave={() => setHovered(null)}
+                          >
+                            <div
+                              className="rounded-sm transition-all hover:ring-1 hover:ring-blue-400"
+                              style={{ backgroundColor: getColor(day.count), width: cellSize, height: cellSize }}
+                              title={`${day.date}: ${day.count} contribution${day.count !== 1 ? 's' : ''}`}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )) : (
+                    <div className="text-gray-500 text-sm">
+                      No public contribution data in the last year. Private activity isn’t visible here.
+                    </div>
                   )}
                 </div>
-              )}
+
+                {/* Hover tooltip */}
+                {hovered && (
+                  <div
+                    className="pointer-events-none"
+                    style={{ position: 'absolute', left: tooltipPos.x, top: tooltipPos.y, transform: 'translate(-50%, -100%)' }}
+                  >
+                    <div className="panel px-3 py-2 text-xs text-white border border-slate-600 shadow-lg" style={{ background: 'rgba(18,18,18,0.98)', minWidth: 200, whiteSpace: 'nowrap' }}>
+                      <div className="font-medium">{hovered.count} contribution{hovered.count !== 1 ? 's' : ''}</div>
+                      <div className="text-gray-400">{formatDate(hovered.date)}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Repo List (Buttons) */}
-            <div className="flex flex-wrap gap-2 justify-start md:justify-end max-w-md">
+            {/* Right Side: Buttons (30%) */}
+            <div className="lg:w-[30%] flex flex-col gap-2 justify-center">
               {recentRepos.slice(0, 4).map((repo) => (
                 <a 
                   key={repo.nameWithOwner} 
                   href={repo.isPrivate ? undefined : repo.url} 
                   target={repo.isPrivate ? undefined : "_blank"}
                   rel={repo.isPrivate ? undefined : "noopener noreferrer"}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                    repo.isPrivate 
-                      ? 'bg-gray-800 border-gray-700 text-gray-400 cursor-default' 
-                      : 'bg-[#161b22] border-[#30363d] text-[#58a6ff] hover:border-[#8b949e] hover:bg-[#1c2128]'
-                  }`}
+                  className={`btn ${repo.isPrivate ? 'btn-outline opacity-50 cursor-not-allowed' : 'btn-primary'} w-full flex items-center justify-center gap-2 !py-3`}
                   title={repo.description || 'No description'}
                 >
-                  {repo.isPrivate ? 'Private Repo' : repo.name}
+                  <span>{repo.isPrivate ? 'Private Repo' : repo.name}</span>
+                  {!repo.isPrivate && (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  )}
                 </a>
               ))}
             </div>
-          </div>
-
-          {/* GitHub-style contribution heatmap */}
-          <div className="pb-2 relative mt-4" ref={gridRef} style={{ overflow: 'visible' }}>
-            {/* Month labels row */}
-            {contributionWeeks.length > 0 && (
-              <div className="inline-flex mb-2" style={{ gap: '6px' }}>
-                {monthLabels.map((m, i) => (
-                  <div key={i} style={{ width: cellSize, height: 10 }} className="text-xs text-gray-400 whitespace-nowrap">
-                    {m}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div className="inline-flex" style={{ gap: '6px' }}>
-              {totalContrib > 0 ? contributionWeeks.map((week, weekIndex) => (
-                <div key={weekIndex} className="flex flex-col" style={{ gap: '6px', width: cellSize }}>
-                  {week.map((day) => {
-                    return (
-                      <div
-                        key={day.date}
-                        className="relative"
-                        onMouseEnter={(e) => {
-                          const grid = gridRef.current;
-                          if (!grid) return;
-                          const gridRect = grid.getBoundingClientRect();
-                          const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-                          const x = rect.left - gridRect.left + rect.width / 2;
-                          const maxX = grid.clientWidth - 8;
-                          const minX = 8;
-                          setTooltipPos({ x: Math.max(minX, Math.min(maxX, x)), y: rect.top - gridRect.top - 8 });
-                          setHovered({ date: day.date, count: day.count });
-                        }}
-                        onMouseMove={(e) => {
-                          const grid = gridRef.current;
-                          if (!grid) return;
-                          const gridRect = grid.getBoundingClientRect();
-                          const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-                          const x = rect.left - gridRect.left + rect.width / 2;
-                          const maxX = grid.clientWidth - 8;
-                          const minX = 8;
-                          setTooltipPos({ x: Math.max(minX, Math.min(maxX, x)), y: rect.top - gridRect.top - 8 });
-                        }}
-                        onMouseLeave={() => setHovered(null)}
-                      >
-                        <div
-                          className="rounded-sm transition-all hover:ring-1 hover:ring-blue-400"
-                          style={{ backgroundColor: getColor(day.count), width: cellSize, height: cellSize }}
-                          title={`${day.date}: ${day.count} contribution${day.count !== 1 ? 's' : ''}`}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              )) : (
-                <div className="text-gray-500 text-sm">
-                  No public contribution data in the last year. Private activity isn’t visible here.
-                </div>
-              )}
-            </div>
-
-            {/* Hover tooltip */}
-            {hovered && (
-              <div
-                className="pointer-events-none"
-                style={{ position: 'absolute', left: tooltipPos.x, top: tooltipPos.y, transform: 'translate(-50%, -100%)' }}
-              >
-                <div className="panel px-3 py-2 text-xs text-white border border-slate-600 shadow-lg" style={{ background: 'rgba(18,18,18,0.98)', minWidth: 200, whiteSpace: 'nowrap' }}>
-                  <div className="font-medium">{hovered.count} contribution{hovered.count !== 1 ? 's' : ''}</div>
-                  <div className="text-gray-400">{formatDate(hovered.date)}</div>
-                </div>
-              </div>
-            )}
           </div>
 
 
