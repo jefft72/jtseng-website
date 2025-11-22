@@ -326,28 +326,45 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     console.log('GithubStats - Events loaded:', events.length);
     
     return (
-    <div className="panel p-4 ml-auto w-fit">
+    <div className="panel p-4 mx-auto w-fit">
       {loading && <div className="text-gray-400">Loading…</div>}
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          <div className="flex flex-col gap-2">
-            {/* Heatmap & Header */}
-            <div className="w-full">
-              {/* Header row: title left */}
-              <div className="flex items-baseline justify-between mb-4 gap-8">
-                <div>
-                  <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
-                  <div className="text-xs text-gray-400">{sinceLabel}</div>
-                </div>
+          <div className="flex gap-12 items-start">
+            {/* Left Column: Header & Latest Commit */}
+            <div className="flex flex-col gap-6">
+              <div>
+                <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
+                <div className="text-xs text-gray-400">{sinceLabel}</div>
               </div>
 
-              <div className="flex gap-4 items-end mt-2">
-                {/* GitHub-style contribution heatmap */}
-                <div className="pb-2 relative" ref={gridRef} style={{ overflow: 'visible' }}>
+              <div>
+                <div className="text-sm text-gray-400 mb-2">Latest commit</div>
+                {latestCommit ? (
+                  <>
+                    <div className="text-base text-white font-medium">
+                      {latestCommit.isPrivate ? (
+                        <span className="text-gray-300">{latestCommit.message}</span>
+                      ) : (
+                        <span className="text-blue-300">{latestCommit.message}</span>
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-500 mt-1">
+                      {formatDateTime(latestCommit.timestamp)} · {formatTimeAgo(latestCommit.timestamp)}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-base text-gray-500 italic">No recent public activity</div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Column: Heatmap */}
+            <div className="relative" ref={gridRef} style={{ overflow: 'visible' }}>
                 {/* Month labels row */}
                 {contributionWeeks.length > 0 && (
-                  <div className="inline-flex mb-6" style={{ gap: '6px' }}>
+                  <div className="inline-flex mb-2" style={{ gap: '6px' }}>
                     {monthLabels.map((m, i) => (
                       <div key={i} style={{ width: cellSize, height: 10 }} className="text-xs text-gray-400 whitespace-nowrap">
                         {m}
@@ -356,7 +373,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                   </div>
                 )}
 
-                <div className="inline-flex" style={{ gap: '6px' }}>
+                <div className="flex" style={{ gap: '6px' }}>
                   {totalContrib > 0 ? contributionWeeks.map((week, weekIndex) => (
                     <div key={weekIndex} className="flex flex-col" style={{ gap: '6px', width: cellSize }}>
                       {week.map((day) => {
@@ -407,7 +424,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                 {hovered && (
                   <div
                     className="pointer-events-none"
-                    style={{ position: 'absolute', left: tooltipPos.x, top: tooltipPos.y, transform: 'translate(-50%, -100%)' }}
+                    style={{ position: 'absolute', left: tooltipPos.x, top: tooltipPos.y, transform: 'translate(-100%, -100%)' }}
                   >
                     <div className="panel px-3 py-2 text-xs text-white border border-slate-600 shadow-lg" style={{ background: 'rgba(18,18,18,0.98)', minWidth: 200, whiteSpace: 'nowrap' }}>
                       <div className="font-medium">{hovered.count} contribution{hovered.count !== 1 ? 's' : ''}</div>
@@ -415,31 +432,8 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                     </div>
                   </div>
                 )}
-              </div>
-
-              <div className="pb-2 min-w-[200px] mt-2">
-                <div className="text-[11px] text-gray-400 mb-1">Latest commit</div>
-                {latestCommit ? (
-                  <>
-                    <div className="text-[13px] text-white font-medium truncate max-w-[20rem]">
-                      {latestCommit.isPrivate ? (
-                        <span className="text-gray-300">{latestCommit.message}</span>
-                      ) : (
-                        <span className="text-blue-300">{latestCommit.message}</span>
-                      )}
-                    </div>
-                    <div className="text-[10px] text-gray-500 mt-0.5">
-                      {formatDateTime(latestCommit.timestamp)} · {formatTimeAgo(latestCommit.timestamp)}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-[13px] text-gray-500 italic">No recent public activity</div>
-                )}
-              </div>
-              </div>
             </div>
           </div>
-
 
           {!(import.meta as any).env?.VITE_GITHUB_TOKEN && (
             <div className="text-[11px] text-gray-500 mt-2">
