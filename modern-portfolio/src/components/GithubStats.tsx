@@ -326,7 +326,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     console.log('GithubStats - Events loaded:', events.length);
     
     return (
-    <div className="panel p-4 mx-auto w-fit">
+    <div className="panel p-4 pl-8 mx-auto w-fit">
       {loading && <div className="text-gray-400">Loading…</div>}
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
@@ -361,12 +361,12 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
             </div>
 
             {/* Right Column: Heatmap */}
-            <div className="relative" ref={gridRef} style={{ overflow: 'visible' }}>
+            <div className="relative -mt-2" ref={gridRef} style={{ overflow: 'visible' }}>
                 {/* Month labels row */}
                 {contributionWeeks.length > 0 && (
-                  <div className="inline-flex mb-2" style={{ gap: '6px' }}>
+                  <div className="inline-flex mb-3" style={{ gap: '6px' }}>
                     {monthLabels.map((m, i) => (
-                      <div key={i} style={{ width: cellSize, height: 10 }} className="text-xs text-gray-400 whitespace-nowrap">
+                      <div key={i} style={{ width: cellSize }} className="text-xs text-gray-400 whitespace-nowrap">
                         {m}
                       </div>
                     ))}
@@ -423,7 +423,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                 {/* Hover tooltip */}
                 {hovered && (
                   <div
-                    className="pointer-events-none"
+                    className="pointer-events-none z-50"
                     style={{ position: 'absolute', left: tooltipPos.x, top: tooltipPos.y, transform: 'translate(-100%, -100%)' }}
                   >
                     <div className="panel px-3 py-2 text-xs text-white border border-slate-600 shadow-lg" style={{ background: 'rgba(18,18,18,0.98)', minWidth: 200, whiteSpace: 'nowrap' }}>
