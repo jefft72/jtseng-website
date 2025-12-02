@@ -162,14 +162,22 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
               timestamp: pushEvent.created_at,
               isPrivate: false
             });
-          } else if (allEvents.length > 0) {
-            // No public push events; infer last activity time from most recent event
-            const fallbackTs = allEvents[0]?.created_at;
-            if (fallbackTs) {
+          } else {
+            // Check for any recent activity events (CreateEvent, IssuesEvent, etc.)
+            const recentEvent = allEvents[0];
+            if (recentEvent) {
+              let message = 'Recent activity';
+              if (recentEvent.type === 'CreateEvent') {
+                message = `Created ${recentEvent.payload?.ref_type || 'repository'}`;
+              } else if (recentEvent.type === 'IssuesEvent') {
+                message = `${recentEvent.payload?.action || 'Updated'} issue`;
+              } else if (recentEvent.type === 'PullRequestEvent') {
+                message = `${recentEvent.payload?.action || 'Updated'} pull request`;
+              }
               setLatestCommit({
-                message: 'Recent activity is private',
-                timestamp: fallbackTs,
-                isPrivate: true
+                message: !token ? 'Connect GitHub token to view private contributions' : message,
+                timestamp: recentEvent.created_at,
+                isPrivate: !token
               });
             }
           }
