@@ -155,13 +155,45 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
         // Fallback: use events if GraphQL didn't populate latestCommit
         if (!foundCommit) {
           const pushEvent = allEvents.find((e: EventItem) => e.type === 'PushEvent');
-          if (pushEvent && pushEvent.payload?.commits?.length > 0) {
-            const commit = pushEvent.payload.commits[0];
-            setLatestCommit({
-              message: commit.message || 'Recent commit',
-              timestamp: pushEvent.created_at,
-              isPrivate: false
-            });
+          if (pushEvent) {
+            // If commits are in payload, use them
+            if (pushEvent.payload?.commits?.length > 0) {
+              const commit = pushEvent.payload.commits[0];
+              setLatestCommit({
+                message: commit.message || 'Recent commit',
+                timestamp: pushEvent.created_at,
+                isPrivate: false
+              });
+            } else if (pushEvent.payload?.head && pushEvent.repo?.name) {
+              // Fetch commit details using the commit SHA
+              try {
+                const repoName = pushEvent.repo.name;
+                const commitSha = pushEvent.payload.head;
+                const commitUrl = `https://api.github.com/repos/${repoName}/commits/${commitSha}`;
+                const commitResp = await fetch(commitUrl);
+                if (commitResp.ok) {
+                  const commitData = await commitResp.json();
+                  setLatestCommit({
+                    message: commitData.commit?.message || 'Recent commit',
+                    timestamp: pushEvent.created_at,
+                    isPrivate: false
+                  });
+                } else {
+                  // Fallback if commit fetch fails
+                  setLatestCommit({
+                    message: 'Recent commit',
+                    timestamp: pushEvent.created_at,
+                    isPrivate: false
+                  });
+                }
+              } catch {
+                setLatestCommit({
+                  message: 'Recent commit',
+                  timestamp: pushEvent.created_at,
+                  isPrivate: false
+                });
+              }
+            }
           } else {
             // Check for any recent activity events (CreateEvent, IssuesEvent, etc.)
             const recentEvent = allEvents[0];
