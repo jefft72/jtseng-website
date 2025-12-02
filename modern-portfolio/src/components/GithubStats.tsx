@@ -248,12 +248,15 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
         }
       }
     } else {
+      console.log('Building heatmap from events:', events.length);
       for (const ev of events) {
         const day = ev.created_at?.slice(0, 10);
         if (day && day >= startDate.toISOString().slice(0, 10)) {
           counts[day] = (counts[day] || 0) + 1;
+          console.log('Counted event on', day, '- total now:', counts[day]);
         }
       }
+      console.log('Total days with activity:', Object.keys(counts).length);
     }
 
     // Construct weeks from aligned start to today
@@ -322,8 +325,6 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     }
   };
 
-  const totalContrib = useMemo(() => contributionWeeks.flat().reduce((a, d) => a + d.count, 0), [contributionWeeks]);
-  
   const gridRef = useRef<HTMLDivElement>(null);
   const cellSize = 15;
 
@@ -401,7 +402,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
             </div>
 
             {/* Right Column: Heatmap */}
-            <div className="relative md:-mt-2 overflow-x-auto overflow-y-visible pb-2 pt-16 md:pt-20 w-full" ref={gridRef} style={{ minWidth: 0 }}>
+            <div className="relative md:-mt-2 overflow-x-auto overflow-y-visible pb-2 pt-16 md:pt-20 pr-4 w-full max-w-full" ref={gridRef} style={{ minWidth: 0 }}>
                 {/* Month labels row */}
                 {contributionWeeks.length > 0 && (
                   <div className="inline-flex mb-3" style={{ gap: '6px' }}>
@@ -414,7 +415,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                 )}
 
                 <div className="flex" style={{ gap: '6px', minWidth: 'max-content' }}>
-                  {totalContrib > 0 ? contributionWeeks.map((week, weekIndex) => (
+                  {contributionWeeks.length > 0 ? contributionWeeks.map((week, weekIndex) => (
                     <div key={weekIndex} className="flex flex-col" style={{ gap: '6px', width: cellSize }}>
                       {week.map((day) => {
                         return (
@@ -480,11 +481,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
             </div>
           </div>
 
-          {!(import.meta as any).env?.VITE_GITHUB_TOKEN && (
-            <div className="text-[11px] text-gray-500 mt-2">
-              Connect a GitHub token in <code className="text-gray-400">.env</code> as <code className="text-gray-400">VITE_GITHUB_TOKEN</code> to show your full-year private + public contribution history.
-            </div>
-          )}
+
         </>
       )}
     </div>
