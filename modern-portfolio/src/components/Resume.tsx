@@ -81,7 +81,7 @@ const Resume: React.FC<Props> = ({ fullPage = false }) => {
         {
           degree: 'B.S. in Computer Science & Mathematics',
           school: 'Purdue University, West Lafayette, IN',
-          year: 'Graduation: May 2029 | GPA: 4.0/4.0',
+          year: 'Graduation: May 2028 | GPA: 4.0/4.0',
         },
       ],
     },
@@ -242,7 +242,7 @@ const Resume: React.FC<Props> = ({ fullPage = false }) => {
             <div className="w-24 h-1 bg-blue-600 mx-auto rounded-md mb-8"></div>
             
             {/* View/Download Buttons */}
-            <div className="flex justify-center gap-3">
+            <div className="flex flex-col sm:flex-row justify-center gap-6 sm:gap-3">
               <a href="/JeffreyTsengResume.pdf" target="_blank" rel="noopener noreferrer">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -266,9 +266,9 @@ const Resume: React.FC<Props> = ({ fullPage = false }) => {
           </motion.div>
 
           {/* Interactive Resume Content */}
-          <motion.div variants={itemVariants} className="panel p-8">
+          <motion.div variants={itemVariants} className="panel p-4 md:p-8">
             {/* Tab Navigation */}
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
+            <div className="flex flex-wrap justify-center gap-8 md:gap-6 mb-8 overflow-x-auto px-2">
               {tabs.map((tab) => (
                 <motion.button
                   key={tab.id}

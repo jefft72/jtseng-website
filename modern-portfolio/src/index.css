@@ -243,21 +243,24 @@ html {
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 1.1rem 1.5rem; /* taller buttons with more vertical padding */
-  border-radius: 0.6rem;
-  border: 1px solid var(--border);
-  background: var(--panel);
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  background: transparent;
   color: var(--text);
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-weight: 700;
   line-height: 1.2;
   transition: all 200ms ease;
+  font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  cursor: pointer;
 }
-.btn:hover { border-color: var(--blue-strong); filter: brightness(1.08); }
-.btn:focus { outline: none; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4); }
-.btn-primary { background: #0b1220; border-color: #0b1220; color: #ffffff; }
-.btn-primary:hover { background: #111827; border-color: #111827; }
-.btn-outline { background: transparent; border-color: var(--border); }
-.btn-outline:hover { border-color: var(--blue-strong); background: rgba(15,15,15,0.6); }
+.btn:hover { color: var(--blue-strong); }
+.btn:focus { outline: none; }
+.btn-primary { color: var(--blue); }
+.btn-primary:hover { color: var(--blue-strong); }
+.btn-outline { color: var(--text); }
+.btn-outline:hover { color: var(--blue-strong); }
 
 .panel {
   background: var(--panel);
@@ -273,14 +276,19 @@ html {
 }
 
 .tab {
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  border: 1px solid transparent;
+  padding: 0;
+  border-radius: 0;
+  border: none;
   color: var(--text);
   background: transparent;
+  font-weight: 700;
+  font-family: 'Outfit', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
-.tab:hover { color: #ffffff; border-color: var(--border); }
-.tab-active { color: #000; border-color: var(--blue-strong); background: var(--blue); }
+.tab:hover { color: var(--blue-strong); }
+.tab-active { color: var(--blue); }
 
 /* Pixel-style text used in the intro */
 .pixel-text {

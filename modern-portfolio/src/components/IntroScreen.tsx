@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import milkyWayBg from '../assets/milky-way.png';
 
 type Props = {
   onEnter: () => void;
@@ -43,7 +44,7 @@ const IntroScreen: React.FC<Props> = ({ onEnter }) => {
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: 'url("/milky-way.png")',
+          backgroundImage: `url(${milkyWayBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           imageRendering: 'pixelated',

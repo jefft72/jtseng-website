@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ProjectCard, { type Project } from './ProjectCard';
 import ProjectOverlay from './ProjectOverlay';
+import UPlateThumbnail from '../assets/UPlateThumbnail.png';
+import HTFThumbnail from '../assets/HTFThumbnail.png';
+import GDGThumbnail from '../assets/GDGThumbnail.png';
+import CrclThumbnail from '../assets/CrclThumbnail.png';
 type Props = { fullPage?: boolean };
 
 const About: React.FC<Props> = ({ fullPage = false }) => {
@@ -35,7 +39,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
       tech: ['Flutter', 'Firebase', 'Vertex AI'],
       repoUrl: 'https://jefft72.github.io/UPlate/',
       liveUrl: '',
-      image: '/src/assets/UPlateThumbnail.png',
+      image: UPlateThumbnail,
       fit: 'contain',
       position: 'center',
       scale: 0.85,
@@ -47,7 +51,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
       tech: ['React', 'TypeScript', 'Node'],
       repoUrl: 'Private Repo',
       liveUrl: '',
-      image: '/src/assets/HTFThumbnail.png',
+      image: HTFThumbnail,
       fit: 'cover',
       position: 'center',
     },
@@ -58,7 +62,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
       tech: ['Firebase', 'RAG', 'Flutter'],
       repoUrl: 'Private Repo',
       liveUrl: '',
-      image: '/src/assets/GDGThumbnail.png',
+      image: GDGThumbnail,
       fit: 'contain',
       position: 'center',
       scale: 0.7,
@@ -70,7 +74,7 @@ const About: React.FC<Props> = ({ fullPage = false }) => {
       tech: ['RAG', 'React Native', 'AI'],
       repoUrl: 'https://crcle.ai/',
       liveUrl: '',
-      image: '/src/assets/CrclThumbnail.png',
+      image: CrclThumbnail,
       fit: 'contain',
       position: 'center',
     },

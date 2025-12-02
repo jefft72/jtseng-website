@@ -326,14 +326,14 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     console.log('GithubStats - Events loaded:', events.length);
     
     return (
-    <div className="panel p-4 pl-8 mx-auto w-fit">
+    <div className="panel p-4 md:pl-8 mx-auto w-full">
       {loading && <div className="text-gray-400">Loading…</div>}
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          <div className="flex gap-12 items-start">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-12 items-start overflow-hidden">
             {/* Left Column: Header & Latest Commit */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 shrink-0">
               <div>
                 <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
                 <div className="text-xs text-gray-400">{sinceLabel}</div>
@@ -361,7 +361,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
             </div>
 
             {/* Right Column: Heatmap */}
-            <div className="relative -mt-2" ref={gridRef} style={{ overflow: 'visible' }}>
+            <div className="relative md:-mt-2 overflow-x-auto overflow-y-visible pb-2 pt-16 md:pt-20 w-full" ref={gridRef} style={{ minWidth: 0 }}>
                 {/* Month labels row */}
                 {contributionWeeks.length > 0 && (
                   <div className="inline-flex mb-3" style={{ gap: '6px' }}>
@@ -373,7 +373,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                   </div>
                 )}
 
-                <div className="flex" style={{ gap: '6px' }}>
+                <div className="flex" style={{ gap: '6px', minWidth: 'max-content' }}>
                   {totalContrib > 0 ? contributionWeeks.map((week, weekIndex) => (
                     <div key={weekIndex} className="flex flex-col" style={{ gap: '6px', width: cellSize }}>
                       {week.map((day) => {
@@ -389,7 +389,10 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                               const x = rect.left - gridRect.left + rect.width / 2;
                               const maxX = grid.clientWidth - 8;
                               const minX = 8;
-                              setTooltipPos({ x: Math.max(minX, Math.min(maxX, x)), y: rect.top - gridRect.top - 8 });
+                              const y = rect.top - gridRect.top;
+                              // Ensure tooltip doesn't go above container
+                              const safeY = Math.max(y - 8, 60);
+                              setTooltipPos({ x: Math.max(minX, Math.min(maxX, x)), y: safeY });
                               setHovered({ date: day.date, count: day.count });
                             }}
                             onMouseMove={(e) => {
@@ -400,7 +403,9 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                               const x = rect.left - gridRect.left + rect.width / 2;
                               const maxX = grid.clientWidth - 8;
                               const minX = 8;
-                              setTooltipPos({ x: Math.max(minX, Math.min(maxX, x)), y: rect.top - gridRect.top - 8 });
+                              const y = rect.top - gridRect.top;
+                              const safeY = Math.max(y - 8, 60);
+                              setTooltipPos({ x: Math.max(minX, Math.min(maxX, x)), y: safeY });
                             }}
                             onMouseLeave={() => setHovered(null)}
                           >
