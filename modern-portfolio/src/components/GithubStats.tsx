@@ -224,7 +224,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
   }, []);
 
   // Build GitHub-style contribution heatmap (last 5 months ending today)
-  const { contributionWeeks, maxContributions, sinceLabel } = useMemo(() => {
+  const { contributionWeeks, maxContributions, sinceLabel, totalContributions } = useMemo(() => {
     const today = new Date();
     // Calculate start date as 5 months ago
     const startDate = new Date(today);
@@ -282,7 +282,8 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     }
 
     const max = Math.max(1, ...Object.keys(counts).map(k => counts[k]));
-    return { contributionWeeks: weeks, maxContributions: max, sinceLabel };
+    const totalContributions = Object.values(counts).reduce((sum, c) => sum + c, 0);
+    return { contributionWeeks: weeks, maxContributions: max, sinceLabel, totalContributions };
   }, [events, calendarWeeks]);
 
   // Blue color scale (cornflower to navy)
@@ -313,18 +314,6 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     return `${months}mo ago`;
   };
 
-  const formatDateTime = (iso: string) => {
-    try {
-      const d = new Date(iso);
-      return d.toLocaleString(undefined, {
-        month: 'short', day: 'numeric', year: 'numeric',
-        hour: 'numeric', minute: '2-digit'
-      });
-    } catch {
-      return iso;
-    }
-  };
-
   const gridRef = useRef<HTMLDivElement>(null);
   const cellSize = 15;
 
@@ -341,24 +330,31 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     }
   };
 
-  // Month labels aligned to weeks (label when a week contains the first of a month)
+  // Month labels - show month name when majority of week is in new month
   const monthLabels = useMemo(() => {
     const labels: string[] = [];
-    let lastMonth = '';
-    for (const week of contributionWeeks) {
-      let label = '';
-      for (const day of week) {
-        if (day.date.slice(8, 10) === '01') {
-          const d = new Date(day.date);
-          const month = d.toLocaleDateString(undefined, { month: 'short' });
-          if (month !== lastMonth) {
-            label = month;
-            lastMonth = month;
-          }
-          break;
+    let lastShownMonth = -1;
+    
+    for (let i = 0; i < contributionWeeks.length; i++) {
+      const week = contributionWeeks[i];
+      // Use the middle of the week (Thursday) to determine the month
+      // This prevents edge cases where week starts in one month but mostly in another
+      const midDay = week[Math.min(3, week.length - 1)];
+      
+      if (midDay) {
+        const d = new Date(midDay.date);
+        const month = d.getMonth();
+        
+        // Only show label if this is a new month we haven't labeled yet
+        if (month !== lastShownMonth) {
+          labels.push(d.toLocaleDateString(undefined, { month: 'short' }));
+          lastShownMonth = month;
+        } else {
+          labels.push('');
         }
+      } else {
+        labels.push('');
       }
-      labels.push(label);
     }
     return labels;
   }, [contributionWeeks]);
@@ -372,45 +368,58 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          <div className="flex flex-col md:flex-row gap-6 md:gap-12 items-start overflow-hidden">
+          <div className="flex flex-col gap-6 md:gap-12 items-start overflow-hidden">
             {/* Left Column: Header & Latest Commit */}
-            <div className="flex flex-col gap-6 shrink-0">
-              <div>
-                <h4 className="text-white font-semibold text-sm">GitHub contributions</h4>
-                <div className="text-xs text-gray-400">{sinceLabel}</div>
+            <div className="flex flex-col md:flex-row gap-6 md:gap-12 w-full">
+              <div className="flex flex-col gap-4 shrink-0">
+                <div>
+                  <h4 className="text-white font-semibold text-sm">GitHub Activity</h4>
+                  <div className="text-xs text-gray-400">{sinceLabel}</div>
+                </div>
+                
+                <div className="flex items-baseline">
+                  <span className="text-2xl font-bold text-blue-400">{totalContributions}</span>
+                  <span className="text-sm text-gray-400 ml-2">contributions</span>
+                </div>
+
+                <div>
+                  <div className="text-sm text-gray-400 mb-1">Latest commit</div>
+                  {latestCommit ? (
+                    <>
+                      <div className="text-sm text-white font-medium max-w-xs">
+                        {latestCommit.isPrivate ? (
+                          <span className="text-gray-300">{latestCommit.message}</span>
+                        ) : (
+                          <span className="text-blue-300">{latestCommit.message}</span>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        {formatTimeAgo(latestCommit.timestamp)}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-sm text-gray-500 italic">No recent activity</div>
+                  )}
+                </div>
               </div>
 
-              <div>
-                <div className="text-sm text-gray-400 mb-2">Latest commit</div>
-                {latestCommit ? (
-                  <>
-                    <div className="text-base text-white font-medium">
-                      {latestCommit.isPrivate ? (
-                        <span className="text-gray-300">{latestCommit.message}</span>
-                      ) : (
-                        <span className="text-blue-300">{latestCommit.message}</span>
-                      )}
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      {formatDateTime(latestCommit.timestamp)} · {formatTimeAgo(latestCommit.timestamp)}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-base text-gray-500 italic">No recent public activity</div>
-                )}
-              </div>
-            </div>
-
-            {/* Right Column: Heatmap */}
-            <div className="relative md:-mt-2 overflow-x-auto overflow-y-visible pb-2 pt-16 md:pt-20 pr-4 w-full max-w-full" ref={gridRef} style={{ minWidth: 0 }}>
+            {/* Heatmap - horizontally scrollable */}
+            <div className="relative overflow-x-auto overflow-y-visible pb-2 pt-2 w-full" ref={gridRef} style={{ minWidth: 0 }}>
                 {/* Month labels row */}
                 {contributionWeeks.length > 0 && (
-                  <div className="inline-flex mb-3" style={{ gap: '6px' }}>
-                    {monthLabels.map((m, i) => (
-                      <div key={i} style={{ width: cellSize }} className="text-xs text-gray-400 whitespace-nowrap">
-                        {m}
-                      </div>
-                    ))}
+                  <div className="flex mb-1" style={{ minWidth: 'max-content' }}>
+                    {contributionWeeks.map((_, i) => {
+                      const label = monthLabels[i] || '';
+                      return (
+                        <div 
+                          key={i} 
+                          style={{ width: cellSize + 6, flexShrink: 0 }} 
+                          className="text-xs text-gray-400"
+                        >
+                          {label}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
@@ -478,6 +487,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                     </div>
                   </div>
                 )}
+            </div>
             </div>
           </div>
 

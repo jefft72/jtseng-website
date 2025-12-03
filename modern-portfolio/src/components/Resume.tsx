@@ -267,8 +267,39 @@ const Resume: React.FC<Props> = ({ fullPage = false }) => {
 
           {/* Interactive Resume Content */}
           <motion.div variants={itemVariants} className="panel p-4 md:p-8">
-            {/* Tab Navigation */}
-            <div className="flex flex-wrap justify-center gap-8 md:gap-6 mb-8 overflow-x-auto px-4">
+            {/* Tab Navigation - pyramid on mobile (2 top, 3 bottom), row on desktop */}
+            <div className="md:hidden flex flex-col items-center gap-3 mb-8 px-4">
+              {/* Top row - 2 tabs */}
+              <div className="flex justify-center gap-6">
+                {tabs.slice(0, 2).map((tab) => (
+                  <motion.button
+                    key={tab.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`tab ${activeTab === tab.id ? 'tab-active' : ''}`}
+                  >
+                    {tab.label}
+                  </motion.button>
+                ))}
+              </div>
+              {/* Bottom row - 3 tabs */}
+              <div className="flex justify-center gap-6">
+                {tabs.slice(2).map((tab) => (
+                  <motion.button
+                    key={tab.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`tab ${activeTab === tab.id ? 'tab-active' : ''}`}
+                  >
+                    {tab.label}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+            {/* Desktop - single row */}
+            <div className="hidden md:flex justify-center gap-6 mb-8">
               {tabs.map((tab) => (
                 <motion.button
                   key={tab.id}
