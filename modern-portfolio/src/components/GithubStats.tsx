@@ -330,6 +330,18 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     }
   };
 
+  const formatDateTime = (iso: string) => {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, {
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: 'numeric', minute: '2-digit'
+      });
+    } catch {
+      return iso;
+    }
+  };
+
   // Month labels - show month name when majority of week is in new month
   const monthLabels = useMemo(() => {
     const labels: string[] = [];
@@ -368,10 +380,10 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          <div className="flex flex-col gap-6 md:gap-12 items-start overflow-hidden">
+          <div className="flex flex-col gap-4 md:gap-8 items-start overflow-hidden">
             {/* Left Column: Header & Latest Commit */}
-            <div className="flex flex-col md:flex-row gap-6 md:gap-12 w-full">
-              <div className="flex flex-col gap-4 shrink-0">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-12 w-full">
+              <div className="flex flex-col gap-2 shrink-0">
                 <div>
                   <h4 className="text-white font-semibold text-sm">GitHub Activity</h4>
                   <div className="text-xs text-gray-400">{sinceLabel}</div>
@@ -379,7 +391,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                 
                 <div className="flex items-baseline">
                   <span className="text-2xl font-bold text-blue-400">{totalContributions}</span>
-                  <span className="text-sm text-gray-400 ml-2">contributions</span>
+                  <span className="text-sm text-gray-400">&nbsp;contributions</span>
                 </div>
 
                 <div>
@@ -394,7 +406,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                         )}
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
-                        {formatTimeAgo(latestCommit.timestamp)}
+                        {formatDateTime(latestCommit.timestamp)} · {formatTimeAgo(latestCommit.timestamp)}
                       </div>
                     </>
                   ) : (
