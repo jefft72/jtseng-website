@@ -380,7 +380,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          <div className="flex flex-col gap-4 md:gap-8 items-start overflow-hidden">
+          <div className="flex flex-col gap-4 md:gap-8 items-start">
             {/* Left Column: Header & Latest Commit */}
             <div className="flex flex-col md:flex-row gap-4 md:gap-12 w-full">
               <div className="flex flex-col gap-2 shrink-0">
