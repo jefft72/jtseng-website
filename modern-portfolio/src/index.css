@@ -417,3 +417,18 @@ html {
   .project-card-wrapper { min-width: auto; width: 100%; height: 240px; }
   .project-grid-scroll { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; overflow: visible; }
 }
+
+/* GitHub heatmap horizontal scroll on mobile */
+.heatmap-scroll {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 768px) {
+  .heatmap-scroll {
+    overflow-x: visible;
+  }
+}

@@ -375,14 +375,14 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     console.log('GithubStats - Events loaded:', events.length);
     
     return (
-    <div className="panel p-4 md:pl-8 mx-auto w-full">
+    <div className="panel p-4 md:pl-8 mx-auto w-full overflow-hidden">
       {loading && <div className="text-gray-400">Loading…</div>}
       {error && <div className="text-gray-400">Error: {error}</div>}
       {!loading && !error && (
         <>
-          <div className="flex flex-col gap-4 md:gap-8 items-start">
+          <div className="flex flex-col gap-4 md:gap-8 items-start overflow-hidden">
             {/* Left Column: Header & Latest Commit */}
-            <div className="flex flex-col md:flex-row gap-4 md:gap-12 w-full">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-12 w-full min-w-0">
               <div className="flex flex-col gap-2 shrink-0">
                 <div>
                   <h4 className="text-white font-semibold text-sm">GitHub Activity</h4>
@@ -415,11 +415,16 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                 </div>
               </div>
 
-            {/* Heatmap - horizontally scrollable */}
-            <div className="relative overflow-x-auto overflow-y-visible pb-2 pt-2 w-full" ref={gridRef} style={{ minWidth: 0 }}>
+            {/* Heatmap - horizontally scrollable on mobile */}
+            <div 
+              className="heatmap-scroll relative pt-2 flex-1 min-w-0" 
+              ref={gridRef}
+            >
+              {/* Wrapper to keep month labels and grid together */}
+              <div style={{ minWidth: 'max-content' }}>
                 {/* Month labels row */}
                 {contributionWeeks.length > 0 && (
-                  <div className="flex mb-1" style={{ minWidth: 'max-content' }}>
+                  <div className="flex mb-1">
                     {contributionWeeks.map((_, i) => {
                       const label = monthLabels[i] || '';
                       return (
@@ -435,7 +440,7 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                   </div>
                 )}
 
-                <div className="flex" style={{ gap: '6px', minWidth: 'max-content' }}>
+                <div className="flex" style={{ gap: '6px' }}>
                   {contributionWeeks.length > 0 ? contributionWeeks.map((week, weekIndex) => (
                     <div key={weekIndex} className="flex flex-col" style={{ gap: '6px', width: cellSize }}>
                       {week.map((day) => {
@@ -482,10 +487,11 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                     </div>
                   )) : (
                     <div className="text-gray-500 text-sm">
-                      No public contribution data in the last year. Private activity isn’t visible here.
+                      No public contribution data in the last year. Private activity isn't visible here.
                     </div>
                   )}
                 </div>
+              </div>{/* End wrapper for month labels and grid */}
 
                 {/* Hover tooltip */}
                 {hovered && (
