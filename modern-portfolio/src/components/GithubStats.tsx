@@ -342,30 +342,28 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     }
   };
 
-  // Month labels - show month name when majority of week is in new month
+  // Month labels - calculate positions for month boundaries
   const monthLabels = useMemo(() => {
-    const labels: string[] = [];
+    const labels: Array<{ label: string; weekIndex: number }> = [];
     let lastShownMonth = -1;
     
     for (let i = 0; i < contributionWeeks.length; i++) {
       const week = contributionWeeks[i];
-      // Use the middle of the week (Thursday) to determine the month
-      // This prevents edge cases where week starts in one month but mostly in another
-      const midDay = week[Math.min(3, week.length - 1)];
+      // Use first day of the week to determine month
+      const firstDay = week[0];
       
-      if (midDay) {
-        const d = new Date(midDay.date);
+      if (firstDay) {
+        const d = new Date(firstDay.date);
         const month = d.getMonth();
         
         // Only show label if this is a new month we haven't labeled yet
         if (month !== lastShownMonth) {
-          labels.push(d.toLocaleDateString(undefined, { month: 'short' }));
+          labels.push({
+            label: d.toLocaleDateString(undefined, { month: 'short' }),
+            weekIndex: i
+          });
           lastShownMonth = month;
-        } else {
-          labels.push('');
         }
-      } else {
-        labels.push('');
       }
     }
     return labels;
@@ -424,19 +422,21 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
               <div style={{ minWidth: 'max-content' }}>
                 {/* Month labels row */}
                 {contributionWeeks.length > 0 && (
-                  <div className="flex mb-1">
-                    {contributionWeeks.map((_, i) => {
-                      const label = monthLabels[i] || '';
-                      return (
-                        <div 
-                          key={i} 
-                          style={{ width: cellSize + 6, flexShrink: 0 }} 
-                          className="text-xs text-gray-400"
-                        >
-                          {label}
-                        </div>
-                      );
-                    })}
+                  <div className="relative mb-2" style={{ height: '30px', paddingBottom: '4px' }}>
+                    {monthLabels.map((monthLabel, idx) => (
+                      <div 
+                        key={idx} 
+                        style={{ 
+                          position: 'absolute',
+                          left: `${monthLabel.weekIndex * (cellSize + 6)}px`,
+                          top: 0,
+                          whiteSpace: 'nowrap'
+                        }} 
+                        className="text-xs text-gray-400"
+                      >
+                        {monthLabel.label}
+                      </div>
+                    ))}
                   </div>
                 )}
 
