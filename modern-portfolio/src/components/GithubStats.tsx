@@ -342,33 +342,6 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
     }
   };
 
-  // Month labels - calculate positions for month boundaries
-  const monthLabels = useMemo(() => {
-    const labels: Array<{ label: string; weekIndex: number }> = [];
-    let lastShownMonth = -1;
-    
-    for (let i = 0; i < contributionWeeks.length; i++) {
-      const week = contributionWeeks[i];
-      // Use first day of the week to determine month
-      const firstDay = week[0];
-      
-      if (firstDay) {
-        const d = new Date(firstDay.date);
-        const month = d.getMonth();
-        
-        // Only show label if this is a new month we haven't labeled yet
-        if (month !== lastShownMonth) {
-          labels.push({
-            label: d.toLocaleDateString(undefined, { month: 'short' }),
-            weekIndex: i
-          });
-          lastShownMonth = month;
-        }
-      }
-    }
-    return labels;
-  }, [contributionWeeks]);
-
   const Chart: React.FC = () => {
     console.log('GithubStats - Events loaded:', events.length);
     
@@ -413,33 +386,12 @@ const GithubStats: React.FC<Props> = ({ variant = 'section' }) => {
                 </div>
               </div>
 
-            {/* Heatmap - horizontally scrollable on mobile */}
+            {/* Heatmap - centered */}
             <div 
-              className="heatmap-scroll relative pt-2 flex-1 min-w-0" 
+              className="heatmap-scroll relative flex-1 min-w-0 flex justify-center" 
               ref={gridRef}
             >
-              {/* Wrapper to keep month labels and grid together */}
               <div style={{ minWidth: 'max-content' }}>
-                {/* Month labels row */}
-                {contributionWeeks.length > 0 && (
-                  <div className="relative mb-2" style={{ height: '30px', paddingBottom: '4px' }}>
-                    {monthLabels.map((monthLabel, idx) => (
-                      <div 
-                        key={idx} 
-                        style={{ 
-                          position: 'absolute',
-                          left: `${monthLabel.weekIndex * (cellSize + 6)}px`,
-                          top: 0,
-                          whiteSpace: 'nowrap'
-                        }} 
-                        className="text-xs text-gray-400"
-                      >
-                        {monthLabel.label}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 <div className="flex" style={{ gap: '6px' }}>
                   {contributionWeeks.length > 0 ? contributionWeeks.map((week, weekIndex) => (
                     <div key={weekIndex} className="flex flex-col" style={{ gap: '6px', width: cellSize }}>
