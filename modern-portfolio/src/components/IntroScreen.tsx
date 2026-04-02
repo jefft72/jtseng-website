@@ -105,7 +105,7 @@ const IntroScreen: React.FC<Props> = ({ onEnter }) => {
           style={{
             color: '#8ecaff',
             textTransform: 'lowercase',
-            fontSize: '2rem', /* Bigger text */
+            fontSize: '1.5rem', /* Bigger text */
             fontFamily: "monospace",
             imageRendering: 'pixelated', /* Ensure pixelation */
             textShadow: '0 0 1px #000, 0 0 2px #000', /* Stronger pixel effect */
