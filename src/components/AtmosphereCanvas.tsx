@@ -10,44 +10,89 @@ type Rgb = {
   b: number;
 };
 
-const palettes: Record<string, [Rgb, Rgb, Rgb]> = {
-  all: [
-    { r: 241, g: 229, b: 212 },
-    { r: 201, g: 143, b: 103 },
-    { r: 95, g: 37, b: 41 },
-  ],
-  ai: [
-    { r: 238, g: 235, b: 219 },
-    { r: 139, g: 144, b: 125 },
-    { r: 201, g: 143, b: 103 },
-  ],
-  frontend: [
-    { r: 241, g: 229, b: 212 },
-    { r: 196, g: 170, b: 137 },
-    { r: 120, g: 84, b: 66 },
-  ],
-  mobile: [
-    { r: 232, g: 222, b: 211 },
-    { r: 178, g: 154, b: 129 },
-    { r: 109, g: 80, b: 68 },
-  ],
-  leadership: [
-    { r: 241, g: 229, b: 212 },
-    { r: 201, g: 143, b: 103 },
-    { r: 95, g: 37, b: 41 },
-  ],
+type DitherPalette = {
+  low: Rgb;
+  mid: Rgb;
+  high: Rgb;
+  anchor: {
+    x: number;
+    y: number;
+  };
 };
 
-const rgba = ({ r, g, b }: Rgb, alpha: number) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
+const palettes: Record<string, DitherPalette> = {
+  all: {
+    low: { r: 118, g: 91, b: 75 },
+    mid: { r: 201, g: 143, b: 103 },
+    high: { r: 241, g: 229, b: 212 },
+    anchor: { x: 0.68, y: 0.32 },
+  },
+  ai: {
+    low: { r: 94, g: 98, b: 84 },
+    mid: { r: 139, g: 144, b: 125 },
+    high: { r: 238, g: 235, b: 219 },
+    anchor: { x: 0.74, y: 0.28 },
+  },
+  frontend: {
+    low: { r: 110, g: 77, b: 63 },
+    mid: { r: 196, g: 170, b: 137 },
+    high: { r: 241, g: 229, b: 212 },
+    anchor: { x: 0.42, y: 0.45 },
+  },
+  mobile: {
+    low: { r: 91, g: 72, b: 64 },
+    mid: { r: 178, g: 154, b: 129 },
+    high: { r: 232, g: 222, b: 211 },
+    anchor: { x: 0.58, y: 0.62 },
+  },
+  leadership: {
+    low: { r: 95, g: 37, b: 41 },
+    mid: { r: 201, g: 143, b: 103 },
+    high: { r: 241, g: 229, b: 212 },
+    anchor: { x: 0.28, y: 0.38 },
+  },
+};
+
+const bayer8 = [
+  0, 48, 12, 60, 3, 51, 15, 63,
+  32, 16, 44, 28, 35, 19, 47, 31,
+  8, 56, 4, 52, 11, 59, 7, 55,
+  40, 24, 36, 20, 43, 27, 39, 23,
+  2, 50, 14, 62, 1, 49, 13, 61,
+  34, 18, 46, 30, 33, 17, 45, 29,
+  10, 58, 6, 54, 9, 57, 5, 53,
+  42, 26, 38, 22, 41, 25, 37, 21,
+].map((value) => value / 64);
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+const smoothstep = (edge0: number, edge1: number, value: number) => {
+  const x = clamp((value - edge0) / (edge1 - edge0), 0, 1);
+  return x * x * (3 - 2 * x);
+};
+
+const mix = (a: number, b: number, amount: number) => a + (b - a) * amount;
+
+const mixColor = (from: Rgb, to: Rgb, amount: number): Rgb => ({
+  r: Math.round(mix(from.r, to.r, amount)),
+  g: Math.round(mix(from.g, to.g, amount)),
+  b: Math.round(mix(from.b, to.b, amount)),
+});
+
+const waveNoise = (x: number, y: number, time: number) => {
+  const primary = Math.sin(x * 7.1 + Math.sin(y * 4.2 + time * 0.33) + time * 0.22);
+  const secondary = Math.cos(y * 6.4 - Math.sin(x * 3.8 - time * 0.19) + time * 0.14);
+  const tertiary = Math.sin((x + y) * 4.6 + Math.cos((x - y) * 3.2 + time * 0.11));
+
+  return (primary * 0.42 + secondary * 0.34 + tertiary * 0.24 + 1) / 2;
+};
 
 function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
+    const context = canvas?.getContext('2d', { alpha: true });
 
     if (!canvas || !context) {
       return undefined;
@@ -55,29 +100,32 @@ function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
 
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const palette = palettes[mode] ?? palettes.all;
-    const pointer = { x: window.innerWidth * 0.72, y: window.innerHeight * 0.32 };
+    const pointer = { x: window.innerWidth * 0.68, y: window.innerHeight * 0.34 };
     const target = { ...pointer };
-    const seeds = Array.from({ length: 64 }, (_, index) => ({
-      x: (Math.sin(index * 19.19) * 0.5 + 0.5) * window.innerWidth,
-      y: (Math.cos(index * 11.73) * 0.5 + 0.5) * window.innerHeight,
-      drift: 0.65 + ((index * 17) % 19) / 19,
-    }));
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let dpr = Math.min(window.devicePixelRatio || 1, 1.6);
-    let frame = 0;
+    let bufferWidth = 1;
+    let bufferHeight = 1;
+    let imageData = context.createImageData(1, 1);
+    let compact = false;
     let raf = 0;
+    let frame = 0;
+    let lastPaint = 0;
 
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      dpr = Math.min(window.devicePixelRatio || 1, 1.6);
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
+      compact = width < 760;
+      const pixelSize = compact ? 4 : 3;
+      bufferWidth = Math.ceil(width / pixelSize);
+      bufferHeight = Math.ceil(height / pixelSize);
+      canvas.width = bufferWidth;
+      canvas.height = bufferHeight;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      context.imageSmoothingEnabled = false;
+      imageData = context.createImageData(bufferWidth, bufferHeight);
     };
 
     const movePointer = (event: PointerEvent) => {
@@ -87,118 +135,80 @@ function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
       document.documentElement.style.setProperty('--pointer-y', `${target.y}px`);
     };
 
-    const drawRibbon = (time: number, index: number) => {
-      const verticalAnchor = height * (0.18 + index * 0.16);
-      const pull = (pointer.y - height / 2) * (0.035 + index * 0.012);
-      const amplitude = 34 + index * 18;
-      const frequency = 0.008 + index * 0.0018;
-      const gradient = context.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, rgba(palette[2], 0));
-      gradient.addColorStop(0.24, rgba(palette[1], 0.08 + index * 0.018));
-      gradient.addColorStop(0.58, rgba(palette[0], 0.16 - index * 0.014));
-      gradient.addColorStop(1, rgba(palette[1], 0));
-
-      context.beginPath();
-      for (let x = -80; x <= width + 80; x += 28) {
-        const magnetic = Math.max(0, 1 - Math.abs(x - pointer.x) / Math.max(width * 0.42, 320));
-        const y =
-          verticalAnchor +
-          Math.sin(x * frequency + time * (0.58 + index * 0.12)) * amplitude +
-          Math.cos(x * (frequency * 0.62) - time * 0.32) * amplitude * 0.38 +
-          pull * magnetic;
-
-        if (x === -80) {
-          context.moveTo(x, y);
-        } else {
-          context.lineTo(x, y);
-        }
+    const paint = (timestamp = 0) => {
+      if (!media.matches && timestamp - lastPaint < 32) {
+        raf = window.requestAnimationFrame(paint);
+        return;
       }
 
-      context.lineWidth = 1.3 + index * 1.1;
-      context.strokeStyle = gradient;
-      context.shadowBlur = 26 + index * 7;
-      context.shadowColor = rgba(palette[index % palette.length], 0.22);
-      context.stroke();
-      context.shadowBlur = 0;
-    };
-
-    const drawDither = (time: number) => {
-      const gap = width < 720 ? 42 : 34;
-
-      for (let y = 0; y < height; y += gap) {
-        for (let x = 0; x < width; x += gap) {
-          const dx = x - pointer.x;
-          const dy = y - pointer.y;
-          const distance = Math.hypot(dx, dy);
-          const lens = Math.max(0, 1 - distance / 360);
-          const wave = Math.sin(time * 1.8 + x * 0.018 + y * 0.012);
-          const alpha = Math.max(0, wave * 0.025 + lens * 0.13 - 0.012);
-
-          if (alpha > 0.008) {
-            const size = 1 + lens * 1.8;
-            context.fillStyle = rgba(palette[0], alpha);
-            context.fillRect(x, y, size, size);
-          }
-        }
-      }
-    };
-
-    const drawOrbitMarks = (time: number) => {
-      context.save();
-      context.translate(pointer.x, pointer.y);
-      context.rotate(time * 0.16);
-      context.strokeStyle = rgba(palette[0], 0.12);
-      context.lineWidth = 1;
-
-      for (let index = 0; index < 3; index += 1) {
-        context.beginPath();
-        context.ellipse(0, 0, 92 + index * 38, 24 + index * 12, index * 0.72, 0, Math.PI * 2);
-        context.stroke();
-      }
-
-      context.restore();
-    };
-
-    const drawDust = (time: number) => {
-      seeds.forEach((seed, index) => {
-        const x = (seed.x + Math.sin(time * seed.drift + index) * 34 + width) % width;
-        const y = (seed.y + Math.cos(time * seed.drift * 0.8 + index) * 22 + height) % height;
-        const distance = Math.hypot(x - pointer.x, y - pointer.y);
-        const alpha = 0.03 + Math.max(0, 1 - distance / 320) * 0.15;
-
-        context.fillStyle = rgba(palette[index % palette.length], alpha);
-        context.fillRect(x, y, 1.4, 1.4);
-      });
-    };
-
-    const draw = () => {
-      const time = frame / 60;
+      lastPaint = timestamp;
+      const time = frame / 48;
       frame += media.matches ? 0 : 1;
-      pointer.x += (target.x - pointer.x) * 0.075;
-      pointer.y += (target.y - pointer.y) * 0.075;
+      pointer.x += (target.x - pointer.x) * 0.08;
+      pointer.y += (target.y - pointer.y) * 0.08;
 
-      context.clearRect(0, 0, width, height);
-      context.globalCompositeOperation = 'screen';
-      context.fillStyle = rgba(palette[2], 0.045);
-      context.fillRect(0, 0, width, height);
+      const data = imageData.data;
+      const aspect = width / Math.max(height, 1);
+      const mouseX = (pointer.x / Math.max(width, 1) - 0.5) * aspect;
+      const mouseY = pointer.y / Math.max(height, 1) - 0.5;
+      const anchorX = (palette.anchor.x - 0.5) * aspect;
+      const anchorY = palette.anchor.y - 0.5;
+      const intensity = compact ? 0.62 : 1;
+      const baseAlpha = compact ? 22 : 34;
+      const alphaRange = compact ? 76 : 104;
 
-      drawDither(time);
-      drawDust(time);
+      for (let y = 0; y < bufferHeight; y += 1) {
+        for (let x = 0; x < bufferWidth; x += 1) {
+          const index = (y * bufferWidth + x) * 4;
+          const ux = (x / bufferWidth - 0.5) * aspect;
+          const uy = y / bufferHeight - 0.5;
+          const mouseDistance = Math.hypot(ux - mouseX, uy - mouseY);
+          const anchorDistance = Math.hypot(ux - anchorX, uy - anchorY);
+          const sourceDistance = Math.hypot(ux + 0.3 * aspect, uy - 0.18);
+          const cursorVoid = Math.exp(-(mouseDistance * mouseDistance) / 0.013);
+          const cursorRing = Math.exp(-((mouseDistance - 0.18) * (mouseDistance - 0.18)) / 0.004);
+          const anchorGlow = Math.exp(-(anchorDistance * anchorDistance) / 0.11);
+          const sourceGlow = Math.exp(-(sourceDistance * sourceDistance) / 0.16);
+          const texture = waveNoise(ux, uy, time);
+          const threshold = bayer8[(x % 8) + (y % 8) * 8] - 0.5;
+          const density =
+            0.1 +
+            anchorGlow * 0.48 * intensity +
+            sourceGlow * 0.24 * intensity +
+            cursorRing * 0.34 * intensity -
+            cursorVoid * 0.2 * intensity +
+            texture * 0.28 +
+            threshold * 0.34;
+          const quantized = Math.floor(clamp(smoothstep(0.24, 0.98, density), 0, 1) * 4) / 4;
 
-      for (let index = 0; index < 5; index += 1) {
-        drawRibbon(time, index);
+          if (quantized <= 0.08) {
+            data[index] = 0;
+            data[index + 1] = 0;
+            data[index + 2] = 0;
+            data[index + 3] = 0;
+            continue;
+          }
+
+          const tone = quantized < 0.5
+            ? mixColor(palette.low, palette.mid, quantized * 2)
+            : mixColor(palette.mid, palette.high, (quantized - 0.5) * 2);
+
+          data[index] = tone.r;
+          data[index + 1] = tone.g;
+          data[index + 2] = tone.b;
+          data[index + 3] = Math.round(baseAlpha + quantized * alphaRange);
+        }
       }
 
-      drawOrbitMarks(time);
-      context.globalCompositeOperation = 'source-over';
+      context.putImageData(imageData, 0, 0);
 
       if (!media.matches) {
-        raf = window.requestAnimationFrame(draw);
+        raf = window.requestAnimationFrame(paint);
       }
     };
 
     resize();
-    draw();
+    paint();
     window.addEventListener('resize', resize);
     window.addEventListener('pointermove', movePointer, { passive: true });
 
