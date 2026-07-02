@@ -47,9 +47,9 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 78% 10%, rgba(201, 143, 103, 0.11), transparent 30rem),
-    radial-gradient(circle at 10% 45%, rgba(95, 37, 41, 0.22), transparent 38rem),
-    linear-gradient(180deg, #17120f 0%, var(--bg) 36%, #0b0908 100%);
+    radial-gradient(circle at 76% 8%, rgba(120, 157, 170, 0.12), transparent 34rem),
+    radial-gradient(circle at 14% 48%, rgba(66, 78, 86, 0.18), transparent 36rem),
+    linear-gradient(180deg, #101111 0%, #0d0d0c 42%, #070707 100%);
   color: var(--ink);
 }
 
@@ -110,43 +110,27 @@ input:focus-visible {
   pointer-events: none;
   background:
     radial-gradient(
-      circle 360px at var(--pointer-x, 72vw) var(--pointer-y, 32vh),
-      rgba(241, 229, 212, 0.042),
-      rgba(201, 143, 103, 0.026) 34%,
+      circle 300px at var(--pointer-x, 72vw) var(--pointer-y, 32vh),
+      rgba(205, 230, 233, 0.036),
+      rgba(94, 129, 137, 0.022) 34%,
       transparent 72%
     ),
     radial-gradient(
-      circle 190px at var(--pointer-x, 72vw) var(--pointer-y, 32vh),
-      rgba(255, 255, 255, 0.032),
+      circle 160px at var(--pointer-x, 72vw) var(--pointer-y, 32vh),
+      rgba(255, 255, 255, 0.024),
       transparent 68%
     );
   mix-blend-mode: screen;
-  opacity: 0.44;
+  opacity: 0.34;
 }
 
 .command-site::before {
-  position: fixed;
-  inset: 0;
-  z-index: -3;
-  pointer-events: none;
-  content: '';
-  background:
-    linear-gradient(90deg, rgba(241, 229, 212, 0.018) 1px, transparent 1px) 0 0 / 128px 128px,
-    linear-gradient(rgba(241, 229, 212, 0.014) 1px, transparent 1px) 0 0 / 128px 128px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.95), transparent 78%);
+  display: none;
+  content: none;
 }
 
 .texture {
-  position: fixed;
-  inset: -50%;
-  z-index: -2;
-  pointer-events: none;
-  opacity: 0.07;
-  background-image:
-    radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.42) 0 1px, transparent 1px),
-    radial-gradient(circle at 76% 62%, rgba(255, 255, 255, 0.32) 0 1px, transparent 1px);
-  background-size: 5px 5px, 7px 7px;
-  mix-blend-mode: soft-light;
+  display: none;
 }
 
 .system-bar {

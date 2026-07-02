@@ -14,42 +14,39 @@ type DitherPalette = {
   low: Rgb;
   mid: Rgb;
   high: Rgb;
-  anchor: {
-    x: number;
-    y: number;
-  };
+  spark: Rgb;
 };
 
 const palettes: Record<string, DitherPalette> = {
   all: {
-    low: { r: 118, g: 91, b: 75 },
-    mid: { r: 201, g: 143, b: 103 },
-    high: { r: 241, g: 229, b: 212 },
-    anchor: { x: 0.68, y: 0.32 },
+    low: { r: 38, g: 44, b: 48 },
+    mid: { r: 111, g: 126, b: 132 },
+    high: { r: 225, g: 228, b: 222 },
+    spark: { r: 184, g: 219, b: 222 },
   },
   ai: {
-    low: { r: 94, g: 98, b: 84 },
-    mid: { r: 139, g: 144, b: 125 },
-    high: { r: 238, g: 235, b: 219 },
-    anchor: { x: 0.74, y: 0.28 },
+    low: { r: 31, g: 48, b: 50 },
+    mid: { r: 92, g: 143, b: 142 },
+    high: { r: 220, g: 239, b: 231 },
+    spark: { r: 118, g: 225, b: 209 },
   },
   frontend: {
-    low: { r: 110, g: 77, b: 63 },
-    mid: { r: 196, g: 170, b: 137 },
-    high: { r: 241, g: 229, b: 212 },
-    anchor: { x: 0.42, y: 0.45 },
+    low: { r: 43, g: 42, b: 55 },
+    mid: { r: 112, g: 122, b: 162 },
+    high: { r: 225, g: 229, b: 241 },
+    spark: { r: 159, g: 188, b: 255 },
   },
   mobile: {
-    low: { r: 91, g: 72, b: 64 },
-    mid: { r: 178, g: 154, b: 129 },
-    high: { r: 232, g: 222, b: 211 },
-    anchor: { x: 0.58, y: 0.62 },
+    low: { r: 38, g: 42, b: 48 },
+    mid: { r: 104, g: 118, b: 134 },
+    high: { r: 220, g: 226, b: 232 },
+    spark: { r: 161, g: 209, b: 237 },
   },
   leadership: {
-    low: { r: 95, g: 37, b: 41 },
-    mid: { r: 201, g: 143, b: 103 },
-    high: { r: 241, g: 229, b: 212 },
-    anchor: { x: 0.28, y: 0.38 },
+    low: { r: 50, g: 39, b: 43 },
+    mid: { r: 136, g: 105, b: 99 },
+    high: { r: 235, g: 224, b: 214 },
+    spark: { r: 225, g: 158, b: 139 },
   },
 };
 
@@ -80,11 +77,49 @@ const mixColor = (from: Rgb, to: Rgb, amount: number): Rgb => ({
 });
 
 const waveNoise = (x: number, y: number, time: number) => {
-  const primary = Math.sin(x * 7.1 + Math.sin(y * 4.2 + time * 0.33) + time * 0.22);
-  const secondary = Math.cos(y * 6.4 - Math.sin(x * 3.8 - time * 0.19) + time * 0.14);
-  const tertiary = Math.sin((x + y) * 4.6 + Math.cos((x - y) * 3.2 + time * 0.11));
+  const primary = Math.sin(x * 11.4 + Math.sin(y * 6.6 + time * 0.21) + time * 0.17);
+  const secondary = Math.cos(y * 10.8 - Math.sin(x * 5.3 - time * 0.13) + time * 0.11);
+  const tertiary = Math.sin((x + y) * 8.2 + Math.cos((x - y) * 4.4 + time * 0.09));
 
   return (primary * 0.42 + secondary * 0.34 + tertiary * 0.24 + 1) / 2;
+};
+
+const hash = (x: number, y: number, seed: number) => {
+  const value = Math.sin(x * 127.1 + y * 311.7 + seed * 74.7) * 43758.5453;
+  return value - Math.floor(value);
+};
+
+const emitterField = (x: number, y: number, time: number, mode: string) => {
+  const offset = mode.length * 0.47;
+  const emitters = [
+    {
+      x: 0.18 + Math.sin(time * 0.11 + offset) * 0.08,
+      y: 0.26 + Math.cos(time * 0.08 + offset) * 0.08,
+      sx: 0.34,
+      sy: 0.22,
+      strength: 0.44,
+    },
+    {
+      x: 0.7 + Math.cos(time * 0.09 + offset) * 0.1,
+      y: 0.42 + Math.sin(time * 0.12 + offset) * 0.1,
+      sx: 0.28,
+      sy: 0.34,
+      strength: 0.5,
+    },
+    {
+      x: 0.48 + Math.sin(time * 0.07 + offset * 0.5) * 0.16,
+      y: 0.78 + Math.cos(time * 0.1 + offset) * 0.08,
+      sx: 0.42,
+      sy: 0.2,
+      strength: 0.34,
+    },
+  ];
+
+  return emitters.reduce((total, emitter) => {
+    const dx = (x - emitter.x) / emitter.sx;
+    const dy = (y - emitter.y) / emitter.sy;
+    return total + Math.exp(-(dx * dx + dy * dy)) * emitter.strength;
+  }, 0);
 };
 
 function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
@@ -117,7 +152,7 @@ function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
       width = window.innerWidth;
       height = window.innerHeight;
       compact = width < 760;
-      const pixelSize = compact ? 4 : 3;
+      const pixelSize = compact ? 3 : 2;
       bufferWidth = Math.ceil(width / pixelSize);
       bufferHeight = Math.ceil(height / pixelSize);
       canvas.width = bufferWidth;
@@ -151,37 +186,35 @@ function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
       const aspect = width / Math.max(height, 1);
       const mouseX = (pointer.x / Math.max(width, 1) - 0.5) * aspect;
       const mouseY = pointer.y / Math.max(height, 1) - 0.5;
-      const anchorX = (palette.anchor.x - 0.5) * aspect;
-      const anchorY = palette.anchor.y - 0.5;
-      const intensity = compact ? 0.62 : 1;
-      const baseAlpha = compact ? 22 : 34;
-      const alphaRange = compact ? 76 : 104;
+      const intensity = compact ? 0.5 : 0.74;
+      const baseAlpha = compact ? 14 : 18;
+      const alphaRange = compact ? 70 : 88;
 
       for (let y = 0; y < bufferHeight; y += 1) {
         for (let x = 0; x < bufferWidth; x += 1) {
           const index = (y * bufferWidth + x) * 4;
-          const ux = (x / bufferWidth - 0.5) * aspect;
-          const uy = y / bufferHeight - 0.5;
+          const nx = x / bufferWidth;
+          const ny = y / bufferHeight;
+          const ux = (nx - 0.5) * aspect;
+          const uy = ny - 0.5;
           const mouseDistance = Math.hypot(ux - mouseX, uy - mouseY);
-          const anchorDistance = Math.hypot(ux - anchorX, uy - anchorY);
-          const sourceDistance = Math.hypot(ux + 0.3 * aspect, uy - 0.18);
-          const cursorVoid = Math.exp(-(mouseDistance * mouseDistance) / 0.013);
-          const cursorRing = Math.exp(-((mouseDistance - 0.18) * (mouseDistance - 0.18)) / 0.004);
-          const anchorGlow = Math.exp(-(anchorDistance * anchorDistance) / 0.11);
-          const sourceGlow = Math.exp(-(sourceDistance * sourceDistance) / 0.16);
+          const cursorPressure = Math.exp(-(mouseDistance * mouseDistance) / 0.045);
+          const field = emitterField(nx, ny, time, mode);
           const texture = waveNoise(ux, uy, time);
-          const threshold = bayer8[(x % 8) + (y % 8) * 8] - 0.5;
+          const grain = hash(x, y, frame);
+          const vignette = smoothstep(0.74, 0.08, Math.hypot(ux / Math.max(aspect, 0.1), uy));
+          const orderedThreshold = bayer8[(x % 8) + (y % 8) * 8] - 0.5;
+          const threshold = (hash(x, y, 17) - 0.5) * 0.62 + orderedThreshold * 0.12;
           const density =
-            0.1 +
-            anchorGlow * 0.48 * intensity +
-            sourceGlow * 0.24 * intensity +
-            cursorRing * 0.34 * intensity -
-            cursorVoid * 0.2 * intensity +
-            texture * 0.28 +
-            threshold * 0.34;
-          const quantized = Math.floor(clamp(smoothstep(0.24, 0.98, density), 0, 1) * 4) / 4;
+            0.03 +
+            field * intensity +
+            texture * 0.16 +
+            cursorPressure * 0.18 -
+            grain * 0.11 +
+            threshold * 0.48;
+          const quantized = Math.floor(clamp(smoothstep(0.2, 0.86, density) * vignette, 0, 1) * 5) / 5;
 
-          if (quantized <= 0.08) {
+          if (quantized <= 0.05) {
             data[index] = 0;
             data[index + 1] = 0;
             data[index + 2] = 0;
@@ -192,10 +225,13 @@ function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
           const tone = quantized < 0.5
             ? mixColor(palette.low, palette.mid, quantized * 2)
             : mixColor(palette.mid, palette.high, (quantized - 0.5) * 2);
+          const spark = grain > 0.985 && quantized > 0.35
+            ? mixColor(tone, palette.spark, 0.68)
+            : tone;
 
-          data[index] = tone.r;
-          data[index + 1] = tone.g;
-          data[index + 2] = tone.b;
+          data[index] = spark.r;
+          data[index + 1] = spark.g;
+          data[index + 2] = spark.b;
           data[index + 3] = Math.round(baseAlpha + quantized * alphaRange);
         }
       }
