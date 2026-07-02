@@ -4,123 +4,60 @@ type AtmosphereCanvasProps = {
   mode: string;
 };
 
-type Rgb = {
-  r: number;
-  g: number;
-  b: number;
+type ColorStop = {
+  color: string;
+  alpha: number;
 };
 
-type DitherPalette = {
-  low: Rgb;
-  mid: Rgb;
-  high: Rgb;
-  spark: Rgb;
+type Palette = {
+  bloom: ColorStop[];
+  cursor: string;
 };
 
-const palettes: Record<string, DitherPalette> = {
+const palettes: Record<string, Palette> = {
   all: {
-    low: { r: 38, g: 44, b: 48 },
-    mid: { r: 111, g: 126, b: 132 },
-    high: { r: 225, g: 228, b: 222 },
-    spark: { r: 184, g: 219, b: 222 },
+    bloom: [
+      { color: '40, 232, 255', alpha: 0.26 },
+      { color: '126, 149, 255', alpha: 0.14 },
+      { color: '236, 250, 255', alpha: 0.1 },
+    ],
+    cursor: '203, 251, 255',
   },
   ai: {
-    low: { r: 31, g: 48, b: 50 },
-    mid: { r: 92, g: 143, b: 142 },
-    high: { r: 220, g: 239, b: 231 },
-    spark: { r: 118, g: 225, b: 209 },
+    bloom: [
+      { color: '65, 255, 221', alpha: 0.3 },
+      { color: '94, 177, 255', alpha: 0.15 },
+      { color: '228, 255, 246', alpha: 0.1 },
+    ],
+    cursor: '121, 255, 232',
   },
   frontend: {
-    low: { r: 43, g: 42, b: 55 },
-    mid: { r: 112, g: 122, b: 162 },
-    high: { r: 225, g: 229, b: 241 },
-    spark: { r: 159, g: 188, b: 255 },
+    bloom: [
+      { color: '103, 182, 255', alpha: 0.28 },
+      { color: '144, 118, 255', alpha: 0.14 },
+      { color: '236, 244, 255', alpha: 0.1 },
+    ],
+    cursor: '171, 210, 255',
   },
   mobile: {
-    low: { r: 38, g: 42, b: 48 },
-    mid: { r: 104, g: 118, b: 134 },
-    high: { r: 220, g: 226, b: 232 },
-    spark: { r: 161, g: 209, b: 237 },
+    bloom: [
+      { color: '97, 217, 255', alpha: 0.25 },
+      { color: '118, 255, 206', alpha: 0.13 },
+      { color: '235, 255, 252', alpha: 0.08 },
+    ],
+    cursor: '185, 244, 255',
   },
   leadership: {
-    low: { r: 50, g: 39, b: 43 },
-    mid: { r: 136, g: 105, b: 99 },
-    high: { r: 235, g: 224, b: 214 },
-    spark: { r: 225, g: 158, b: 139 },
+    bloom: [
+      { color: '255, 138, 180', alpha: 0.2 },
+      { color: '89, 209, 255', alpha: 0.16 },
+      { color: '244, 249, 255', alpha: 0.09 },
+    ],
+    cursor: '255, 196, 214',
   },
 };
 
-const bayer8 = [
-  0, 48, 12, 60, 3, 51, 15, 63,
-  32, 16, 44, 28, 35, 19, 47, 31,
-  8, 56, 4, 52, 11, 59, 7, 55,
-  40, 24, 36, 20, 43, 27, 39, 23,
-  2, 50, 14, 62, 1, 49, 13, 61,
-  34, 18, 46, 30, 33, 17, 45, 29,
-  10, 58, 6, 54, 9, 57, 5, 53,
-  42, 26, 38, 22, 41, 25, 37, 21,
-].map((value) => value / 64);
-
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-
-const smoothstep = (edge0: number, edge1: number, value: number) => {
-  const x = clamp((value - edge0) / (edge1 - edge0), 0, 1);
-  return x * x * (3 - 2 * x);
-};
-
-const mix = (a: number, b: number, amount: number) => a + (b - a) * amount;
-
-const mixColor = (from: Rgb, to: Rgb, amount: number): Rgb => ({
-  r: Math.round(mix(from.r, to.r, amount)),
-  g: Math.round(mix(from.g, to.g, amount)),
-  b: Math.round(mix(from.b, to.b, amount)),
-});
-
-const waveNoise = (x: number, y: number, time: number) => {
-  const primary = Math.sin(x * 11.4 + Math.sin(y * 6.6 + time * 0.21) + time * 0.17);
-  const secondary = Math.cos(y * 10.8 - Math.sin(x * 5.3 - time * 0.13) + time * 0.11);
-  const tertiary = Math.sin((x + y) * 8.2 + Math.cos((x - y) * 4.4 + time * 0.09));
-
-  return (primary * 0.42 + secondary * 0.34 + tertiary * 0.24 + 1) / 2;
-};
-
-const hash = (x: number, y: number, seed: number) => {
-  const value = Math.sin(x * 127.1 + y * 311.7 + seed * 74.7) * 43758.5453;
-  return value - Math.floor(value);
-};
-
-const emitterField = (x: number, y: number, time: number, mode: string) => {
-  const offset = mode.length * 0.47;
-  const emitters = [
-    {
-      x: 0.18 + Math.sin(time * 0.11 + offset) * 0.08,
-      y: 0.26 + Math.cos(time * 0.08 + offset) * 0.08,
-      sx: 0.34,
-      sy: 0.22,
-      strength: 0.44,
-    },
-    {
-      x: 0.7 + Math.cos(time * 0.09 + offset) * 0.1,
-      y: 0.42 + Math.sin(time * 0.12 + offset) * 0.1,
-      sx: 0.28,
-      sy: 0.34,
-      strength: 0.5,
-    },
-    {
-      x: 0.48 + Math.sin(time * 0.07 + offset * 0.5) * 0.16,
-      y: 0.78 + Math.cos(time * 0.1 + offset) * 0.08,
-      sx: 0.42,
-      sy: 0.2,
-      strength: 0.34,
-    },
-  ];
-
-  return emitters.reduce((total, emitter) => {
-    const dx = (x - emitter.x) / emitter.sx;
-    const dy = (y - emitter.y) / emitter.sy;
-    return total + Math.exp(-(dx * dx + dy * dy)) * emitter.strength;
-  }, 0);
-};
 
 function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -135,32 +72,31 @@ function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
 
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const palette = palettes[mode] ?? palettes.all;
-    const pointer = { x: window.innerWidth * 0.68, y: window.innerHeight * 0.34 };
+    const pointer = { x: window.innerWidth * 0.7, y: window.innerHeight * 0.34 };
     const target = { ...pointer };
+    const cells = Array.from({ length: 9 }, (_, index) => ({
+      phase: index * 1.71,
+      radius: 0.34 + (index % 3) * 0.12,
+      speed: 0.11 + index * 0.018,
+      x: 0.16 + ((index * 0.19) % 0.74),
+      y: 0.18 + ((index * 0.23) % 0.66),
+    }));
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let bufferWidth = 1;
-    let bufferHeight = 1;
-    let imageData = context.createImageData(1, 1);
-    let compact = false;
+    let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let raf = 0;
-    let frame = 0;
-    let lastPaint = 0;
+    let start = performance.now();
 
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      compact = width < 760;
-      const pixelSize = compact ? 3 : 2;
-      bufferWidth = Math.ceil(width / pixelSize);
-      bufferHeight = Math.ceil(height / pixelSize);
-      canvas.width = bufferWidth;
-      canvas.height = bufferHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      context.imageSmoothingEnabled = false;
-      imageData = context.createImageData(bufferWidth, bufferHeight);
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     const movePointer = (event: PointerEvent) => {
@@ -170,81 +106,67 @@ function AtmosphereCanvas({ mode }: AtmosphereCanvasProps) {
       document.documentElement.style.setProperty('--pointer-y', `${target.y}px`);
     };
 
-    const paint = (timestamp = 0) => {
-      if (!media.matches && timestamp - lastPaint < 32) {
-        raf = window.requestAnimationFrame(paint);
-        return;
-      }
+    const drawBloom = (
+      x: number,
+      y: number,
+      radiusX: number,
+      radiusY: number,
+      stop: ColorStop,
+      rotation: number,
+    ) => {
+      context.save();
+      context.translate(x, y);
+      context.rotate(rotation);
+      context.scale(radiusX / radiusY, 1);
 
-      lastPaint = timestamp;
-      const time = frame / 48;
-      frame += media.matches ? 0 : 1;
-      pointer.x += (target.x - pointer.x) * 0.08;
-      pointer.y += (target.y - pointer.y) * 0.08;
+      const gradient = context.createRadialGradient(0, 0, 0, 0, 0, radiusY);
+      gradient.addColorStop(0, `rgba(${stop.color}, ${stop.alpha})`);
+      gradient.addColorStop(0.42, `rgba(${stop.color}, ${stop.alpha * 0.34})`);
+      gradient.addColorStop(1, `rgba(${stop.color}, 0)`);
 
-      const data = imageData.data;
-      const aspect = width / Math.max(height, 1);
-      const mouseX = (pointer.x / Math.max(width, 1) - 0.5) * aspect;
-      const mouseY = pointer.y / Math.max(height, 1) - 0.5;
-      const intensity = compact ? 0.5 : 0.74;
-      const baseAlpha = compact ? 14 : 18;
-      const alphaRange = compact ? 70 : 88;
+      context.fillStyle = gradient;
+      context.beginPath();
+      context.arc(0, 0, radiusY, 0, Math.PI * 2);
+      context.fill();
+      context.restore();
+    };
 
-      for (let y = 0; y < bufferHeight; y += 1) {
-        for (let x = 0; x < bufferWidth; x += 1) {
-          const index = (y * bufferWidth + x) * 4;
-          const nx = x / bufferWidth;
-          const ny = y / bufferHeight;
-          const ux = (nx - 0.5) * aspect;
-          const uy = ny - 0.5;
-          const mouseDistance = Math.hypot(ux - mouseX, uy - mouseY);
-          const cursorPressure = Math.exp(-(mouseDistance * mouseDistance) / 0.045);
-          const field = emitterField(nx, ny, time, mode);
-          const texture = waveNoise(ux, uy, time);
-          const grain = hash(x, y, frame);
-          const vignette = smoothstep(0.74, 0.08, Math.hypot(ux / Math.max(aspect, 0.1), uy));
-          const orderedThreshold = bayer8[(x % 8) + (y % 8) * 8] - 0.5;
-          const threshold = (hash(x, y, 17) - 0.5) * 0.62 + orderedThreshold * 0.12;
-          const density =
-            0.03 +
-            field * intensity +
-            texture * 0.16 +
-            cursorPressure * 0.18 -
-            grain * 0.11 +
-            threshold * 0.48;
-          const quantized = Math.floor(clamp(smoothstep(0.2, 0.86, density) * vignette, 0, 1) * 5) / 5;
+    const draw = (timestamp: number) => {
+      const elapsed = media.matches ? 0 : (timestamp - start) / 1000;
+      pointer.x += (target.x - pointer.x) * 0.055;
+      pointer.y += (target.y - pointer.y) * 0.055;
 
-          if (quantized <= 0.05) {
-            data[index] = 0;
-            data[index + 1] = 0;
-            data[index + 2] = 0;
-            data[index + 3] = 0;
-            continue;
-          }
+      context.clearRect(0, 0, width, height);
+      context.globalCompositeOperation = 'screen';
+      context.filter = 'blur(34px)';
 
-          const tone = quantized < 0.5
-            ? mixColor(palette.low, palette.mid, quantized * 2)
-            : mixColor(palette.mid, palette.high, (quantized - 0.5) * 2);
-          const spark = grain > 0.985 && quantized > 0.35
-            ? mixColor(tone, palette.spark, 0.68)
-            : tone;
+      cells.forEach((cell, index) => {
+        const stop = palette.bloom[index % palette.bloom.length];
+        const driftX = Math.sin(elapsed * cell.speed + cell.phase) * width * 0.12;
+        const driftY = Math.cos(elapsed * (cell.speed * 0.86) + cell.phase * 0.74) * height * 0.1;
+        const cursorPull = Math.max(0, 1 - Math.hypot(pointer.x - width * cell.x, pointer.y - height * cell.y) / 720);
+        const x = width * cell.x + driftX + (pointer.x - width / 2) * 0.035 * cursorPull;
+        const y = height * cell.y + driftY + (pointer.y - height / 2) * 0.035 * cursorPull;
+        const radiusX = Math.max(width, height) * (cell.radius + cursorPull * 0.08);
+        const radiusY = Math.max(width, height) * (cell.radius * 0.46);
 
-          data[index] = spark.r;
-          data[index + 1] = spark.g;
-          data[index + 2] = spark.b;
-          data[index + 3] = Math.round(baseAlpha + quantized * alphaRange);
-        }
-      }
+        drawBloom(x, y, radiusX, radiusY, stop, Math.sin(elapsed * 0.12 + cell.phase) * 0.7);
+      });
 
-      context.putImageData(imageData, 0, 0);
+      context.filter = 'blur(18px)';
+      drawBloom(pointer.x, pointer.y, 340, 210, { color: palette.cursor, alpha: 0.14 }, 0);
+
+      context.globalCompositeOperation = 'source-over';
+      context.filter = 'none';
 
       if (!media.matches) {
-        raf = window.requestAnimationFrame(paint);
+        raf = window.requestAnimationFrame(draw);
       }
     };
 
     resize();
-    paint();
+    start = performance.now();
+    raf = window.requestAnimationFrame(draw);
     window.addEventListener('resize', resize);
     window.addEventListener('pointermove', movePointer, { passive: true });
 

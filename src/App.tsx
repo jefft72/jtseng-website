@@ -108,11 +108,11 @@ const skillBands = [
 ];
 
 const modeCopy: Record<Mode, string> = {
-  all: 'The complete dossier: engineering, teaching, mobile, and AI work in one continuous record.',
-  ai: 'AI systems selected: RAG, LLM context, Vertex AI, Gemini, and agent-facing product work.',
-  frontend: 'Interface work selected: high-fidelity React, TypeScript, Framer, and responsive surfaces.',
-  mobile: 'Mobile work selected: React Native and Flutter interfaces with production UI constraints.',
-  leadership: 'Leadership selected: teaching, mentorship, team delivery, code review, and client translation.',
+  all: 'Full signal: engineering, teaching, mobile, and AI work moving through one live interface.',
+  ai: 'AI systems: RAG, LLM context, Vertex AI, Gemini, and agent-facing product work.',
+  frontend: 'Interfaces: high-fidelity React, TypeScript, Framer, and responsive product surfaces.',
+  mobile: 'Mobile: React Native and Flutter interfaces with production UI constraints.',
+  leadership: 'Leadership: teaching, mentorship, team delivery, code review, and client translation.',
 };
 
 const commandToMode = (command: string): Mode => {
@@ -197,7 +197,7 @@ function App() {
             <div className="operator-id">
               <img src={profileImage} alt="Jeffrey Tseng" />
               <div>
-                <p>Selected record</p>
+                <p>Active signal</p>
                 <strong>Jeffrey Tseng</strong>
               </div>
             </div>
@@ -214,8 +214,8 @@ function App() {
 
         <section className="console-section" aria-label="Interactive portfolio index">
           <div className="console-copy">
-            <p className="section-code">01 / living index</p>
-            <h2>A portfolio that filters like a private dossier.</h2>
+            <p className="section-code">01 / live index</p>
+            <h2>A portfolio that reacts like a control surface.</h2>
           </div>
 
           <div className="console">
@@ -251,7 +251,7 @@ function App() {
               ))}
             </div>
             <div className="field-readout">
-              <span>ambient field follows cursor and hovered records</span>
+              <span>ambient field tracks cursor and selected work</span>
               <strong>{activeField}</strong>
             </div>
           </div>
@@ -260,7 +260,7 @@ function App() {
         <section id="log" className="log-section">
           <div className="section-rail">
             <p className="section-code">02 / active log</p>
-            <p>{activeEntries.length.toString().padStart(2, '0')} matching records</p>
+            <p>{activeEntries.length.toString().padStart(2, '0')} matching signals</p>
           </div>
           <div className="log-list">
             {activeEntries.map((entry, index) => (
