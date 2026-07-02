@@ -27,10 +27,10 @@ type Project = {
 };
 
 const modes: Array<{ id: Mode; command: string; label: string }> = [
-  { id: 'all', command: 'all', label: 'Full index' },
-  { id: 'ai', command: 'ai systems', label: 'AI systems' },
-  { id: 'frontend', command: 'interface work', label: 'Interfaces' },
-  { id: 'mobile', command: 'mobile work', label: 'Mobile' },
+  { id: 'all', command: 'all', label: 'Everything' },
+  { id: 'ai', command: 'ai', label: 'AI systems' },
+  { id: 'frontend', command: 'interfaces', label: 'Interfaces' },
+  { id: 'mobile', command: 'mobile', label: 'Mobile' },
   { id: 'leadership', command: 'leadership', label: 'Leadership' },
 ];
 
@@ -82,16 +82,16 @@ const projects: Project[] = [
   },
   {
     name: 'jtseng.org',
-    type: 'Personal system',
+    type: 'Personal website',
     summary:
-      'Responsive full-stack portfolio interface engineered with React, TypeScript, and a Node API layer for project data.',
+      'Responsive portfolio built with React and TypeScript around sharp typography, readable project structure, and lightweight motion.',
     stack: 'React / TypeScript / Node',
     metric: 'live production surface',
     tags: ['frontend'],
   },
   {
     name: 'Crcle.ai workflows',
-    type: 'Agentic context',
+    type: 'AI workflows',
     summary:
       'Browser and mobile surfaces that bridge user workflows with AI backends for contextual overlays and retrieval-augmented responses.',
     stack: 'RAG / React Native / LLMs',
@@ -108,11 +108,11 @@ const skillBands = [
 ];
 
 const modeCopy: Record<Mode, string> = {
-  all: 'Full signal: engineering, teaching, mobile, and AI work moving through one live interface.',
-  ai: 'AI systems: RAG, LLM context, Vertex AI, Gemini, and agent-facing product work.',
-  frontend: 'Interfaces: high-fidelity React, TypeScript, Framer, and responsive product surfaces.',
-  mobile: 'Mobile: React Native and Flutter interfaces with production UI constraints.',
-  leadership: 'Leadership: teaching, mentorship, team delivery, code review, and client translation.',
+  all: 'Engineering, teaching, mobile, and AI work in one view.',
+  ai: 'RAG workflows, LLM context, Vertex AI, Gemini, and agent-facing product work.',
+  frontend: 'React, TypeScript, Framer, and responsive product surfaces.',
+  mobile: 'React Native and Flutter interfaces built with production UI constraints.',
+  leadership: 'Teaching, mentorship, team delivery, code review, and client translation.',
 };
 
 const commandToMode = (command: string): Mode => {
@@ -197,12 +197,12 @@ function App() {
             <div className="operator-id">
               <img src={profileImage} alt="Jeffrey Tseng" />
               <div>
-                <p>Active signal</p>
+                <p>Engineer</p>
                 <strong>Jeffrey Tseng</strong>
               </div>
             </div>
             <p className="operator-summary">
-              I architect high-fidelity React and Framer frontends, RAG-based AI backends, and React Native mobile applications.
+              I build React interfaces, RAG-backed systems, and mobile products with a bias toward clear interaction design.
             </p>
             <div className="operator-links">
               <a href="mailto:tseng94@purdue.edu"><Mail size={16} />Email</a>
@@ -214,17 +214,17 @@ function App() {
 
         <section className="console-section" aria-label="Interactive portfolio index">
           <div className="console-copy">
-            <p className="section-code">01 / live index</p>
-            <h2>A portfolio that reacts like a control surface.</h2>
+            <p className="section-code">01 / index</p>
+            <h2>A concise index of the work I have shipped.</h2>
           </div>
 
           <div className="console">
             <div className="console-topline">
-              <span>Index</span>
-              <span>{booted ? 'selection refined' : 'unfiltered'}</span>
+              <span>View</span>
+              <span>{booted ? 'filtered' : 'all entries'}</span>
             </div>
             <form onSubmit={onSubmit}>
-              <span>show me</span>
+              <span>filter</span>
               <input
                 value={command}
                 onChange={(event) => setCommand(event.target.value)}
@@ -250,17 +250,13 @@ function App() {
                 </button>
               ))}
             </div>
-            <div className="field-readout">
-              <span>ambient field tracks cursor and selected work</span>
-              <strong>{activeField}</strong>
-            </div>
           </div>
         </section>
 
         <section id="log" className="log-section">
           <div className="section-rail">
             <p className="section-code">02 / active log</p>
-            <p>{activeEntries.length.toString().padStart(2, '0')} matching signals</p>
+            <p>{activeEntries.length.toString().padStart(2, '0')} matching entries</p>
           </div>
           <div className="log-list">
             {activeEntries.map((entry, index) => (
@@ -313,8 +309,8 @@ function App() {
         </section>
 
         <section id="stack" className="stack-section">
-          <p className="section-code">04 / stack memory</p>
-          <h2>Tools are grouped by operational behavior, not by logo wall.</h2>
+          <p className="section-code">04 / tools</p>
+          <h2>Tools I use when the work asks for them.</h2>
           <div className="stack-bands">
             {skillBands.map((band, index) => (
               <div key={index} className="stack-band">
@@ -327,7 +323,7 @@ function App() {
       </main>
 
       <footer className="footer-cta">
-        <p>Currently exploring AI engineering, agentic systems, React, and Rust-adjacent systems work.</p>
+        <p>Currently working across AI engineering, React interfaces, mobile systems, and Rust-adjacent backend work.</p>
         <a href="mailto:tseng94@purdue.edu">tseng94@purdue.edu</a>
       </footer>
     </div>
