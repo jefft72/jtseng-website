@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter } from 'lucide-react';
+import { Mail, Globe, MapPin, Send, Github, Linkedin, Instagram } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -37,27 +37,27 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       title: 'Email',
-      value: 'jeffreytseng07@gmail.com',
-      href: 'mailto:jeffreytseng07@gmail.com',
+      value: 'tseng94@purdue.edu',
+      href: 'mailto:tseng94@purdue.edu',
     },
     {
-      icon: Phone,
-      title: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567',
+      icon: Globe,
+      title: 'Website',
+      value: 'jtseng.org',
+      href: 'https://jtseng.org',
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'San Francisco, CA',
+      value: 'Purdue University, West Lafayette, IN',
       href: '#',
     },
   ];
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
+    { icon: Github, href: 'https://github.com/jefft72', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://linkedin.com/in/j-tseng/', label: 'LinkedIn' },
+    { icon: Instagram, href: 'https://www.instagram.com/jeffrey_tseng_/', label: 'Instagram' },
   ];
 
   const containerVariants = {
@@ -98,7 +98,7 @@ const Contact: React.FC = () => {
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-8"></div>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Have a project in mind or just want to chat? I'd love to hear from you!
+              Have a project, internship opportunity, or student-build idea? I'd love to hear from you.
             </p>
           </motion.div>
 
@@ -108,8 +108,8 @@ const Contact: React.FC = () => {
               <div>
                 <h3 className="text-2xl font-bold text-white mb-6">Let's Connect</h3>
                 <p className="text-gray-300 mb-8">
-                  I'm always interested in new opportunities and exciting projects. 
-                  Feel free to reach out if you'd like to work together!
+                  I'm interested in full-stack engineering, AI product work, mobile interfaces, and
+                  student-led software that can ship to real users.
                 </p>
               </div>
 

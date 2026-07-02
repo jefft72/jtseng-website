@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Linkedin, Github, Instagram } from 'lucide-react';
-import profileImage from '../assets/DSC08402.JPEG';
+import profileImage from '../../DSC08402.JPEG';
 import GithubStats from './GithubStats';
 
 const Hero: React.FC = () => {
@@ -35,11 +35,11 @@ const Hero: React.FC = () => {
             
             <div className="flex flex-col items-center lg:items-start gap-4">
               <h1 className="text-4xl md:text-5xl font-bold text-white whitespace-nowrap">Jeffrey Tseng</h1>
-              <p className="text-xl text-blue-300">welcome to my portfolio</p>
+              <p className="text-xl text-blue-300">Full-Stack Engineer - Purdue CS + Math</p>
               
               <div className="flex items-center gap-4">
                 <a
-                  href="https://www.linkedin.com/in/jeffrey-tseng-9b3582261/"
+                  href="https://linkedin.com/in/j-tseng/"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"

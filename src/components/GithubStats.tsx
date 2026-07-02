@@ -4,7 +4,11 @@ type EventItem = {
   type: string;
   created_at: string;
   repo?: { name?: string };
-  payload?: any;
+  payload?: {
+    commits?: Array<{
+      message?: string;
+    }>;
+  };
 };
 
 type CommitInfo = {
@@ -32,7 +36,7 @@ const GithubStats: React.FC = () => {
         for (let page = 1; page <= 3; page++) {
           const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/events/public?per_page=100&page=${page}`);
           if (!res.ok) break;
-          const data = await res.json();
+          const data = (await res.json()) as EventItem[];
           if (data.length === 0) break;
           allEvents = [...allEvents, ...data];
         }
@@ -41,8 +45,8 @@ const GithubStats: React.FC = () => {
         
         // Find latest PushEvent for commit info
         const pushEvent = allEvents.find((e: EventItem) => e.type === 'PushEvent');
-        if (pushEvent && pushEvent.payload?.commits?.length > 0) {
-          const commit = pushEvent.payload.commits[0];
+        const [commit] = pushEvent?.payload?.commits ?? [];
+        if (pushEvent && commit) {
           setLatestCommit({
             message: commit.message || 'Recent commit',
             timestamp: pushEvent.created_at,
@@ -56,8 +60,8 @@ const GithubStats: React.FC = () => {
             isPrivate: true
           });
         }
-      } catch (e: any) {
-        setError(e?.message || 'Failed to load activity');
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'Failed to load activity');
       } finally {
         setLoading(false);
       }
@@ -89,7 +93,7 @@ const GithubStats: React.FC = () => {
     }
 
     let currentWeek: Array<{ date: string; count: number }> = [];
-    let currentDate = new Date(startDate);
+    const currentDate = new Date(startDate);
     
     while (currentDate <= today) {
       const dateKey = currentDate.toISOString().slice(0, 10);

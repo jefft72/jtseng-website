@@ -1,55 +1,110 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Eye } from 'lucide-react';
+import resumePdf from '../../modern-portfolio/public/JeffreyTsengResume.pdf?url';
+
+type ExperienceItem = {
+  title: string;
+  company: string;
+  period: string;
+  bullets: string[];
+};
+
+type ProjectItem = {
+  name: string;
+  bullets: string[];
+};
+
+type SkillGroup = {
+  category: string;
+  skills: string[];
+};
+
+type EducationItem = {
+  degree: string;
+  school: string;
+  year: string;
+  details: string;
+};
 
 const Resume: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
-  const resumeData = {
-    overview: {
-      title: 'Professional Overview',
-      content: 'Experienced developer with a passion for creating innovative web solutions and delivering exceptional user experiences.',
-    },
-    experience: {
-      title: 'Experience',
-      content: [
-        {
-          title: 'Web Developer',
-          company: 'Tech Solutions Inc.',
-          period: '2022 - Present',
-          description: 'Developed and maintained web applications using modern frameworks and best practices.',
-        },
-        {
-          title: 'Frontend Developer',
-          company: 'Digital Agency',
-          period: '2021 - 2022',
-          description: 'Created responsive web designs and implemented interactive user interfaces.',
-        },
+  const overview =
+    'Full-stack engineer with professional experience architecting high-fidelity React and Framer frontends, scalable RAG-based AI backends, and React Native mobile applications.';
+
+  const experience: ExperienceItem[] = [
+    {
+      title: 'Technical Teaching Assistant',
+      company: 'Google Developer Groups, Purdue University',
+      period: 'August 2025 - Present',
+      bullets: [
+        'Designed and deployed take-home projects for 300+ students teaching React, Google Cloud, Vertex AI, and TensorFlow.',
+        'Mentored 150+ developer-role students on Flutter, Firebase, and full-stack projects.',
+        'Selected as one of two technical mentors from over 250 applicants.',
       ],
     },
-    skills: {
-      title: 'Technical Skills',
-      content: [
-        { category: 'Frontend', skills: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS'] },
-        { category: 'Backend', skills: ['Node.js', 'Express', 'MongoDB', 'PostgreSQL'] },
-        { category: 'Tools', skills: ['Git', 'Docker', 'AWS', 'Vercel'] },
+    {
+      title: 'Team Lead',
+      company: 'Hack the Future, Purdue University',
+      period: 'October 2025 - Present',
+      bullets: [
+        'Led cross-functional teams of 10+ student engineers building full-stack applications for local nonprofits.',
+        'Integrated React, Node.js, FastAPI, and MongoDB while managing code reviews and Git workflows.',
+        'Collaborated directly with nonprofit clients to implement user-centric solutions that fit their needs.',
       ],
     },
-    education: {
-      title: 'Education',
-      content: [
-        {
-          degree: 'Bachelor of Computer Science',
-          school: 'University of Technology',
-          year: '2020',
-        },
+    {
+      title: 'Software Engineer',
+      company: 'Crcle.ai, West Lafayette, IN',
+      period: 'October 2025 - Present',
+      bullets: [
+        'Designed and implemented RAG workflows to improve LLM context accuracy.',
+        'Developed high-performance React Native mobile interfaces with consistent iOS and Android UI/UX.',
+        'Built browser integrations that connect user workflows with AI backends for instant context retrieval.',
       ],
     },
-  };
+  ];
+
+  const projects: ProjectItem[] = [
+    {
+      name: 'UPlate',
+      bullets: [
+        'Managing over 150 active users at any given time.',
+        'Engineered an AI-powered meal planner using the Google Gemini Generative AI API.',
+        'Built a custom Flutter onboarding flow for collecting user biometrics and macronutrient goals.',
+        'Implemented offline-first SQLite persistence with asynchronous Firestore synchronization.',
+      ],
+    },
+    {
+      name: 'jtseng.org',
+      bullets: [
+        'Architected and deployed a dynamic full-stack personal portfolio website.',
+        'Engineered the frontend with React and TypeScript for a responsive, mobile-first interface.',
+        'Developed a Node.js backend for API requests and project data.',
+      ],
+    },
+  ];
+
+  const skills: SkillGroup[] = [
+    { category: 'Languages', skills: ['React', 'TypeScript', 'Python', 'Java', 'JavaScript', 'Flutter', 'React Native'] },
+    { category: 'AI & Data', skills: ['RAG', 'LLMs', 'Hugging Face', 'NumPy', 'SciPy', 'Matlab'] },
+    { category: 'Tools', skills: ['Gazebo', 'ROS', 'Node', 'Tailwind', 'Firebase', 'MongoDB'] },
+  ];
+
+  const education: EducationItem[] = [
+    {
+      degree: 'Bachelor of Science in Computer Science and Mathematics',
+      school: 'Purdue University, West Lafayette, IN',
+      year: 'Expected Graduation: May 2028',
+      details: 'GPA: 3.5/4.0 | Relevant classes: Web App Programming, Programming in C, Object Oriented Programming, Discrete Math, Linear Algebra',
+    },
+  ];
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
     { id: 'education', label: 'Education' },
   ];
@@ -76,15 +131,13 @@ const Resume: React.FC = () => {
   };
 
   const renderContent = () => {
-    const data = resumeData[activeTab as keyof typeof resumeData];
-    
     switch (activeTab) {
       case 'experience':
         return (
           <div className="space-y-6">
-            {(data.content as any[]).map((exp: any, index: number) => (
+            {experience.map((exp, index) => (
               <motion.div
-                key={index}
+                key={`${exp.title}-${exp.company}`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -95,18 +148,44 @@ const Resume: React.FC = () => {
                   <span className="text-blue-400 font-medium">{exp.period}</span>
                 </div>
                 <p className="text-blue-300 font-medium mb-2">{exp.company}</p>
-                <p className="text-gray-300">{exp.description}</p>
+                <ul className="text-gray-300 space-y-2">
+                  {exp.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
               </motion.div>
             ))}
           </div>
         );
-      
+
+      case 'projects':
+        return (
+          <div className="space-y-6">
+            {projects.map((project, index) => (
+              <motion.div
+                key={project.name}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="p-6 bg-slate-700/30 rounded-xl border border-slate-600/30 hover:border-blue-500/50 transition-all duration-300"
+              >
+                <h3 className="text-xl font-semibold text-white mb-3">{project.name}</h3>
+                <ul className="text-gray-300 space-y-2">
+                  {project.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+        );
+
       case 'skills':
         return (
           <div className="grid md:grid-cols-3 gap-6">
-            {(data.content as any[]).map((skillGroup: any, index: number) => (
+            {skills.map((skillGroup, index) => (
               <motion.div
-                key={index}
+                key={skillGroup.category}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -114,9 +193,9 @@ const Resume: React.FC = () => {
               >
                 <h3 className="text-lg font-semibold text-white mb-4">{skillGroup.category}</h3>
                 <div className="space-y-2">
-                  {skillGroup.skills.map((skill: string, skillIndex: number) => (
+                  {skillGroup.skills.map((skill) => (
                     <div
-                      key={skillIndex}
+                      key={skill}
                       className="px-3 py-2 bg-blue-500/20 text-blue-300 rounded-lg text-sm font-medium"
                     >
                       {skill}
@@ -127,13 +206,13 @@ const Resume: React.FC = () => {
             ))}
           </div>
         );
-      
+
       case 'education':
         return (
           <div className="space-y-6">
-            {(data.content as any[]).map((edu: any, index: number) => (
+            {education.map((edu, index) => (
               <motion.div
-                key={index}
+                key={edu.degree}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -141,12 +220,13 @@ const Resume: React.FC = () => {
               >
                 <h3 className="text-xl font-semibold text-white mb-2">{edu.degree}</h3>
                 <p className="text-blue-300 font-medium mb-1">{edu.school}</p>
-                <p className="text-gray-400">{edu.year}</p>
+                <p className="text-gray-400 mb-2">{edu.year}</p>
+                <p className="text-gray-300">{edu.details}</p>
               </motion.div>
             ))}
           </div>
         );
-      
+
       default:
         return (
           <motion.p
@@ -154,7 +234,7 @@ const Resume: React.FC = () => {
             animate={{ opacity: 1 }}
             className="text-lg text-gray-300 leading-relaxed"
           >
-            {data.content as string}
+            {overview}
           </motion.p>
         );
     }
@@ -176,26 +256,31 @@ const Resume: React.FC = () => {
               Resume
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full mb-8"></div>
-            
+
             {/* Download Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
+              <motion.a
+                href={resumePdf}
+                download="JeffreyTsengResume.pdf"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full flex items-center gap-2 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
               >
                 <Download size={20} />
                 Download PDF
-              </motion.button>
-              
-              <motion.button
+              </motion.a>
+
+              <motion.a
+                href={resumePdf}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="group px-6 py-3 border-2 border-white/30 text-white font-semibold rounded-full flex items-center gap-2 hover:border-blue-400 hover:bg-blue-400/10 transition-all duration-300"
               >
                 <Eye size={20} />
                 View Online
-              </motion.button>
+              </motion.a>
             </div>
           </motion.div>
 

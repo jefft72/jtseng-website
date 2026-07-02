@@ -4,10 +4,10 @@ import { Code, Palette, Zap, Users } from 'lucide-react';
 
 const About: React.FC = () => {
   const skills = [
-    { name: 'Frontend Development', icon: Code, description: 'React, TypeScript, Next.js' },
-    { name: 'UI/UX Design', icon: Palette, description: 'Modern, responsive designs' },
-    { name: 'Performance', icon: Zap, description: 'Optimized, fast applications' },
-    { name: 'Collaboration', icon: Users, description: 'Team player, great communicator' },
+    { name: 'Full-Stack Engineering', icon: Code, description: 'React, TypeScript, Node, FastAPI' },
+    { name: 'High-Fidelity Frontends', icon: Palette, description: 'React, Framer, Tailwind, mobile-first UI' },
+    { name: 'AI Systems', icon: Zap, description: 'RAG, LLMs, Vertex AI, Hugging Face' },
+    { name: 'Leadership & Teaching', icon: Users, description: 'GDG mentor and nonprofit team lead' },
   ];
 
   const containerVariants = {
@@ -44,7 +44,7 @@ const About: React.FC = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              About Me - Updated
+              About Me
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
           </motion.div>
@@ -54,18 +54,18 @@ const About: React.FC = () => {
             {/* Text Content */}
             <motion.div variants={itemVariants} className="space-y-6">
               <p className="text-xl text-gray-300 leading-relaxed">
-                I'm a passionate developer who loves creating beautiful, functional web experiences. 
-                With a keen eye for design and a strong foundation in modern web technologies, 
-                I bring ideas to life through code.
+                I'm a full-stack engineer studying Computer Science and Mathematics at Purdue University.
+                I build high-fidelity React frontends, RAG-based AI backends, and React Native mobile
+                experiences with a focus on practical, user-centered software.
               </p>
               <p className="text-lg text-gray-400 leading-relaxed">
-                My journey in web development started with curiosity and has evolved into a 
-                deep passion for building applications that not only work flawlessly but also 
-                provide exceptional user experiences.
+                Recently, I've been designing workshops for 300+ students with Google Developer Groups,
+                leading nonprofit application teams through Hack the Future, and building AI-powered
+                products like UPlate and Crcle.ai workflows.
               </p>
               <p className="text-lg text-gray-400 leading-relaxed">
-                When I'm not coding, you can find me exploring new technologies, contributing 
-                to open-source projects, or sharing knowledge with the developer community.
+                My current work spans React, TypeScript, Python, Flutter, Firebase, LLM tooling,
+                and production-focused interfaces across web and mobile.
               </p>
             </motion.div>
 
@@ -95,10 +95,10 @@ const About: React.FC = () => {
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8"
           >
             {[
-              { number: '50+', label: 'Projects Completed' },
-              { number: '3+', label: 'Years Experience' },
-              { number: '100%', label: 'Client Satisfaction' },
-              { number: '24/7', label: 'Learning Mode' },
+              { number: '300+', label: 'Students Taught' },
+              { number: '150+', label: 'UPlate Active Users' },
+              { number: '10+', label: 'Engineers Led' },
+              { number: '3.5', label: 'Purdue GPA' },
             ].map((stat) => (
               <motion.div
                 key={stat.label}
