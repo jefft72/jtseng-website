@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Github, Linkedin, Mail } from 'lucide-react';
+import AtmosphereCanvas from './components/AtmosphereCanvas';
 import profileImage from '../DSC08402.JPEG';
 import resumePdf from '../modern-portfolio/public/JeffreyTsengResume.pdf?url';
 
 type Mode = 'all' | 'ai' | 'frontend' | 'mobile' | 'leadership';
+type FieldMode = Mode;
 
 type LogEntry = {
   title: string;
@@ -20,6 +22,7 @@ type Project = {
   summary: string;
   stack: string;
   metric: string;
+  tags: Mode[];
   href?: string;
 };
 
@@ -74,6 +77,7 @@ const projects: Project[] = [
       'Gemini-powered meal planning for Purdue dining halls with custom Flutter onboarding, offline SQLite persistence, and Firestore sync.',
     stack: 'Flutter / Firebase / Gemini / SQLite',
     metric: '150+ active users',
+    tags: ['ai', 'mobile'],
     href: 'https://jefft72.github.io/UPlate/',
   },
   {
@@ -83,6 +87,7 @@ const projects: Project[] = [
       'Responsive full-stack portfolio interface engineered with React, TypeScript, and a Node API layer for project data.',
     stack: 'React / TypeScript / Node',
     metric: 'live production surface',
+    tags: ['frontend'],
   },
   {
     name: 'Crcle.ai workflows',
@@ -91,6 +96,7 @@ const projects: Project[] = [
       'Browser and mobile surfaces that bridge user workflows with AI backends for contextual overlays and retrieval-augmented responses.',
     stack: 'RAG / React Native / LLMs',
     metric: 'co-op through Apr 2026',
+    tags: ['ai', 'mobile', 'frontend'],
   },
 ];
 
@@ -122,11 +128,18 @@ function App() {
   const [mode, setMode] = useState<Mode>('all');
   const [command, setCommand] = useState('all');
   const [booted, setBooted] = useState(false);
+  const [hoverField, setHoverField] = useState<FieldMode | null>(null);
 
   const activeEntries = useMemo(
     () => logEntries.filter((entry) => mode === 'all' || entry.tags.includes(mode) || entry.tags.includes('all')),
     [mode],
   );
+
+  const activeField = hoverField ?? mode;
+
+  const previewField = (tags: Mode[]) => {
+    setHoverField(tags.find((tag) => tag !== 'all') ?? 'all');
+  };
 
   const runCommand = (nextCommand: string) => {
     setCommand(nextCommand);
@@ -140,7 +153,8 @@ function App() {
   };
 
   return (
-    <div className="command-site">
+    <div className="command-site" data-field={activeField}>
+      <AtmosphereCanvas mode={activeField} />
       <div className="texture" aria-hidden="true" />
 
       <header className="system-bar" aria-label="Primary">
@@ -225,12 +239,20 @@ function App() {
                 <button
                   key={item.id}
                   className={mode === item.id ? 'active' : ''}
+                  onBlur={() => setHoverField(null)}
+                  onFocus={() => setHoverField(item.id)}
+                  onMouseEnter={() => setHoverField(item.id)}
+                  onMouseLeave={() => setHoverField(null)}
                   onClick={() => runCommand(item.command)}
                 >
                   <span>{item.command}</span>
                   {item.label}
                 </button>
               ))}
+            </div>
+            <div className="field-readout">
+              <span>ambient field follows cursor and hovered records</span>
+              <strong>{activeField}</strong>
             </div>
           </div>
         </section>
@@ -249,6 +271,8 @@ function App() {
                 viewport={{ once: true, margin: '-80px' }}
                 transition={{ duration: 0.45, delay: index * 0.04 }}
                 className="log-row"
+                onMouseEnter={() => previewField(entry.tags)}
+                onMouseLeave={() => setHoverField(null)}
               >
                 <span>{entry.period}</span>
                 <h3>{entry.title}</h3>
@@ -272,6 +296,10 @@ function App() {
                 target={project.href ? '_blank' : undefined}
                 rel={project.href ? 'noreferrer' : undefined}
                 className="work-row"
+                onBlur={() => setHoverField(null)}
+                onFocus={() => previewField(project.tags)}
+                onMouseEnter={() => previewField(project.tags)}
+                onMouseLeave={() => setHoverField(null)}
               >
                 <span>{project.type}</span>
                 <h3>{project.name}</h3>
