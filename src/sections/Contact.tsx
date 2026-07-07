@@ -4,7 +4,7 @@ import { links } from '../data';
 function Contact() {
   return (
     <section id="contact" className="section" aria-label="Contact">
-      <SectionHead num="05" title="Contact" />
+      <SectionHead num="06" title="Contact" />
       <a className="contact" href={`mailto:${links.email}`}>
         {links.email}
       </a>

@@ -113,6 +113,41 @@ export const reading = {
     'Placeholder — swap in your running notes here in src/data.ts. A sentence or two on what the book is doing to your brain.',
 };
 
+export type Pursuit = {
+  n: string;
+  name: string;
+  detail: string;
+  signal: string;
+};
+
+export const pursuits: Pursuit[] = [
+  {
+    n: '01',
+    name: 'Skiing',
+    detail: 'POWDER ≫ GROOMERS',
+    signal: 'Chasing snow every winter. Type "ski" anywhere on this page.',
+  },
+  {
+    n: '02',
+    name: 'MMA',
+    detail: 'STRIKING + GRAPPLING',
+    signal:
+      'Training and studying fight IQ — the best systems thinking happens in round three.',
+  },
+  {
+    n: '03',
+    name: 'Music',
+    detail: 'ON ROTATION',
+    signal: 'Hip-hop and everything adjacent. Current heavy rotation: classified.',
+  },
+  {
+    n: '04',
+    name: 'Travel',
+    detail: 'NEXT: TBD',
+    signal: 'Collecting cities. San Francisco is home base this year.',
+  },
+];
+
 export const links = {
   email: 'tseng94@purdue.edu',
   github: 'https://github.com/jefft72',

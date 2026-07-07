@@ -3,6 +3,7 @@ import CommandPalette from './components/CommandPalette';
 import DotGrid from './components/DotGrid';
 import TopBar from './sections/TopBar';
 import Reading from './sections/Reading';
+import OffDuty from './sections/OffDuty';
 import Hero from './sections/Hero';
 import Experience from './sections/Experience';
 import Projects from './sections/Projects';
@@ -20,6 +21,7 @@ function App() {
         <Projects />
         <Stack />
         <Reading />
+        <OffDuty />
         <Contact />
       </main>
       <AgentCursor />

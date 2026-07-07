@@ -2,6 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 
 const VERBS = ['inspect', 'parse', 'trace', 'index'];
 
+const IDLE_FLAVOR = [
+  'checking snow report',
+  'rewatching fight tape',
+  'queueing side b',
+  'pricing flights',
+  'refilling context window',
+];
+
 type Step = { text: string; ms: number };
 
 function buildSteps(el: HTMLElement): Step[] {
@@ -98,8 +106,10 @@ function AgentCursor() {
       later(() => {
         const el = pickTarget(target);
         releaseTarget();
-        if (!el) {
-          setStatus('idle · awaiting layout');
+        if (!el || Math.random() < 0.12) {
+          setStatus(
+            `idle · ${IDLE_FLAVOR[Math.floor(Math.random() * IDLE_FLAVOR.length)]}`,
+          );
           anchor.x = window.innerWidth * (0.55 + Math.random() * 0.3);
           anchor.y = window.innerHeight * (0.25 + Math.random() * 0.5);
           nextTarget(1800);

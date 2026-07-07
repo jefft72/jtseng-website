@@ -4,9 +4,21 @@ const SPACING = 26;
 const BASE_ALPHA = 0.09;
 const HOT_ALPHA = 0.34;
 const RADIUS = 150;
+const SNOW_MS = 7000;
+const FLAKES = 240;
+
+type Flake = {
+  x: number;
+  y: number;
+  vy: number;
+  sway: number;
+  phase: number;
+  accent: boolean;
+};
 
 // Adapted from reactbits.dev "Dot Grid" — the Swiss layout grid made literal,
-// waking up near the cursor.
+// waking up near the cursor. Typing "ski" (or the palette's snow command)
+// briefly turns the grid into snowfall.
 function DotGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -21,6 +33,10 @@ function DotGrid() {
     const pointer = { x: -9999, y: -9999 };
     let raf = 0;
     let needsDraw = true;
+    let snowUntil = 0;
+    let flakes: Flake[] = [];
+    let lastTime = performance.now();
+    let keyBuffer = '';
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -30,7 +46,7 @@ function DotGrid() {
       needsDraw = true;
     };
 
-    const draw = () => {
+    const drawGrid = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
       ctx.clearRect(0, 0, w, h);
@@ -52,31 +68,99 @@ function DotGrid() {
       }
     };
 
+    const startSnow = () => {
+      if (reduced) return;
+      snowUntil = performance.now() + SNOW_MS;
+      if (flakes.length === 0) {
+        flakes = Array.from({ length: FLAKES }, () => ({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * -window.innerHeight,
+          vy: 55 + Math.random() * 95,
+          sway: 8 + Math.random() * 22,
+          phase: Math.random() * Math.PI * 2,
+          accent: Math.random() < 0.08,
+        }));
+      }
+    };
+
+    const drawSnow = (dt: number, now: number) => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
+      // faint grid stays underneath so it reads as the grid shaking loose
+      for (let x = SPACING; x < w; x += SPACING) {
+        for (let y = SPACING; y < h; y += SPACING) {
+          ctx.beginPath();
+          ctx.arc(x, y, 1, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(17, 17, 17, ${BASE_ALPHA * 0.5})`;
+          ctx.fill();
+        }
+      }
+      const fading = snowUntil - now < 1200 ? (snowUntil - now) / 1200 : 1;
+      flakes.forEach((flake) => {
+        flake.y += flake.vy * dt;
+        flake.x += Math.sin(now / 900 + flake.phase) * flake.sway * dt;
+        if (flake.y > h + 4 && now < snowUntil - 1200) {
+          flake.y = -6;
+          flake.x = Math.random() * w;
+        }
+        ctx.beginPath();
+        ctx.arc(flake.x, flake.y, flake.accent ? 1.8 : 1.4, 0, Math.PI * 2);
+        ctx.fillStyle = flake.accent
+          ? `rgba(255, 59, 0, ${0.75 * fading})`
+          : `rgba(17, 17, 17, ${0.55 * fading})`;
+        ctx.fill();
+      });
+    };
+
     const onMove = (event: PointerEvent) => {
       pointer.x = event.clientX;
       pointer.y = event.clientY;
       needsDraw = true;
     };
 
-    const tick = () => {
-      if (needsDraw) {
-        draw();
-        needsDraw = false;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key.length !== 1) return;
+      keyBuffer = (keyBuffer + event.key.toLowerCase()).slice(-6);
+      if (keyBuffer.endsWith('ski') || keyBuffer.endsWith('snow')) {
+        keyBuffer = '';
+        startSnow();
+      }
+    };
+
+    const onSnowEvent = () => startSnow();
+
+    const tick = (now: number) => {
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+      if (now < snowUntil) {
+        drawSnow(dt, now);
+        needsDraw = true;
+      } else {
+        if (flakes.length > 0) flakes = [];
+        if (needsDraw) {
+          drawGrid();
+          needsDraw = false;
+        }
       }
       raf = requestAnimationFrame(tick);
     };
 
     resize();
     window.addEventListener('resize', resize);
+    window.addEventListener('jt:snow', onSnowEvent);
     if (!reduced) {
       window.addEventListener('pointermove', onMove, { passive: true });
+      window.addEventListener('keydown', onKey);
     }
     raf = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('jt:snow', onSnowEvent);
       window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('keydown', onKey);
     };
   }, []);
 
