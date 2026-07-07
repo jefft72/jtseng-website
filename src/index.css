@@ -281,7 +281,7 @@ main,
 .expand-inner {
   display: grid;
   gap: 14px;
-  padding: 8px 0 28px 72px;
+  padding: 8px 0 28px calc(72px + clamp(12px, 2vw, 32px));
   border-bottom: 1px solid var(--paper);
 }
 
@@ -410,6 +410,18 @@ main,
 /* ---------- responsive ---------- */
 
 @media (max-width: 720px) {
+  .topbar {
+    gap: 16px;
+  }
+
+  .topbar-links {
+    gap: 12px;
+  }
+
+  .topbar-links a:not(:last-child) {
+    display: none;
+  }
+
   .index-row {
     grid-template-columns: 1fr;
     gap: 6px;
