@@ -120,15 +120,14 @@ export type Place = {
   lng: number;
 };
 
-// Add every city you've been to — each one becomes a marker on the globe.
+// One pin per country. The note shows in the hover tooltip — a short line
+// on what you did there. All but the US are samples: edit freely.
 export const places: Place[] = [
-  { name: 'San Francisco', note: 'home base', lat: 37.7749, lng: -122.4194 },
-  { name: 'West Lafayette', note: 'purdue', lat: 40.4259, lng: -86.9081 },
-  { name: 'Princeton', note: 'hackprinceton W', lat: 40.3573, lng: -74.6672 },
+  { name: 'United States', note: 'home base — sf', lat: 37.77, lng: -122.42 },
+  { name: 'Taiwan', note: 'edit me in data.ts', lat: 25.03, lng: 121.56 },
+  { name: 'Japan', note: 'edit me in data.ts', lat: 35.68, lng: 139.69 },
+  { name: 'Switzerland', note: 'edit me in data.ts', lat: 46.2, lng: 7.36 },
 ];
-
-export const offDutyLine =
-  'off duty: skiing · mma · hip-hop — type "ski" anywhere';
 
 export const links = {
   email: 'tseng94@purdue.edu',

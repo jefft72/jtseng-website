@@ -1,13 +1,37 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import createGlobe from 'cobe';
-import { places } from '../data';
+import { places, type Place } from '../data';
 
-// Dotted, draggable globe (cobe) — visited cities as vermilion markers.
+const DEG = Math.PI / 180;
+const THETA = 0.28;
+const SPHERE_RATIO = 0.39; // visual sphere radius / canvas width
+const HIT_RADIUS = 18;
+
+type Tip = { place: Place; x: number; y: number };
+
+// Project lat/lng to canvas coordinates for cobe's rotation state.
+// Verified against rendered marker positions.
+function project(lat: number, lng: number, phi: number, w: number) {
+  const la = lat * DEG;
+  const lo = lng * DEG + phi - Math.PI;
+  const x = Math.cos(la) * Math.sin(lo);
+  const y = Math.sin(la);
+  const z = Math.cos(la) * Math.cos(lo);
+  const yT = y * Math.cos(THETA) - z * Math.sin(THETA);
+  const zT = y * Math.sin(THETA) + z * Math.cos(THETA);
+  const r = w * SPHERE_RATIO;
+  return { x: w / 2 + x * r, y: w / 2 - yT * r, front: zT > 0.08 };
+}
+
+// Dotted, draggable ink globe (cobe) — hover a vermilion pin for the story.
 function Globe() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const phiRef = useRef(4.6); // start facing the US
   const dragStart = useRef<number | null>(null);
-  const dragOffset = useRef(0);
   const dragBase = useRef(0);
+  const [tip, setTip] = useState<Tip | null>(null);
+  const tipRef = useRef<Tip | null>(null);
+  tipRef.current = tip;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -16,78 +40,114 @@ function Globe() {
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches;
-    // start facing the US where the markers live
-    let phi = 4.6;
     let raf = 0;
-    let width = canvas.offsetWidth;
+    let globe: ReturnType<typeof createGlobe> | null = null;
 
-    const onResize = () => {
-      width = canvas.offsetWidth;
-    };
-    window.addEventListener('resize', onResize);
-
-    const globe = createGlobe(canvas, {
-      devicePixelRatio: 2,
-      width: width * 2,
-      height: width * 2,
-      phi,
-      theta: 0.28,
-      dark: 1,
-      diffuse: 1.2,
-      mapSamples: 22000,
-      mapBrightness: 7,
-      baseColor: [0.957, 0.949, 0.929],
-      markerColor: [1, 0.23, 0],
-      glowColor: [0.957, 0.949, 0.929],
-      markerElevation: 0,
-      markers: places.map((place) => ({
-        location: [place.lat, place.lng],
-        size: 0.045,
-      })),
-    });
-
-    const tick = () => {
-      if (dragStart.current === null && !reduced) phi += 0.0035;
-      globe.update({
-        phi: phi + dragOffset.current,
+    const init = () => {
+      const width = canvas.offsetWidth;
+      if (width === 0) {
+        // layout not ready yet — retry next frame instead of mounting blank
+        raf = requestAnimationFrame(init);
+        return;
+      }
+      globe = createGlobe(canvas, {
+        devicePixelRatio: 2,
         width: width * 2,
         height: width * 2,
+        phi: phiRef.current,
+        theta: THETA,
+        dark: 1,
+        diffuse: 1.2,
+        mapSamples: 22000,
+        mapBrightness: 7,
+        baseColor: [0.957, 0.949, 0.929],
+        markerColor: [1, 0.23, 0],
+        glowColor: [0.957, 0.949, 0.929],
+        markerElevation: 0,
+        markers: places.map((place) => ({
+          location: [place.lat, place.lng],
+          size: 0.045,
+        })),
       });
+
+      const tick = () => {
+        const paused =
+          dragStart.current !== null || tipRef.current !== null || reduced;
+        if (!paused) phiRef.current += 0.0035;
+        globe?.update({
+          phi: phiRef.current,
+          width: canvas.offsetWidth * 2,
+          height: canvas.offsetWidth * 2,
+        });
+        raf = requestAnimationFrame(tick);
+      };
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
 
+    init();
     return () => {
       cancelAnimationFrame(raf);
-      globe.destroy();
-      window.removeEventListener('resize', onResize);
+      globe?.destroy();
     };
   }, []);
 
+  const hitTest = (clientX: number, clientY: number): Tip | null => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+    for (const place of places) {
+      const p = project(place.lat, place.lng, phiRef.current, rect.width);
+      if (p.front && Math.hypot(p.x - px, p.y - py) < HIT_RADIUS) {
+        return { place, x: p.x, y: p.y };
+      }
+    }
+    return null;
+  };
+
   return (
-    <canvas
-      ref={canvasRef}
-      className="globe"
-      aria-label="Globe of visited places"
-      onPointerDown={(e) => {
-        dragStart.current = e.clientX;
-        dragBase.current = dragOffset.current;
-        e.currentTarget.style.cursor = 'grabbing';
-      }}
-      onPointerMove={(e) => {
-        if (dragStart.current !== null) {
-          dragOffset.current =
-            dragBase.current + (e.clientX - dragStart.current) / 140;
-        }
-      }}
-      onPointerUp={(e) => {
-        dragStart.current = null;
-        e.currentTarget.style.cursor = 'grab';
-      }}
-      onPointerLeave={() => {
-        dragStart.current = null;
-      }}
-    />
+    <div className="globe-wrap">
+      <canvas
+        ref={canvasRef}
+        className="globe"
+        aria-label="Globe of visited countries"
+        onPointerDown={(e) => {
+          dragStart.current = e.clientX;
+          dragBase.current = phiRef.current;
+          setTip(null);
+          e.currentTarget.style.cursor = 'grabbing';
+        }}
+        onPointerMove={(e) => {
+          if (dragStart.current !== null) {
+            phiRef.current =
+              dragBase.current + (e.clientX - dragStart.current) / 140;
+            return;
+          }
+          const hit = hitTest(e.clientX, e.clientY);
+          setTip(hit);
+          e.currentTarget.style.cursor = hit ? 'pointer' : 'grab';
+        }}
+        onPointerUp={(e) => {
+          dragStart.current = null;
+          e.currentTarget.style.cursor = 'grab';
+        }}
+        onPointerLeave={() => {
+          dragStart.current = null;
+          setTip(null);
+        }}
+      />
+      {tip && (
+        <div
+          className="globe-tip"
+          style={{ left: tip.x, top: tip.y }}
+          role="status"
+        >
+          <strong>{tip.place.name}</strong>
+          <span>{tip.place.note}</span>
+        </div>
+      )}
+    </div>
   );
 }
 

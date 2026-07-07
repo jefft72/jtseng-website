@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 const VERBS = ['inspect', 'parse', 'trace', 'index'];
 
 const IDLE_FLAVOR = [
-  'checking snow report',
-  'rewatching fight tape',
-  'queueing side b',
-  'pricing flights',
+  'compacting context',
+  'warming cache',
   'refilling context window',
+  'polling for updates',
 ];
 
 type Step = { text: string; ms: number };
