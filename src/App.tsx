@@ -1,3 +1,4 @@
+import DotGrid from './components/DotGrid';
 import TopBar from './sections/TopBar';
 import Hero from './sections/Hero';
 import Experience from './sections/Experience';
@@ -8,6 +9,7 @@ import Contact from './sections/Contact';
 function App() {
   return (
     <>
+      <DotGrid />
       <TopBar />
       <main>
         <Hero />

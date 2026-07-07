@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import SectionHead from '../components/SectionHead';
 import { stackLines } from '../data';
 
 const marqueeText = stackLines.join(' · ');
@@ -6,10 +7,7 @@ const marqueeText = stackLines.join(' · ');
 function Stack() {
   return (
     <section id="stack" className="section" aria-label="Stack">
-      <div className="section-head">
-        <span className="section-num">03</span>
-        <h2>Stack</h2>
-      </div>
+      <SectionHead num="03" title="Stack" />
       {stackLines.map((line, i) => (
         <motion.p
           className="stack-line"

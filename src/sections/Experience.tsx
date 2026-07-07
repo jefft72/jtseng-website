@@ -1,13 +1,11 @@
 import { motion } from 'framer-motion';
+import SectionHead from '../components/SectionHead';
 import { experience } from '../data';
 
 function Experience() {
   return (
     <section id="experience" className="section" aria-label="Experience">
-      <div className="section-head">
-        <span className="section-num">01</span>
-        <h2>Experience</h2>
-      </div>
+      <SectionHead num="01" title="Experience" />
       {experience.map((item, i) => (
         <motion.div
           className="index-row"

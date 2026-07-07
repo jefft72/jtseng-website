@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
+import SectionHead from '../components/SectionHead';
 import { projects } from '../data';
 
 function Projects() {
@@ -12,10 +13,7 @@ function Projects() {
       className="section section--invert"
       aria-label="Projects"
     >
-      <div className="section-head">
-        <span className="section-num">02</span>
-        <h2>Projects</h2>
-      </div>
+      <SectionHead num="02" title="Projects" />
       {projects.map((project, i) => {
         const isOpen = open === project.n;
         return (

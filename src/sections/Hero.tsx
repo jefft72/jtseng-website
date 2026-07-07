@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import VariableProximity from '../components/VariableProximity';
 import { links } from '../data';
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -14,7 +15,7 @@ function Hero() {
               animate={{ y: 0 }}
               transition={{ duration: 0.7, delay: i * 0.09, ease }}
             >
-              {word}
+              <VariableProximity text={word} />
             </motion.span>
           </span>
         ))}

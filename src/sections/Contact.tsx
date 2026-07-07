@@ -1,12 +1,10 @@
+import SectionHead from '../components/SectionHead';
 import { links } from '../data';
 
 function Contact() {
   return (
     <section id="contact" className="section" aria-label="Contact">
-      <div className="section-head">
-        <span className="section-num">04</span>
-        <h2>Contact</h2>
-      </div>
+      <SectionHead num="04" title="Contact" />
       <a className="contact" href={`mailto:${links.email}`}>
         {links.email}
       </a>
