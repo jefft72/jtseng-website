@@ -87,13 +87,28 @@ main,
   align-items: center;
   justify-content: space-between;
   padding: 14px 0;
+  border: 2px solid transparent;
   border-bottom: var(--rule);
-  background: var(--paper);
+  background: transparent;
   font-family: var(--mono);
   font-size: var(--meta);
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition:
+    width 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.topbar--collapsed {
+  top: 12px;
+  width: min(100% - 24px, 860px);
+  padding: 9px 18px;
+  border-color: var(--ink);
+  background: var(--paper);
 }
 
 .topbar .mark {

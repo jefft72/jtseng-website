@@ -1,9 +1,24 @@
+import { useEffect, useState } from 'react';
 import VisitCounter from '../components/VisitCounter';
 import { links } from '../data';
 
 function TopBar() {
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      // hysteresis so the bar doesn't flicker at the threshold
+      setCollapsed((c) => (c ? window.scrollY > 40 : window.scrollY > 110));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <nav className="topbar" aria-label="Primary">
+    <nav
+      className={`topbar${collapsed ? ' topbar--collapsed' : ''}`}
+      aria-label="Primary"
+    >
       <a className="mark" href="#top">
         JT
       </a>
