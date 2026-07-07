@@ -130,7 +130,44 @@ main,
 /* ---------- hero ---------- */
 
 .hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: clamp(24px, 4vw, 72px);
+  align-items: start;
   padding: clamp(48px, 9vh, 120px) 0 clamp(32px, 5vh, 64px);
+}
+
+.portrait-slot {
+  grid-row: 1;
+  grid-column: 2;
+  align-self: center;
+}
+
+.portrait {
+  margin: 0;
+  width: clamp(170px, 18vw, 250px);
+}
+
+.portrait canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border: var(--rule);
+}
+
+.portrait figcaption {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.hero-statement,
+.credit-line {
+  grid-column: 1 / -1;
 }
 
 .hero h1 {
@@ -735,21 +772,27 @@ main,
   opacity: 0.7;
 }
 
-.vim-toast {
+.cmdline {
   position: fixed;
-  bottom: 22px;
-  left: 50%;
-  z-index: 40;
+  bottom: 16px;
+  left: var(--gutter);
+  z-index: 35;
   margin: 0;
+  min-width: 120px;
   padding: 6px 12px;
   border: 1px solid var(--ink);
   background: var(--paper);
-  transform: translateX(-50%);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
+}
+
+.cmdline::after {
+  content: '▌';
+  margin-left: 2px;
+  color: var(--accent);
+  animation: caret-blink 0.9s steps(1) infinite;
 }
 
 .footer-key {
@@ -844,8 +887,14 @@ main,
   }
 
   .kbd-hint,
-  .visit-counter {
+  .visit-counter,
+  .portrait-slot,
+  .cmdline {
     display: none;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
   }
 }
 

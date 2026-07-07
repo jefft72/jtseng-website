@@ -27,7 +27,7 @@ const isTyping = (target: EventTarget | null) =>
 
 function KeyboardLayer() {
   const [helpOpen, setHelpOpen] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const [cmd, setCmd] = useState<string | null>(null);
 
   useEffect(() => {
     const reduced = window.matchMedia(
@@ -36,7 +36,7 @@ function KeyboardLayer() {
     const behavior: ScrollBehavior = reduced ? 'auto' : 'smooth';
     let lastG = 0;
     let buffer = '';
-    let toastTimer: ReturnType<typeof setTimeout>;
+    let cmdTimer: ReturnType<typeof setTimeout>;
 
     const scrollBy = (px: number) => window.scrollBy({ top: px, behavior });
 
@@ -59,10 +59,14 @@ function KeyboardLayer() {
         ?.scrollIntoView({ behavior });
     };
 
-    const showToast = (text: string) => {
-      setToast(text);
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => setToast(null), 2200);
+    // echo keystrokes on the cmdline; results linger a bit longer
+    const showCmd = (text: string, holdMs: number) => {
+      setCmd(text);
+      clearTimeout(cmdTimer);
+      cmdTimer = setTimeout(() => {
+        setCmd(null);
+        buffer = '';
+      }, holdMs);
     };
 
     const onKey = (event: KeyboardEvent) => {
@@ -71,14 +75,24 @@ function KeyboardLayer() {
 
       if (event.key === 'Escape') {
         setHelpOpen(false);
+        setCmd(null);
+        buffer = '';
         return;
       }
 
-      if (event.key.length === 1) buffer = (buffer + event.key).slice(-4);
+      if (event.key.length === 1) {
+        buffer = (buffer + event.key).slice(-10);
+        showCmd(buffer, 1600);
+      }
       if (buffer.endsWith(':wq') || buffer.endsWith(':q!')) {
         buffer = '';
-        showToast('E45: readonly — nothing to write ✓');
+        showCmd('E45: readonly — nothing to write ✓', 2400);
         return;
+      }
+      if (buffer.endsWith('ski') || buffer.endsWith('snow')) {
+        buffer = '';
+        showCmd('❄ let it snow', 2400);
+        // DotGrid handles the actual snowfall via its own listener
       }
 
       switch (event.key) {
@@ -138,7 +152,7 @@ function KeyboardLayer() {
     return () => {
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('jt:keymap', onKeymapEvent);
-      clearTimeout(toastTimer);
+      clearTimeout(cmdTimer);
     };
   }, []);
 
@@ -176,15 +190,15 @@ function KeyboardLayer() {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {toast && (
+        {cmd && (
           <motion.p
-            className="vim-toast"
-            initial={{ opacity: 0, y: 10 }}
+            className="cmdline"
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.15 }}
           >
-            {toast}
+            {cmd}
           </motion.p>
         )}
       </AnimatePresence>
