@@ -482,6 +482,81 @@ main,
   line-height: 1.55;
 }
 
+/* ---------- travel ---------- */
+
+.travel {
+  display: grid;
+  grid-template-columns: minmax(300px, 520px) 1fr;
+  gap: clamp(24px, 5vw, 80px);
+  align-items: center;
+}
+
+.travel-globe {
+  width: 100%;
+  max-width: 520px;
+}
+
+.globe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.travel-list {
+  display: grid;
+  gap: 4px;
+  align-content: center;
+}
+
+.travel-place {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 18px;
+  align-items: baseline;
+  margin: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ink);
+}
+
+.travel-coords {
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.travel-place strong {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.travel-place em {
+  grid-column: 2;
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.travel-etc {
+  margin: 18px 0 0;
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
 /* ---------- agent cursor ---------- */
 
 .agent-cursor {
@@ -724,6 +799,10 @@ main,
 
   .reading {
     flex-direction: column;
+  }
+
+  .travel {
+    grid-template-columns: 1fr;
   }
 
   .kbd-hint,

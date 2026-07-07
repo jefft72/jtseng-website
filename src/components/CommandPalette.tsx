@@ -17,7 +17,7 @@ const actions: Action[] = [
   { label: 'Go to projects', hint: '02', run: () => jump('#projects') },
   { label: 'Go to stack', hint: '03', run: () => jump('#stack') },
   { label: 'Go to reading', hint: '04', run: () => jump('#reading') },
-  { label: 'Go to off duty', hint: '05', run: () => jump('#offduty') },
+  { label: 'Go to travel log', hint: '05', run: () => jump('#travel') },
   { label: 'Go to contact', hint: '06', run: () => jump('#contact') },
   {
     label: 'Let it snow',
