@@ -9,7 +9,16 @@ function Contact() {
         {links.email}
       </a>
       <footer className="footer">
-        <span>© {new Date().getFullYear()} Jeffrey Tseng</span>
+        <span>
+          © {new Date().getFullYear()} Jeffrey Tseng
+          <button
+            type="button"
+            className="footer-key"
+            onClick={() => window.dispatchEvent(new Event('jt:keymap'))}
+          >
+            ? keymap
+          </button>
+        </span>
         <div className="footer-links">
           <a href={links.github} target="_blank" rel="noreferrer">
             GitHub

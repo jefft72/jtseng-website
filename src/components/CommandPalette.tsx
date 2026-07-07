@@ -25,6 +25,11 @@ const actions: Action[] = [
     run: () => window.dispatchEvent(new Event('jt:snow')),
   },
   {
+    label: 'Show keymap',
+    hint: '?',
+    run: () => window.dispatchEvent(new Event('jt:keymap')),
+  },
+  {
     label: 'Open resume',
     hint: 'PDF',
     run: () => window.open(links.resume, '_blank'),
@@ -69,8 +74,17 @@ function CommandPalette() {
         setOpen(false);
       }
     };
+    const onOpenEvent = () => {
+      setOpen(true);
+      setQuery('');
+      setSelected(0);
+    };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('jt:palette', onOpenEvent);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('jt:palette', onOpenEvent);
+    };
   }, []);
 
   useEffect(() => {

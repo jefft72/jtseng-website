@@ -1,5 +1,6 @@
 import AgentCursor from './components/AgentCursor';
 import CommandPalette from './components/CommandPalette';
+import KeyboardLayer from './components/KeyboardLayer';
 import DotGrid from './components/DotGrid';
 import TopBar from './sections/TopBar';
 import Reading from './sections/Reading';
@@ -26,6 +27,7 @@ function App() {
       </main>
       <AgentCursor />
       <CommandPalette />
+      <KeyboardLayer />
     </>
   );
 }
