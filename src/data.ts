@@ -102,6 +102,17 @@ export const stackLines = [
   'NumPy · SciPy · Matlab · Gazebo · ROS',
 ];
 
+export const reading = {
+  title: 'Gödel, Escher, Bach',
+  author: 'Douglas Hofstadter',
+  // Drop a cover image in public/ (e.g. /book.jpg) and set it here;
+  // leave empty for the typographic cover.
+  cover: '',
+  started: 'JUL 2026',
+  thoughts:
+    'Placeholder — swap in your running notes here in src/data.ts. A sentence or two on what the book is doing to your brain.',
+};
+
 export const links = {
   email: 'tseng94@purdue.edu',
   github: 'https://github.com/jefft72',

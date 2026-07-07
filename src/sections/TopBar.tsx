@@ -10,10 +10,14 @@ function TopBar() {
         <a href="#experience">Experience</a>
         <a href="#projects">Projects</a>
         <a href="#stack">Stack</a>
+        <a href="#reading">Reading</a>
         <a href="#contact">Contact</a>
         <a href={links.resume} target="_blank" rel="noreferrer">
           Resume
         </a>
+        <span className="kbd-hint" aria-hidden="true">
+          ⌘K
+        </span>
       </div>
     </nav>
   );

@@ -1,5 +1,8 @@
+import AgentCursor from './components/AgentCursor';
+import CommandPalette from './components/CommandPalette';
 import DotGrid from './components/DotGrid';
 import TopBar from './sections/TopBar';
+import Reading from './sections/Reading';
 import Hero from './sections/Hero';
 import Experience from './sections/Experience';
 import Projects from './sections/Projects';
@@ -16,8 +19,11 @@ function App() {
         <Experience />
         <Projects />
         <Stack />
+        <Reading />
         <Contact />
       </main>
+      <AgentCursor />
+      <CommandPalette />
     </>
   );
 }
