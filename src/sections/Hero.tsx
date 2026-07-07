@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import HalftonePortrait from '../components/HalftonePortrait';
 import VariableProximity from '../components/VariableProximity';
 import { links } from '../data';
 
@@ -21,14 +20,6 @@ function Hero() {
           </span>
         ))}
       </h1>
-      <motion.div
-        className="portrait-slot"
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.25, ease }}
-      >
-        <HalftonePortrait />
-      </motion.div>
       <motion.p
         className="hero-statement"
         initial={{ opacity: 0, y: 14 }}

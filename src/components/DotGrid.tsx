@@ -17,8 +17,8 @@ type Flake = {
 };
 
 // Adapted from reactbits.dev "Dot Grid" — the Swiss layout grid made literal,
-// waking up near the cursor. Typing "ski" (or the palette's snow command)
-// briefly turns the grid into snowfall.
+// waking up near the cursor. The :ski command (or the palette) briefly
+// turns the grid into snowfall via the jt:snow event.
 function DotGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -36,7 +36,6 @@ function DotGrid() {
     let snowUntil = 0;
     let flakes: Flake[] = [];
     let lastTime = performance.now();
-    let keyBuffer = '';
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -119,15 +118,6 @@ function DotGrid() {
       needsDraw = true;
     };
 
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key.length !== 1) return;
-      keyBuffer = (keyBuffer + event.key.toLowerCase()).slice(-6);
-      if (keyBuffer.endsWith('ski') || keyBuffer.endsWith('snow')) {
-        keyBuffer = '';
-        startSnow();
-      }
-    };
-
     const onSnowEvent = () => startSnow();
 
     const tick = (now: number) => {
@@ -151,7 +141,6 @@ function DotGrid() {
     window.addEventListener('jt:snow', onSnowEvent);
     if (!reduced) {
       window.addEventListener('pointermove', onMove, { passive: true });
-      window.addEventListener('keydown', onKey);
     }
     raf = requestAnimationFrame(tick);
 
@@ -160,7 +149,6 @@ function DotGrid() {
       window.removeEventListener('resize', resize);
       window.removeEventListener('jt:snow', onSnowEvent);
       window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('keydown', onKey);
     };
   }, []);
 

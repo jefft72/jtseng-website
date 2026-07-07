@@ -17,8 +17,10 @@ const BINDINGS: Array<[string, string]> = [
   ['[ / ]', 'previous / next section'],
   ['1 – 6', 'jump to section n'],
   ['/ or ⌘k', 'command palette'],
-  ['?', 'toggle this keymap'],
+  [':', 'ex command line (enter submits)'],
+  [':ski', 'let it snow'],
   [':wq', 'relax — page is read-only'],
+  ['?', 'toggle this keymap'],
 ];
 
 const isTyping = (target: EventTarget | null) =>
@@ -35,7 +37,8 @@ function KeyboardLayer() {
     ).matches;
     const behavior: ScrollBehavior = reduced ? 'auto' : 'smooth';
     let lastG = 0;
-    let buffer = '';
+    let mode: 'normal' | 'command' = 'normal';
+    let cmdBuf = '';
     let cmdTimer: ReturnType<typeof setTimeout>;
 
     const scrollBy = (px: number) => window.scrollBy({ top: px, behavior });
@@ -59,14 +62,36 @@ function KeyboardLayer() {
         ?.scrollIntoView({ behavior });
     };
 
-    // echo keystrokes on the cmdline; results linger a bit longer
-    const showCmd = (text: string, holdMs: number) => {
+    // transient result message; fades after holdMs
+    const showResult = (text: string, holdMs: number) => {
       setCmd(text);
       clearTimeout(cmdTimer);
-      cmdTimer = setTimeout(() => {
+      cmdTimer = setTimeout(() => setCmd(null), holdMs);
+    };
+
+    const execute = (raw: string) => {
+      const command = raw.trim();
+      mode = 'normal';
+      cmdBuf = '';
+      if (command === '') {
         setCmd(null);
-        buffer = '';
-      }, holdMs);
+        return;
+      }
+      if (['w', 'wq', 'q', 'q!', 'x'].includes(command)) {
+        showResult('E45: readonly — nothing to write ✓', 2400);
+        return;
+      }
+      if (command === 'ski' || command === 'snow') {
+        window.dispatchEvent(new Event('jt:snow'));
+        showResult('❄ let it snow', 2400);
+        return;
+      }
+      if (command === 'help' || command === 'h') {
+        setCmd(null);
+        setHelpOpen(true);
+        return;
+      }
+      showResult(`E492: not an editor command: ${command.slice(0, 18)}`, 2400);
     };
 
     const onKey = (event: KeyboardEvent) => {
@@ -75,24 +100,37 @@ function KeyboardLayer() {
 
       if (event.key === 'Escape') {
         setHelpOpen(false);
+        mode = 'normal';
+        cmdBuf = '';
         setCmd(null);
-        buffer = '';
         return;
       }
 
-      if (event.key.length === 1) {
-        buffer = (buffer + event.key).slice(-10);
-        showCmd(buffer, 1600);
-      }
-      if (buffer.endsWith(':wq') || buffer.endsWith(':q!')) {
-        buffer = '';
-        showCmd('E45: readonly — nothing to write ✓', 2400);
+      if (mode === 'command') {
+        event.preventDefault();
+        if (event.key === 'Enter') {
+          execute(cmdBuf);
+        } else if (event.key === 'Backspace') {
+          if (cmdBuf === '') {
+            mode = 'normal';
+            setCmd(null);
+          } else {
+            cmdBuf = cmdBuf.slice(0, -1);
+            setCmd(`:${cmdBuf}`);
+          }
+        } else if (event.key.length === 1) {
+          cmdBuf += event.key;
+          setCmd(`:${cmdBuf}`);
+        }
         return;
       }
-      if (buffer.endsWith('ski') || buffer.endsWith('snow')) {
-        buffer = '';
-        showCmd('❄ let it snow', 2400);
-        // DotGrid handles the actual snowfall via its own listener
+
+      if (event.key === ':') {
+        mode = 'command';
+        cmdBuf = '';
+        clearTimeout(cmdTimer);
+        setCmd(':');
+        return;
       }
 
       switch (event.key) {
@@ -100,8 +138,6 @@ function KeyboardLayer() {
           scrollBy(160);
           break;
         case 'k':
-          // don't scroll mid-"ski": the snow easter egg owns that sequence
-          if (buffer.endsWith('sk')) break;
           scrollBy(-160);
           break;
         case 'd':
