@@ -1,99 +1,173 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
-type AgentPose = {
-  x: number;
-  y: number;
-  status: string;
-  travelMs: number;
-};
+const VERBS = ['inspect', 'parse', 'trace', 'index'];
 
-const DWELL_MIN = 1800;
-const DWELL_MAX = 3600;
+type Step = { text: string; ms: number };
 
-function pickTarget() {
-  const candidates = Array.from(
-    document.querySelectorAll<HTMLElement>('.index-row, .section-head, .contact'),
-  );
-  const visible = candidates
-    .map((el) => ({ el, rect: el.getBoundingClientRect() }))
-    .filter(
-      ({ rect }) => rect.top > 90 && rect.bottom < window.innerHeight - 40,
-    );
-  if (visible.length === 0) return null;
-  const { el, rect } = visible[Math.floor(Math.random() * visible.length)];
-  const label =
-    el.querySelector('h3, h2')?.textContent?.trim().toLowerCase() ?? 'section';
-  return {
-    x: rect.left + rect.width * (0.2 + Math.random() * 0.45),
-    y: rect.top + rect.height * (0.3 + Math.random() * 0.4),
-    label,
-  };
+function buildSteps(el: HTMLElement): Step[] {
+  const title = el
+    .querySelector('h3, h2')
+    ?.textContent?.trim()
+    .toLowerCase()
+    .slice(0, 34);
+  const org = el
+    .querySelector('.row-org')
+    ?.textContent?.trim()
+    .toLowerCase()
+    .slice(0, 34);
+  const period = el.querySelector('.row-period')?.textContent?.trim();
+  const verb = VERBS[Math.floor(Math.random() * VERBS.length)];
+
+  if (el.classList.contains('contact')) {
+    return [
+      { text: 'found mailto route', ms: 900 },
+      { text: `resolve: ${el.textContent?.trim().toLowerCase()}`, ms: 1100 },
+      { text: 'contact ✓', ms: 700 },
+    ];
+  }
+  if (el.classList.contains('section-head')) {
+    return [
+      { text: `scan /${title?.replace(/\s+/g, '-')}`, ms: 1000 },
+      { text: 'ok ✓', ms: 600 },
+    ];
+  }
+  const steps: Step[] = [{ text: `${verb} ▸ ${title}`, ms: 1100 }];
+  if (org) steps.push({ text: `└ ${org}`, ms: 1000 });
+  if (period && Math.random() > 0.4)
+    steps.push({ text: `└ ${period.toLowerCase()}`, ms: 900 });
+  steps.push({ text: 'indexed ✓', ms: 650 });
+  return steps;
 }
 
-// A second cursor browsing the page on its own — the multi-agent pitch, made visible.
-function AgentCursor() {
-  const [enabled, setEnabled] = useState(false);
-  const [pose, setPose] = useState<AgentPose>({
-    x: window.innerWidth * 0.7,
-    y: window.innerHeight * 0.55,
-    status: 'idle',
-    travelMs: 1400,
+function pickTarget(current: HTMLElement | null): HTMLElement | null {
+  const candidates = Array.from(
+    document.querySelectorAll<HTMLElement>(
+      '.index-row, .section-head, .contact',
+    ),
+  ).filter((el) => {
+    if (el === current) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.top > 90 && rect.bottom < window.innerHeight - 30;
   });
+  if (candidates.length === 0) return null;
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+// agent-01: locks onto real elements, follows them through scroll, and
+// narrates a multi-step trace of what it is inspecting.
+function AgentCursor() {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [enabled, setEnabled] = useState(false);
+  const [status, setStatus] = useState('boot');
 
   useEffect(() => {
     const fine = window.matchMedia('(pointer: fine)').matches;
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches;
-    const wide = window.innerWidth > 720;
-    if (!fine || reduced || !wide) return;
+    if (!fine || reduced || window.innerWidth <= 720) return;
     setEnabled(true);
-
-    let timer: ReturnType<typeof setTimeout>;
-    let cancelled = false;
-
-    const step = () => {
-      if (cancelled) return;
-      const target = pickTarget();
-      if (!target) {
-        setPose((p) => ({ ...p, status: 'idle' }));
-        timer = setTimeout(step, 1600);
-        return;
-      }
-      const travelMs = 1100 + Math.random() * 900;
-      setPose({ x: target.x, y: target.y, status: 'moving', travelMs });
-      timer = setTimeout(() => {
-        if (cancelled) return;
-        setPose((p) => ({ ...p, status: `reading ${target.label}` }));
-        timer = setTimeout(
-          step,
-          DWELL_MIN + Math.random() * (DWELL_MAX - DWELL_MIN),
-        );
-      }, travelMs);
-    };
-
-    timer = setTimeout(step, 2200);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
   }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const root = rootRef.current;
+    if (!root) return;
+
+    let raf = 0;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    let target: HTMLElement | null = null;
+    let arrived = false;
+    const pos = {
+      x: window.innerWidth * 0.72,
+      y: window.innerHeight * 0.5,
+    };
+    const anchor = { ...pos };
+
+    const later = (fn: () => void, ms: number) => {
+      timers.push(setTimeout(fn, ms));
+    };
+
+    const releaseTarget = () => {
+      target?.classList.remove('agent-scan');
+      target = null;
+      arrived = false;
+    };
+
+    const nextTarget = (delay: number) => {
+      later(() => {
+        const el = pickTarget(target);
+        releaseTarget();
+        if (!el) {
+          setStatus('idle · awaiting layout');
+          anchor.x = window.innerWidth * (0.55 + Math.random() * 0.3);
+          anchor.y = window.innerHeight * (0.25 + Math.random() * 0.5);
+          nextTarget(1800);
+          return;
+        }
+        target = el;
+        arrived = false;
+        setStatus('moving');
+      }, delay);
+    };
+
+    const runSteps = (el: HTMLElement) => {
+      el.classList.add('agent-scan');
+      const steps = buildSteps(el);
+      let acc = 0;
+      steps.forEach((step) => {
+        later(() => {
+          if (target === el) setStatus(step.text);
+        }, acc);
+        acc += step.ms;
+      });
+      nextTarget(acc + 300);
+    };
+
+    const tick = () => {
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        if (rect.bottom < 70 || rect.top > window.innerHeight - 20) {
+          // element scrolled away — drop the lock and re-plan
+          releaseTarget();
+          setStatus('re-acquiring…');
+          nextTarget(600);
+        } else {
+          anchor.x = rect.left + Math.min(rect.width * 0.32, 380);
+          anchor.y = rect.top + rect.height * 0.42;
+          const distance = Math.hypot(anchor.x - pos.x, anchor.y - pos.y);
+          if (!arrived && distance < 26) {
+            arrived = true;
+            runSteps(target);
+          }
+        }
+      }
+      pos.x += (anchor.x - pos.x) * 0.075;
+      pos.y += (anchor.y - pos.y) * 0.075;
+      root.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+      raf = requestAnimationFrame(tick);
+    };
+
+    setStatus('boot · scanning page');
+    nextTarget(2000);
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+      releaseTarget();
+    };
+  }, [enabled]);
 
   if (!enabled) return null;
 
   return (
-    <motion.div
-      className="agent-cursor"
-      aria-hidden="true"
-      animate={{ x: pose.x, y: pose.y }}
-      transition={{ duration: pose.travelMs / 1000, ease: [0.3, 0.9, 0.3, 1] }}
-    >
+    <div className="agent-cursor" ref={rootRef} aria-hidden="true">
       <svg width="13" height="13" viewBox="0 0 13 13">
         <path d="M1 1 L12 6 L6.5 7.5 L4 12.5 Z" fill="var(--accent)" />
       </svg>
-      <span className="agent-chip">agent-01 · {pose.status}</span>
-    </motion.div>
+      <span className="agent-chip">agent-01 · {status}</span>
+    </div>
   );
 }
 

@@ -491,6 +491,68 @@ main,
   white-space: nowrap;
 }
 
+.agent-chip::after {
+  content: '▌';
+  margin-left: 2px;
+  color: var(--accent);
+  animation: caret-blink 0.9s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.agent-scan {
+  outline: 1px dashed var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------- visit counter ---------- */
+
+.visit-counter {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0.5;
+}
+
+.visit-label {
+  margin-right: 5px;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+}
+
+.flip-cell {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 13px;
+  height: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(17, 17, 17, 0.55);
+  background: rgba(17, 17, 17, 0.05);
+  perspective: 90px;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.flip-cell::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 1px;
+  background: rgba(17, 17, 17, 0.25);
+}
+
+.flip-card {
+  display: block;
+  transform-origin: center 50%;
+  backface-visibility: hidden;
+}
+
 /* ---------- command palette ---------- */
 
 .kbd-hint {
@@ -649,7 +711,8 @@ main,
     flex-direction: column;
   }
 
-  .kbd-hint {
+  .kbd-hint,
+  .visit-counter {
     display: none;
   }
 }

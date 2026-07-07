@@ -1,3 +1,4 @@
+import VisitCounter from '../components/VisitCounter';
 import { links } from '../data';
 
 function TopBar() {
@@ -18,6 +19,7 @@ function TopBar() {
         <span className="kbd-hint" aria-hidden="true">
           ⌘K
         </span>
+        <VisitCounter />
       </div>
     </nav>
   );
