@@ -11,10 +11,11 @@ const RELEASE_RADIUS = 52; // once locked, keep the tip until this far away
 type Tip = { place: Place; x: number; y: number };
 
 // Project lat/lng to canvas coordinates for cobe's rotation state.
-// Verified against rendered marker positions.
+// cobe centers longitude (3π/2 − phi); verified against frozen-rotation
+// reference pins (north pole + null island) measured to the pixel.
 function project(lat: number, lng: number, phi: number, w: number) {
   const la = lat * DEG;
-  const lo = lng * DEG + phi - Math.PI;
+  const lo = lng * DEG + phi - 1.5 * Math.PI;
   const x = Math.cos(la) * Math.sin(lo);
   const y = Math.sin(la);
   const z = Math.cos(la) * Math.cos(lo);
@@ -27,7 +28,7 @@ function project(lat: number, lng: number, phi: number, w: number) {
 // Dotted, draggable ink globe (cobe) — hover a vermilion pin for the story.
 function Globe() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const phiRef = useRef(4.6); // start facing the US
+  const phiRef = useRef(0.15); // face the US: center lng = 3π/2 − phi
   const dragStart = useRef<number | null>(null);
   const dragBase = useRef(0);
   const [tip, setTip] = useState<Tip | null>(null);
@@ -59,7 +60,7 @@ function Globe() {
         theta: THETA,
         dark: 1,
         diffuse: 1.2,
-        mapSamples: 22000,
+        mapSamples: 42000,
         mapBrightness: 7,
         baseColor: [0.957, 0.949, 0.929],
         markerColor: [1, 0.23, 0],

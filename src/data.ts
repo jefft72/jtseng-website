@@ -121,12 +121,14 @@ export type Place = {
 };
 
 // One pin per country. The note shows in the hover tooltip — a short line
-// on what you did there. All but the US are samples: edit freely.
+// on what you did there. Coordinates map 1:1 onto the globe; use the
+// country's center (not a coastal city) so the pin sits on the landmass.
+// All but the US are samples: edit freely.
 export const places: Place[] = [
-  { name: 'United States', note: 'home base — sf', lat: 37.77, lng: -122.42 },
-  { name: 'Taiwan', note: 'edit me in data.ts', lat: 25.03, lng: 121.56 },
-  { name: 'Japan', note: 'edit me in data.ts', lat: 35.68, lng: 139.69 },
-  { name: 'Switzerland', note: 'edit me in data.ts', lat: 46.2, lng: 7.36 },
+  { name: 'United States', note: 'home base — sf', lat: 39.8, lng: -98.6 },
+  { name: 'Taiwan', note: 'edit me in data.ts', lat: 23.7, lng: 121.0 },
+  { name: 'Japan', note: 'edit me in data.ts', lat: 36.2, lng: 138.25 },
+  { name: 'Switzerland', note: 'edit me in data.ts', lat: 46.8, lng: 8.23 },
 ];
 
 export const links = {
