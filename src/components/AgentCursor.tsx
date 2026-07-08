@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { places } from '../data';
 
 const VERBS = ['inspect', 'parse', 'trace', 'index'];
 
@@ -25,6 +26,13 @@ function buildSteps(el: HTMLElement): Step[] {
   const period = el.querySelector('.row-period')?.textContent?.trim();
   const verb = VERBS[Math.floor(Math.random() * VERBS.length)];
 
+  if (el.classList.contains('globe')) {
+    return [
+      { text: 'open travel.db', ms: 900 },
+      { text: 'SELECT * FROM places', ms: 1100 },
+      { text: `${places.length} rows ✓`, ms: 900 },
+    ];
+  }
   if (el.classList.contains('contact')) {
     return [
       { text: 'found mailto route', ms: 900 },
@@ -157,14 +165,25 @@ function AgentCursor() {
       raf = requestAnimationFrame(tick);
     };
 
+    const onTravel = () => {
+      const globeEl = document.querySelector<HTMLElement>('canvas.globe');
+      if (!globeEl) return;
+      releaseTarget();
+      target = globeEl;
+      arrived = false;
+      setStatus('routing to /travel');
+    };
+
     setStatus('boot · scanning page');
     nextTarget(2000);
     raf = requestAnimationFrame(tick);
+    window.addEventListener('jt:travel', onTravel);
 
     return () => {
       cancelAnimationFrame(raf);
       timers.forEach(clearTimeout);
       releaseTarget();
+      window.removeEventListener('jt:travel', onTravel);
     };
   }, [enabled]);
 

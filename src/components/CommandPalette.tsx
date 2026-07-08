@@ -20,6 +20,14 @@ const actions: Action[] = [
   { label: 'Go to travel log', hint: '05', run: () => jump('#travel') },
   { label: 'Go to contact', hint: '06', run: () => jump('#contact') },
   {
+    label: 'See where Jeff traveled',
+    hint: '◉',
+    run: () => {
+      jump('#travel');
+      setTimeout(() => window.dispatchEvent(new Event('jt:travel')), 650);
+    },
+  },
+  {
     label: 'Let it snow',
     hint: '❄',
     run: () => window.dispatchEvent(new Event('jt:snow')),

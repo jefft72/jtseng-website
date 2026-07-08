@@ -120,15 +120,34 @@ export type Place = {
   lng: number;
 };
 
-// One pin per country. The note shows in the hover tooltip — a short line
-// on what you did there. Coordinates map 1:1 onto the globe; use the
-// country's center (not a coastal city) so the pin sits on the landmass.
-// All but the US are samples: edit freely.
+// One pin per place. The note shows in the hover tooltip — a short line
+// on what you did there. Coordinates map 1:1 onto the globe.
 export const places: Place[] = [
-  { name: 'United States', note: 'home base — sf', lat: 39.8, lng: -98.6 },
-  { name: 'Taiwan', note: 'edit me in data.ts', lat: 23.7, lng: 121.0 },
-  { name: 'Japan', note: 'edit me in data.ts', lat: 36.2, lng: 138.25 },
-  { name: 'Switzerland', note: 'edit me in data.ts', lat: 46.8, lng: 8.23 },
+  { name: 'Merzouga Sand Dunes', note: 'camped in the sahara and rode camels', lat: 31.0966, lng: -3.9846 },
+  { name: 'San Francisco', note: 'Home', lat: 37.7749, lng: -122.4194 },
+  { name: 'Dolomites', note: 'Skied in the dolomites', lat: 46.4333, lng: 11.8500 },
+  { name: 'Tokyo', note: 'Visited friends and ate good food', lat: 35.6762, lng: 139.6503 },
+  { name: 'Osaka', note: 'Visited friends and ate good food', lat: 34.6937, lng: 135.5023 },
+  { name: 'Kyoto', note: 'Visited friends and ate good food', lat: 35.0116, lng: 135.7681 },
+  { name: 'Taipei', note: 'Visited family', lat: 25.0330, lng: 121.5654 },
+  { name: 'Green Island', note: 'Scuba diving', lat: 22.6616, lng: 121.4884 },
+  { name: 'Vienna', note: 'Sibling trip!', lat: 48.2082, lng: 16.3738 },
+  { name: 'Frankfurt', note: 'Sibling trip!', lat: 50.1109, lng: 8.6821 },
+  { name: 'Munich', note: 'Sibling trip!', lat: 48.1351, lng: 11.5820 },
+  { name: 'Passau', note: 'Sibling trip!', lat: 48.5667, lng: 13.4319 },
+  { name: 'Dresden', note: 'Sibling trip!', lat: 51.0504, lng: 13.7373 },
+  { name: 'Hamburg', note: 'Sibling trip!', lat: 53.5511, lng: 9.9937 },
+  { name: 'Prague', note: 'Sibling trip!', lat: 50.0755, lng: 14.4378 },
+  { name: 'Mexico City', note: 'Family trip!', lat: 19.4326, lng: -99.1332 },
+  { name: 'Glacier National Park', note: 'Sightseeing and hiking', lat: 48.7596, lng: -113.7870 },
+  { name: 'West Lafayette', note: 'Purdue', lat: 40.4259, lng: -86.9081 },
+  { name: 'Denali', note: 'Sightseeing and hiking', lat: 63.1148, lng: -151.1926 },
+  { name: 'Anchorage', note: 'Sightseeing and hiking', lat: 61.2181, lng: -149.9003 },
+  { name: 'Kauai', note: 'Snorkeling', lat: 22.0964, lng: -159.5261 },
+  { name: 'Honolulu', note: 'Waikiki', lat: 21.3069, lng: -157.8583 },
+  { name: 'Maui', note: 'First time surfing!', lat: 20.7984, lng: -156.3319 },
+  { name: 'Dallas', note: 'Mind-blowing bbq', lat: 32.7767, lng: -96.7970 },
+  { name: 'NYC', note: 'Good eats', lat: 40.7128, lng: -74.0060 }
 ];
 
 export const links = {

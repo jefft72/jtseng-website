@@ -15,6 +15,13 @@ function Travel() {
       >
         <Globe />
       </motion.div>
+      <button
+        type="button"
+        className="travel-cta"
+        onClick={() => window.dispatchEvent(new Event('jt:travel'))}
+      >
+        see where i've traveled ↗
+      </button>
     </section>
   );
 }
