@@ -5,11 +5,11 @@ import { places, type Place } from '../data';
 const DEG = Math.PI / 180;
 const THETA = 0.28;
 const SPHERE_RATIO = 0.39; // visual sphere radius / canvas width
-const HIT_RADIUS = 24;
-const RELEASE_RADIUS = 34;
-const CLUSTER_GRAB = 30; // cursor distance that wakes a cluster apart
-const CLUSTER_EXIT = 95; // leave radius that collapses it again
-const SPREAD_PX = 42; // spread pins sit this far from the cluster center
+const HIT_RADIUS = 16;
+const RELEASE_RADIUS = 24;
+const CLUSTER_GRAB = 26; // cursor distance that wakes a cluster apart
+const CLUSTER_EXIT = 70; // leave radius that collapses it again
+const SPREAD_PX = 24; // spread pins sit this far from the cluster center
 
 type Tip = { place: Place; x: number; y: number };
 type Spread = {
