@@ -5,7 +5,8 @@ import { places, type Place } from '../data';
 const DEG = Math.PI / 180;
 const THETA = 0.28;
 const SPHERE_RATIO = 0.39; // visual sphere radius / canvas width
-const HIT_RADIUS = 18;
+const HIT_RADIUS = 36; // generous hitbox around a pin
+const RELEASE_RADIUS = 52; // once locked, keep the tip until this far away
 
 type Tip = { place: Place; x: number; y: number };
 
@@ -97,13 +98,27 @@ function Globe() {
     const rect = canvas.getBoundingClientRect();
     const px = clientX - rect.left;
     const py = clientY - rect.top;
-    for (const place of places) {
-      const p = project(place.lat, place.lng, phiRef.current, rect.width);
-      if (p.front && Math.hypot(p.x - px, p.y - py) < HIT_RADIUS) {
-        return { place, x: p.x, y: p.y };
+
+    // sticky: keep the active tip until the pointer clearly leaves it
+    const active = tipRef.current;
+    if (active) {
+      const p = project(active.place.lat, active.place.lng, phiRef.current, rect.width);
+      if (p.front && Math.hypot(p.x - px, p.y - py) < RELEASE_RADIUS) {
+        return { place: active.place, x: p.x, y: p.y };
       }
     }
-    return null;
+
+    let best: Tip | null = null;
+    let bestDist = HIT_RADIUS;
+    for (const place of places) {
+      const p = project(place.lat, place.lng, phiRef.current, rect.width);
+      const dist = Math.hypot(p.x - px, p.y - py);
+      if (p.front && dist < bestDist) {
+        best = { place, x: p.x, y: p.y };
+        bestDist = dist;
+      }
+    }
+    return best;
   };
 
   return (
