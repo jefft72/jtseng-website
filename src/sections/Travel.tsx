@@ -5,7 +5,7 @@ import SectionHead from '../components/SectionHead';
 function Travel() {
   return (
     <section id="travel" className="section" aria-label="Travel log">
-      <SectionHead num="05" title="Travel log" />
+      <SectionHead num="02" title="Travel log" />
       <motion.div
         className="travel"
         initial={{ opacity: 0, scale: 0.95 }}

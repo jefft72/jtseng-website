@@ -1,27 +1,22 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const SECTIONS = [
-  '#experience',
-  '#projects',
-  '#stack',
-  '#reading',
-  '#travel',
-  '#contact',
-];
-
 const BINDINGS: Array<[string, string]> = [
   ['j / k', 'scroll down / up'],
   ['d / u', 'half page down / up'],
   ['gg / G', 'jump to top / bottom'],
   ['[ / ]', 'previous / next section'],
-  ['1 – 6', 'jump to section n'],
+  ['1 – 9', 'jump to section n'],
   ['/ or ⌘k', 'command palette'],
   [':', 'ex command line (enter submits)'],
+  [':cd', 'after-hours / work'],
   [':ski', 'let it snow'],
   [':wq', 'relax — page is read-only'],
   ['?', 'toggle this keymap'],
 ];
+
+const sectionEls = () =>
+  Array.from(document.querySelectorAll<HTMLElement>('main section[id]'));
 
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLElement &&
@@ -43,23 +38,17 @@ function KeyboardLayer() {
 
     const scrollBy = (px: number) => window.scrollBy({ top: px, behavior });
 
-    const sectionTops = () =>
-      SECTIONS.map((sel) => ({
-        sel,
-        top:
-          (document.querySelector(sel) as HTMLElement | null)?.getBoundingClientRect()
-            .top ?? Number.POSITIVE_INFINITY,
-      }));
-
     const jumpSection = (dir: 1 | -1) => {
-      const tops = sectionTops();
+      const els = sectionEls().map((el) => ({
+        el,
+        top: el.getBoundingClientRect().top,
+      }));
       const next =
         dir === 1
-          ? tops.find((s) => s.top > 80)
-          : [...tops].reverse().find((s) => s.top < -80);
-      document
-        .querySelector(next?.sel ?? (dir === 1 ? '#contact' : '#top'))
-        ?.scrollIntoView({ behavior });
+          ? els.find((s) => s.top > 80)
+          : [...els].reverse().find((s) => s.top < -80);
+      if (next) next.el.scrollIntoView({ behavior });
+      else if (dir === -1) window.scrollTo({ top: 0, behavior });
     };
 
     // transient result message; fades after holdMs
@@ -89,6 +78,27 @@ function KeyboardLayer() {
       if (command === 'help' || command === 'h') {
         setCmd(null);
         setHelpOpen(true);
+        return;
+      }
+      if (command === 'cd' || command.startsWith('cd ')) {
+        const arg = command
+          .slice(2)
+          .trim()
+          .replace(/^~\/?/, '');
+        const to =
+          arg === '' || arg === 'work'
+            ? 'work'
+            : arg.startsWith('after') || arg === 'play'
+              ? 'play'
+              : null;
+        if (to) {
+          window.dispatchEvent(
+            new CustomEvent('jt:nav', { detail: { surface: to } }),
+          );
+          showResult(`→ ~/${to === 'play' ? 'after-hours' : 'work'}`, 1800);
+        } else {
+          showResult(`E344: no such dir: ${arg.slice(0, 14)}`, 2400);
+        }
         return;
       }
       showResult(`E492: not an editor command: ${command.slice(0, 18)}`, 2400);
@@ -172,10 +182,8 @@ function KeyboardLayer() {
           break;
         default: {
           const n = Number(event.key);
-          if (n >= 1 && n <= SECTIONS.length) {
-            document
-              .querySelector(SECTIONS[n - 1])
-              ?.scrollIntoView({ behavior });
+          if (n >= 1 && n <= 9) {
+            sectionEls()[n - 1]?.scrollIntoView({ behavior });
           }
         }
       }

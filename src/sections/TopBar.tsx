@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import VisitCounter from '../components/VisitCounter';
 import { links } from '../data';
+import type { Surface } from '../App';
 
-function TopBar() {
+const nav = (surface: Surface) =>
+  window.dispatchEvent(new CustomEvent('jt:nav', { detail: { surface } }));
+
+function TopBar({ surface }: { surface: Surface }) {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
@@ -23,11 +27,33 @@ function TopBar() {
         JT
       </a>
       <div className="topbar-links">
-        <a href="#experience">Experience</a>
-        <a href="#projects">Projects</a>
-        <a href="#stack">Stack</a>
-        <a href="#reading">Reading</a>
-        <a href="#contact">Contact</a>
+        {surface === 'work' ? (
+          <>
+            <a href="#experience">Experience</a>
+            <a href="#projects">Projects</a>
+            <a href="#stack">Stack</a>
+            <a href="#contact">Contact</a>
+            <button
+              type="button"
+              className="topbar-switch"
+              onClick={() => nav('play')}
+            >
+              After hours
+            </button>
+          </>
+        ) : (
+          <>
+            <a href="#reading">Reading</a>
+            <a href="#travel">Travel</a>
+            <button
+              type="button"
+              className="topbar-switch"
+              onClick={() => nav('work')}
+            >
+              Back to work
+            </button>
+          </>
+        )}
         <a href={links.resume} target="_blank" rel="noreferrer">
           Resume
         </a>

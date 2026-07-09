@@ -5,7 +5,7 @@ import { reading } from '../data';
 function Reading() {
   return (
     <section id="reading" className="section" aria-label="Currently reading">
-      <SectionHead num="04" title="Reading" />
+      <SectionHead num="01" title="Reading" />
       <motion.div
         className="reading"
         initial={{ opacity: 0, y: 16 }}

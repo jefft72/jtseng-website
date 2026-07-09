@@ -34,6 +34,122 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ---------- surfaces ---------- */
+
+.surface {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.surface--play {
+  --paper: #101010;
+  --ink: #f4f2ed;
+}
+
+html.is-play,
+html.is-play body {
+  background: #101010;
+}
+
+.wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+}
+
+.wipe--play {
+  background: #101010;
+  color: #f4f2ed;
+}
+
+.wipe--work {
+  background: #f4f2ed;
+  color: #111111;
+}
+
+.wipe--in {
+  animation: wipe-in 0.52s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.wipe--out {
+  animation: wipe-out 0.52s cubic-bezier(0.7, 0, 0.84, 0) both;
+}
+
+@keyframes wipe-in {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes wipe-out {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+.wipe-label {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.wipe-label::after {
+  content: '▌';
+  margin-left: 3px;
+  color: var(--accent);
+  animation: caret-blink 0.6s steps(1) infinite;
+}
+
+.segue {
+  margin-top: clamp(40px, 7vh, 88px);
+}
+
+.segue button {
+  position: relative;
+  left: 50%;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  width: 100vw;
+  padding: clamp(56px, 12vh, 120px) var(--gutter);
+  background: var(--ink);
+  color: var(--paper);
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.segue strong {
+  font-size: var(--h2);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transition: color 0.18s ease;
+}
+
+.segue button:hover strong {
+  color: var(--accent);
+}
+
+.segue-cmd {
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
 ::selection {
   background: var(--accent);
   color: var(--paper);
@@ -124,6 +240,27 @@ main,
 }
 
 .topbar-links a:hover {
+  color: var(--accent);
+}
+
+.topbar-switch {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--accent);
+}
+
+.topbar-switch:hover {
+  color: var(--ink);
+}
+
+.credit-switch {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+
+.credit-switch:hover {
   color: var(--accent);
 }
 

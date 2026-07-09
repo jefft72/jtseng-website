@@ -19,13 +19,15 @@ type Flake = {
 // Adapted from reactbits.dev "Dot Grid" — the Swiss layout grid made literal,
 // waking up near the cursor. The :ski command (or the palette) briefly
 // turns the grid into snowfall via the jt:snow event.
-function DotGrid() {
+function DotGrid({ inverted = false }: { inverted?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
+
+    const ink = inverted ? '244, 242, 237' : '17, 17, 17';
 
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
@@ -61,7 +63,7 @@ function DotGrid() {
           }
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(17, 17, 17, ${alpha})`;
+          ctx.fillStyle = `rgba(${ink}, ${alpha})`;
           ctx.fill();
         }
       }
@@ -91,7 +93,7 @@ function DotGrid() {
         for (let y = SPACING; y < h; y += SPACING) {
           ctx.beginPath();
           ctx.arc(x, y, 1, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(17, 17, 17, ${BASE_ALPHA * 0.5})`;
+          ctx.fillStyle = `rgba(${ink}, ${BASE_ALPHA * 0.5})`;
           ctx.fill();
         }
       }
@@ -107,7 +109,7 @@ function DotGrid() {
         ctx.arc(flake.x, flake.y, flake.accent ? 1.8 : 1.4, 0, Math.PI * 2);
         ctx.fillStyle = flake.accent
           ? `rgba(255, 59, 0, ${0.75 * fading})`
-          : `rgba(17, 17, 17, ${0.55 * fading})`;
+          : `rgba(${ink}, ${0.55 * fading})`;
         ctx.fill();
       });
     };
@@ -150,7 +152,7 @@ function DotGrid() {
       window.removeEventListener('jt:snow', onSnowEvent);
       window.removeEventListener('pointermove', onMove);
     };
-  }, []);
+  }, [inverted]);
 
   return <canvas className="dot-grid" ref={canvasRef} aria-hidden="true" />;
 }
