@@ -33,13 +33,6 @@ function buildSteps(el: HTMLElement): Step[] {
       { text: `${places.length} rows ✓`, ms: 900 },
     ];
   }
-  if (el.classList.contains('contact')) {
-    return [
-      { text: 'found mailto route', ms: 900 },
-      { text: `resolve: ${el.textContent?.trim().toLowerCase()}`, ms: 1100 },
-      { text: 'contact ✓', ms: 700 },
-    ];
-  }
   if (el.classList.contains('section-head')) {
     return [
       { text: `scan /${title?.replace(/\s+/g, '-')}`, ms: 1000 },
@@ -57,7 +50,7 @@ function buildSteps(el: HTMLElement): Step[] {
 function pickTarget(current: HTMLElement | null): HTMLElement | null {
   const candidates = Array.from(
     document.querySelectorAll<HTMLElement>(
-      '.index-row, .section-head, .contact',
+      '.index-row, .section-head',
     ),
   ).filter((el) => {
     if (el === current) return false;

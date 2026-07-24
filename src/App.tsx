@@ -8,10 +8,11 @@ import Hero from './sections/Hero';
 import Experience from './sections/Experience';
 import Projects from './sections/Projects';
 import Stack from './sections/Stack';
-import Contact from './sections/Contact';
 import PlayHero from './sections/PlayHero';
-import Reading from './sections/Reading';
 import Travel from './sections/Travel';
+import Reading from './sections/Reading';
+import TerminalSetup from './sections/TerminalSetup';
+import Climbing from './sections/Climbing';
 import Segue from './sections/Segue';
 
 export type Surface = 'work' | 'play';
@@ -22,16 +23,37 @@ const surfaceFromHash = (): Surface =>
   window.location.hash.startsWith('#/after-hours') ? 'play' : 'work';
 
 const WIPE_MS = 520;
+const INTRO_HOLD_MS = 900;
+
+type Wipe = { to: Surface; phase: 'in' | 'out' | 'hold'; label?: string };
 
 function App() {
   const [surface, setSurface] = useState<Surface>(surfaceFromHash);
-  const [wipe, setWipe] = useState<{ to: Surface; phase: 'in' | 'out' } | null>(
-    null,
+  const [wipe, setWipe] = useState<Wipe | null>(() =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? null
+      : { to: surfaceFromHash(), phase: 'hold', label: 'cd ~/jeffreytseng' },
   );
   const surfaceRef = useRef(surface);
   surfaceRef.current = surface;
   const pendingRef = useRef<NavDetail | null>(null);
   const timers = useRef<number[]>([]);
+
+  useEffect(() => {
+    const t1 = window.setTimeout(
+      () =>
+        setWipe((w) => (w?.phase === 'hold' ? { ...w, phase: 'out' } : w)),
+      INTRO_HOLD_MS,
+    );
+    const t2 = window.setTimeout(
+      () => setWipe((w) => (w?.label ? null : w)),
+      INTRO_HOLD_MS + WIPE_MS,
+    );
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
 
   useEffect(() => {
     const reduced = window.matchMedia(
@@ -104,6 +126,13 @@ function App() {
     };
 
     const onHashChange = () => {
+      const hash = window.location.hash;
+      // Only the surface-routing hashes switch surfaces; in-page section
+      // anchors (e.g. #reading, #travel) must not be read as leaving play.
+      const isRoute =
+        hash === '' || hash === '#' || hash === '#/' ||
+        hash.startsWith('#/after-hours');
+      if (!isRoute) return;
       const next = surfaceFromHash();
       if (next === surfaceRef.current) return;
       const detail =
@@ -138,14 +167,15 @@ function App() {
           <Experience />
           <Projects />
           <Stack />
-          <Contact />
           <Segue to="play" title="After hours" cmd="cd ~/after-hours" />
         </main>
       ) : (
         <main>
           <PlayHero />
-          <Reading />
           <Travel />
+          <Reading />
+          <TerminalSetup />
+          <Climbing />
           <Segue to="work" title="Back to work" cmd="cd ~/work" />
         </main>
       )}
@@ -158,7 +188,7 @@ function App() {
           aria-hidden="true"
         >
           <span className="wipe-label">
-            cd ~/{wipe.to === 'play' ? 'after-hours' : 'work'}
+            {wipe.label ?? `cd ~/${wipe.to === 'play' ? 'after-hours' : 'work'}`}
           </span>
         </div>
       )}

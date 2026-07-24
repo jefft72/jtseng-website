@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import VisitCounter from '../components/VisitCounter';
-import { links } from '../data';
 import type { Surface } from '../App';
 
 const nav = (surface: Surface) =>
@@ -32,7 +31,6 @@ function TopBar({ surface }: { surface: Surface }) {
             <a href="#experience">Experience</a>
             <a href="#projects">Projects</a>
             <a href="#stack">Stack</a>
-            <a href="#contact">Contact</a>
             <button
               type="button"
               className="topbar-switch"
@@ -43,8 +41,10 @@ function TopBar({ surface }: { surface: Surface }) {
           </>
         ) : (
           <>
-            <a href="#reading">Reading</a>
             <a href="#travel">Travel</a>
+            <a href="#reading">Reading</a>
+            <a href="#terminal">Terminal</a>
+            <a href="#climbing">Climbing</a>
             <button
               type="button"
               className="topbar-switch"
@@ -54,9 +54,6 @@ function TopBar({ surface }: { surface: Surface }) {
             </button>
           </>
         )}
-        <a href={links.resume} target="_blank" rel="noreferrer">
-          Resume
-        </a>
         <span className="kbd-hint" aria-hidden="true">
           ⌘K
         </span>

@@ -236,6 +236,7 @@ main,
 
 .topbar-links {
   display: flex;
+  align-items: center;
   gap: clamp(14px, 2.5vw, 32px);
 }
 
@@ -270,6 +271,10 @@ main,
   padding: clamp(48px, 9vh, 120px) 0 clamp(32px, 5vh, 64px);
 }
 
+.hero--work {
+  padding-bottom: 0;
+}
+
 .hero h1 {
   margin: 0;
   font-size: var(--h-hero);
@@ -277,6 +282,56 @@ main,
   line-height: 0.92;
   letter-spacing: -0.03em;
   text-transform: uppercase;
+}
+
+.hero-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: clamp(24px, 4vw, 64px);
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hero-photo {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-self: stretch;
+  margin: 0;
+  width: clamp(240px, 34vw, 500px);
+}
+
+/* the image is absolutely positioned so it adopts the height of the
+   name + statement column instead of dictating the row height */
+.hero-photo-frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border: 2px solid var(--ink);
+}
+
+.hero-photo-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+.hero-photo figcaption {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
 }
 
 .hero-mask {
@@ -308,7 +363,7 @@ main,
   justify-content: space-between;
   gap: 12px;
   margin-top: clamp(32px, 6vh, 72px);
-  padding-top: 16px;
+  padding: 16px 0;
   border-top: var(--rule-thick);
   font-family: var(--mono);
   font-size: var(--meta);
@@ -450,6 +505,7 @@ main,
 
 .section--invert {
   position: relative;
+  isolation: isolate;
   color: var(--paper);
 }
 
@@ -619,6 +675,463 @@ main,
   line-height: 1.55;
 }
 
+/* ---------- climbing ---------- */
+
+.climbing {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.15fr) minmax(260px, 0.85fr);
+  gap: clamp(32px, 6vw, 88px);
+  align-items: center;
+}
+
+.climbing-photo {
+  margin: 0;
+}
+
+.climbing-photo picture,
+.climbing-photo img {
+  display: block;
+  width: 100%;
+}
+
+.climbing-photo img {
+  height: clamp(220px, 20vw, 280px);
+  border: var(--rule);
+  object-fit: cover;
+  box-shadow: 12px 12px 0 var(--accent);
+}
+
+.climbing-copy p:last-child {
+  max-width: 24ch;
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 3rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+/* ---------- terminal setup ---------- */
+
+.terminal-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 4vw, 64px);
+  margin-bottom: clamp(28px, 5vh, 56px);
+}
+
+.terminal-meta p {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.terminal-meta span {
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.terminal-meta strong {
+  font-size: clamp(1.5rem, 3vw, 3rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.terminal-demo {
+  --term-bg: #18243d;
+  --term-bg-dark: #121c30;
+  --term-cell: #1b2944;
+  --term-cell-bright: #2d4268;
+  --term-fg: #eaf2ff;
+  --term-muted: #a9b9d6;
+  --term-border: #536f9f;
+  --term-blue: #91b4ff;
+  --term-cyan: #a7dcf5;
+  --term-green: #b6e3d1;
+  --term-yellow: #f3dfa8;
+  --term-red: #f3a6b9;
+  --term-magenta: #cab7ff;
+  position: relative;
+  isolation: isolate;
+}
+
+.terminal-demo::before {
+  content: '';
+  position: absolute;
+  inset: -28px;
+  z-index: 0;
+  border-radius: 22px;
+  background: url('/terminal-wallpaper.jpg') center / cover no-repeat;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
+  pointer-events: none;
+}
+
+.terminal-window {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid var(--term-border);
+  border-radius: 12px;
+  background: rgba(24, 36, 61, 0.48);
+  color: var(--term-fg);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.3),
+    inset 0 0 80px rgba(145, 180, 255, 0.05);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  backdrop-filter: blur(36px) saturate(1.15);
+  -webkit-backdrop-filter: blur(36px) saturate(1.15);
+}
+
+.terminal-titlebar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--term-border);
+  background: rgba(18, 28, 48, 0.68);
+  color: var(--term-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.terminal-dots {
+  display: flex;
+  gap: 7px;
+}
+
+.terminal-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--term-red);
+}
+
+.terminal-dots span:nth-child(2) {
+  background: var(--term-yellow);
+}
+
+.terminal-dots span:nth-child(3) {
+  background: var(--term-green);
+}
+
+.terminal-recording {
+  display: inline-flex;
+  justify-self: end;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+}
+
+.terminal-recording i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--term-red);
+  animation: terminal-pulse 1.2s ease-in-out infinite;
+}
+
+.terminal-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  min-height: clamp(430px, 52vw, 680px);
+}
+
+.terminal-pane {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: rgba(24, 36, 61, 0.58);
+  font-size: clamp(0.62rem, 0.9vw, 0.82rem);
+  line-height: 1.55;
+}
+
+.terminal-pane--nvim {
+  grid-row: 1 / 3;
+  border-right: 1px solid var(--term-blue);
+}
+
+.terminal-pane--codex {
+  padding: clamp(18px, 3vw, 34px);
+  border-bottom: 1px solid var(--term-border);
+}
+
+.terminal-pane--tests {
+  padding: clamp(18px, 3vw, 34px);
+}
+
+.terminal-pane-label {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: var(--term-muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.nvim-tabs {
+  display: flex;
+  height: 30px;
+  background: rgba(18, 28, 48, 0.72);
+  color: var(--term-muted);
+}
+
+.nvim-tabs span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+}
+
+.nvim-tabs .is-active {
+  background: rgba(27, 41, 68, 0.78);
+  color: var(--term-fg);
+}
+
+.nvim-code {
+  padding: 18px 12px 76px 0;
+}
+
+.nvim-code > div {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  min-height: 24px;
+  padding-right: 12px;
+}
+
+.nvim-code > div.is-current {
+  background: var(--term-cell-bright);
+}
+
+.nvim-code b {
+  padding-right: 12px;
+  color: var(--term-muted);
+  font-weight: 400;
+  text-align: right;
+  user-select: none;
+}
+
+.nvim-code code {
+  color: var(--term-fg);
+  font: inherit;
+  white-space: pre;
+}
+
+.nvim-code em {
+  color: var(--term-magenta);
+  font-style: italic;
+}
+
+.nvim-code q {
+  color: var(--term-green);
+}
+
+.nvim-code mark {
+  padding: 0;
+  background: transparent;
+  color: var(--term-blue);
+}
+
+.telescope {
+  position: absolute;
+  top: 17%;
+  left: 12%;
+  z-index: 3;
+  display: grid;
+  width: 76%;
+  border: 1px solid var(--term-blue);
+  border-radius: 8px;
+  background: var(--term-cell);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.38);
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.telescope.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.telescope strong,
+.telescope span {
+  padding: 7px 11px;
+}
+
+.telescope strong {
+  border-bottom: 1px solid var(--term-border);
+  color: var(--term-cyan);
+}
+
+.telescope span:first-of-type {
+  background: var(--term-cell-bright);
+  color: var(--term-blue);
+}
+
+.nvim-command {
+  position: absolute;
+  right: 0;
+  bottom: 27px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  height: 27px;
+  padding: 0 10px;
+  background: rgba(24, 36, 61, 0.72);
+  color: var(--term-fg);
+}
+
+.nvim-command i,
+.terminal-output i {
+  display: inline-block;
+  width: 0.62em;
+  height: 1.1em;
+  margin-left: 3px;
+  background: var(--term-blue);
+  vertical-align: -0.2em;
+  animation: terminal-caret 0.8s steps(1) infinite;
+}
+
+.nvim-status,
+.tmux-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 27px;
+  padding-right: 10px;
+  background: rgba(27, 41, 68, 0.82);
+  color: var(--term-muted);
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+.nvim-status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.nvim-status strong {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  border-radius: 0 14px 14px 0;
+  background: var(--term-blue);
+  color: var(--term-bg);
+}
+
+.nvim-status-end,
+.tmux-status-end {
+  margin-left: auto;
+}
+
+.codex-mark {
+  margin: 10px 0 18px;
+  color: var(--term-blue);
+  font-size: clamp(1.8rem, 4vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.terminal-pane p {
+  margin: 0 0 12px;
+}
+
+.terminal-output {
+  color: var(--term-cyan);
+}
+
+.terminal-activity {
+  position: absolute;
+  right: 10%;
+  bottom: 18%;
+  left: 10%;
+  height: 2px;
+  overflow: hidden;
+  background: var(--term-cell-bright);
+}
+
+.terminal-activity::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--term-blue), transparent);
+  transform: translateX(-100%);
+  animation: terminal-scan 2.2s ease-in-out infinite;
+}
+
+.term-prompt {
+  color: var(--term-green);
+}
+
+.test-summary {
+  color: var(--term-green);
+  opacity: 0;
+  transform: translateY(5px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.test-summary.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tmux-status {
+  height: 29px;
+  padding-right: 12px;
+  background: rgba(27, 41, 68, 0.84);
+}
+
+.tmux-status strong {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  background: var(--term-blue);
+  color: var(--term-bg);
+}
+
+.tmux-status span:first-of-type {
+  padding: 3px 9px;
+  background: var(--term-cyan);
+  color: var(--term-bg);
+  font-weight: 700;
+}
+
+@keyframes terminal-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes terminal-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes terminal-scan {
+  0%,
+  20% {
+    transform: translateX(-100%);
+  }
+  80%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* ---------- travel ---------- */
 
 .travel {
@@ -626,6 +1139,23 @@ main,
   flex-direction: column;
   align-items: center;
   gap: 22px;
+}
+
+.travel-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.travel-stat {
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .travel-cta {
@@ -855,8 +1385,8 @@ main,
   width: 13px;
   height: 18px;
   overflow: hidden;
-  border: 1px solid rgba(17, 17, 17, 0.55);
-  background: rgba(17, 17, 17, 0.05);
+  border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
   perspective: 90px;
   font-size: 0.62rem;
   font-weight: 700;
@@ -867,7 +1397,7 @@ main,
   position: absolute;
   inset: 50% 0 auto;
   height: 1px;
-  background: rgba(17, 17, 17, 0.25);
+  background: color-mix(in srgb, var(--ink) 25%, transparent);
 }
 
 .flip-card {
@@ -954,7 +1484,7 @@ main,
   font-size: 0.78rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(17, 17, 17, 0.5);
+  color: color-mix(in srgb, var(--ink) 50%, transparent);
 }
 
 /* ---------- keymap ---------- */
@@ -1035,50 +1565,25 @@ main,
   opacity: 1;
 }
 
-/* ---------- contact ---------- */
-
-.contact {
-  display: inline-block;
-  font-size: clamp(2rem, 6.5vw, 6.5rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  text-transform: uppercase;
-  word-break: break-all;
-  transition: color 0.18s ease;
-}
-
-.contact:hover {
-  color: var(--accent);
-}
-
-.footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: clamp(40px, 8vh, 96px);
-  padding-top: 16px;
-  border-top: var(--rule);
-  font-family: var(--mono);
-  font-size: var(--meta);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.footer-links {
-  display: flex;
-  gap: clamp(14px, 2.5vw, 32px);
-}
-
-.footer-links a:hover {
-  color: var(--accent);
-}
-
 /* ---------- responsive ---------- */
 
 @media (max-width: 720px) {
+  .hero-row {
+    flex-direction: column;
+  }
+
+  .hero-photo {
+    width: 100%;
+    align-self: auto;
+  }
+
+  /* stacked layout: give the frame its own height since the
+     absolutely positioned image can't */
+  .hero-photo-frame {
+    flex: none;
+    aspect-ratio: 4 / 3;
+  }
+
   .topbar {
     gap: 16px;
   }
@@ -1112,6 +1617,49 @@ main,
     flex-direction: column;
   }
 
+  .climbing {
+    grid-template-columns: 1fr;
+  }
+
+  .climbing-photo img {
+    height: 220px;
+    box-shadow: 7px 7px 0 var(--accent);
+  }
+
+  .terminal-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-demo::before {
+    inset: -10px;
+    border-radius: 17px;
+  }
+
+  .terminal-titlebar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .terminal-titlebar > span:nth-child(2) {
+    display: none;
+  }
+
+  .terminal-panes {
+    min-height: 500px;
+  }
+
+  .terminal-pane--codex,
+  .terminal-pane--tests {
+    padding: 18px 14px;
+  }
+
+  .nvim-code > div {
+    grid-template-columns: 30px 1fr;
+  }
+
+  .nvim-code > div:nth-child(n + 10) {
+    display: none;
+  }
+
   .kbd-hint,
   .visit-counter,
   .cmdline {
@@ -1127,6 +1675,13 @@ main,
   }
 
   .marquee-track {
+    animation: none;
+  }
+
+  .terminal-recording i,
+  .nvim-command i,
+  .terminal-output i,
+  .terminal-activity::after {
     animation: none;
   }
 

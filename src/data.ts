@@ -20,43 +20,43 @@ export type Project = {
 export const experience: Experience[] = [
   {
     n: '01',
-    role: 'Backend Software Engineer',
-    org: 'Judi Health / Capital Rx',
-    period: 'JUN 2026 — AUG 2026',
+    role: 'Backend Software Engineering Intern',
+    org: 'Judi Health (formerly Capital Rx)',
+    period: 'JUN 2026 - PRESENT',
     signal:
-      'Backend systems for healthcare claims adjudication; built a Rust-based linter enforcing type-safe calls across the claims pipeline.',
+      'Building an AWS-hosted Firecracker microVM execution platform and backend services for pharmacy claim adjudication serving 5M+ contracted lives.',
   },
   {
     n: '02',
     role: 'Co-Founder',
-    org: 'Diffex — Luntraa Inc',
-    period: 'APR 2026 — PRESENT',
+    org: 'Diffex - Luntraa Inc.',
+    period: 'APR 2026 - PRESENT',
     signal:
-      'Self-learning, model-agnostic AI agent harness that evolves through iterative cycles. $50K Daytona Grid award.',
+      'Architected a modular Rust-based agent harness and evidence-driven self-evaluation pipeline, improving SWE-bench Lite performance to 20% after one evolution cycle.',
   },
   {
     n: '03',
-    role: 'CEO & Co-Founder',
+    role: 'Co-Founder',
     org: 'UPlate',
-    period: 'AUG 2025 — PRESENT',
+    period: 'AUG 2025 - JUL 2026',
     signal:
-      'AI meal planning with a custom RAG pipeline over nutritional datasets; leading a team of 5 engineers.',
+      'Grew a campus dining and nutrition app to 150+ daily active users; engineered its RAG pipeline and full stateful Flutter onboarding flow.',
   },
   {
     n: '04',
     role: 'Technical Teaching Assistant',
-    org: 'Google Developer Groups, Purdue',
-    period: 'AUG 2025 — MAY 2026',
+    org: 'Google Developer Groups - Purdue University',
+    period: 'AUG 2025 - MAY 2026',
     signal:
-      'Taught RAG backends — semantic chunking, vector databases, cosine similarity — and shipped take-home projects for 300+ students.',
+      'Taught RAG architecture to 300+ students and designed take-home projects on React, Google Cloud, Vertex AI, and TensorFlow.',
   },
   {
     n: '05',
     role: 'Team Lead',
-    org: 'Hack the Future, Purdue',
-    period: 'OCT 2025 — MAY 2026',
+    org: 'Hack the Future - Purdue University',
+    period: 'OCT 2025 - MAY 2026',
     signal:
-      'Led 10+ engineers building full-stack apps for local nonprofits with React, Node.js/FastAPI, and MongoDB.',
+      'Led 10+ student engineers shipping full-stack apps for a local nonprofit, owning code reviews, Git workflows, and client requirements.',
   },
 ];
 
@@ -67,9 +67,9 @@ export const projects: Project[] = [
     type: 'AGENT HARNESS',
     year: '2026',
     summary:
-      'Self-evolving, model-agnostic agent harness that rewrites its own scaffolding through iterative improvement cycles.',
-    stack: 'TYPESCRIPT / LLMS / EVALS',
-    metric: '0% → 20% SWE-BENCH IN ONE CYCLE',
+      'Modular, provider-agnostic agent harness with typed execution traces, tool orchestration, persistent session state, and replayable evaluations.',
+    stack: 'RUST / LLMS / EVALUATIONS',
+    metric: '20% SWE-BENCH LITE AFTER ONE EVOLUTION CYCLE',
     href: 'https://diffex.ai',
   },
   {
@@ -78,9 +78,9 @@ export const projects: Project[] = [
     type: 'MULTI-AGENT SYSTEM',
     year: '2026',
     summary:
-      'Multi-agent coordination backend for Minecraft task execution — Supabase as shared state, RAG over agent directives, end-to-end contention harness.',
-    stack: 'SUPABASE / PGVECTOR / OPENAI',
-    metric: 'HACKPRINCETON 2026 WINNER',
+      'Multi-agent coordination backend for Minecraft using Supabase as shared state for jobs, agents, and memory, with an integration harness for contention and handoffs.',
+    stack: 'SUPABASE / POSTGRES / REALTIME / PGVECTOR',
+    metric: 'HACKPRINCETON 2026 WINNER (DEDALUS TRACK)',
   },
   {
     n: '03',
@@ -88,29 +88,29 @@ export const projects: Project[] = [
     type: 'MOBILE APP',
     year: '2025',
     summary:
-      'Gemini-powered meal planning for campus dining, with semantic-chunking RAG and a stateful Flutter onboarding flow.',
+      'Campus dining and nutrition app with semantic-chunking RAG over nutritional data and a stateful multi-page Flutter onboarding flow.',
     stack: 'FLUTTER / FIREBASE / GEMINI',
-    metric: '150+ ACTIVE USERS',
+    metric: '150+ DAILY ACTIVE USERS',
     href: 'https://jefft72.github.io/UPlate/',
   },
 ];
 
 export const stackLines = [
-  'TypeScript · Python · Java · JavaScript · C · Rust',
-  'React · React Native · Flutter · Node · Tailwind',
-  'LangChain · LLMs · Hugging Face · RAG · Supabase',
-  'NumPy · SciPy · Matlab · Gazebo · ROS',
+  'Python · Rust · TypeScript / JavaScript · C · Java · Dart',
+  'React · React Native · Flutter · Node.js · FastAPI · LangChain',
+  'AWS (EC2, VPC) · Firecracker · PostgreSQL · Supabase',
+  'Git · Google Cloud · Vertex AI',
 ];
 
 export const reading = {
-  title: 'Gödel, Escher, Bach',
-  author: 'Douglas Hofstadter',
+  title: 'Dark Age',
+  author: 'Pierce Brown',
   // Drop a cover image in public/ (e.g. /book.jpg) and set it here;
   // leave empty for the typographic cover.
-  cover: '',
+  cover: 'darkagecover.jpg',
   started: 'JUL 2026',
   thoughts:
-    'Placeholder — swap in your running notes here in src/data.ts. A sentence or two on what the book is doing to your brain.',
+    'Red Rising is such a cult classic cut-and-dry dystopian sci-fi series for a reason. I\'ve lost count of how many people I\'ve recommended it to. My only gripe is that Pierce Brown keeps killing everyone off...',
 };
 
 export type Place = {
@@ -120,7 +120,7 @@ export type Place = {
   lng: number;
 };
 
-// One pin per place. The note shows in the hover tooltip — a short line
+// One pin per place. The note shows in the hover tooltip - a short line
 // on what you did there. Coordinates map 1:1 onto the globe.
 export const places: Place[] = [
   { name: 'Merzouga Sand Dunes', note: 'camped in the sahara and rode camels', lat: 31.0966, lng: -3.9846 },
@@ -154,5 +154,4 @@ export const links = {
   email: 'tseng94@purdue.edu',
   github: 'https://github.com/jefft72',
   linkedin: 'https://linkedin.com/in/j-tseng/',
-  resume: '/JeffreyTsengResume.pdf',
 };

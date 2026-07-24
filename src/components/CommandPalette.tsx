@@ -17,10 +17,11 @@ const actions: Action[] = [
   { label: 'Go to experience', hint: '01', run: () => nav('work', '#experience') },
   { label: 'Go to projects', hint: '02', run: () => nav('work', '#projects') },
   { label: 'Go to stack', hint: '03', run: () => nav('work', '#stack') },
-  { label: 'Go to contact', hint: '04', run: () => nav('work', '#contact') },
   { label: 'After hours', hint: '→', run: () => nav('play') },
-  { label: 'Go to reading', hint: 'AH', run: () => nav('play', '#reading') },
   { label: 'Go to travel log', hint: 'AH', run: () => nav('play', '#travel') },
+  { label: 'Go to reading', hint: 'AH', run: () => nav('play', '#reading') },
+  { label: 'Go to terminal setup', hint: 'AH', run: () => nav('play', '#terminal') },
+  { label: 'Go to climbing', hint: 'AH', run: () => nav('play', '#climbing') },
   { label: 'Back to work', hint: '←', run: () => nav('work') },
   {
     label: 'See where Jeff traveled',
@@ -36,11 +37,6 @@ const actions: Action[] = [
     label: 'Show keymap',
     hint: '?',
     run: () => window.dispatchEvent(new Event('jt:keymap')),
-  },
-  {
-    label: 'Open resume',
-    hint: 'PDF',
-    run: () => window.open(links.resume, '_blank'),
   },
   {
     label: 'Open GitHub',
