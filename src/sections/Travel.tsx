@@ -17,7 +17,8 @@ function Travel() {
       </motion.div>
       <div className="travel-foot">
         <span className="travel-stat">
-          Travel log: 24 states and 11 countries
+          I love traveling, and I've had the pleasure of meeting incredible
+          people all around the world.
         </span>
         <button
           type="button"
