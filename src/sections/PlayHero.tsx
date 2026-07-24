@@ -10,7 +10,7 @@ function PlayHero() {
     );
 
   return (
-    <header className="hero" id="top">
+    <header className="hero hero--play" id="top">
       <div className="hero-row">
         <h1 aria-label="After hours">
           {['After', 'Hours'].map((word, i) => (
@@ -25,9 +25,17 @@ function PlayHero() {
             </span>
           ))}
         </h1>
-        <button type="button" className="credit-switch" onClick={navWork}>
-          ← Back to work
-        </button>
+        <motion.div
+          className="play-hero-aside"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.35, ease }}
+        >
+          <p>some stuff i like outside of work</p>
+          <button type="button" className="credit-switch" onClick={navWork}>
+            ← Back to work
+          </button>
+        </motion.div>
       </div>
     </header>
   );
