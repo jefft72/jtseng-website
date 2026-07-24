@@ -1,21 +1,197 @@
-import Header from './components/Header';
-import Hero from './components/Hero';
-import About from './components/About';
-import Resume from './components/Resume';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import { useEffect, useRef, useState } from 'react';
+import AgentCursor from './components/AgentCursor';
+import CommandPalette from './components/CommandPalette';
+import KeyboardLayer from './components/KeyboardLayer';
+import DotGrid from './components/DotGrid';
+import TopBar from './sections/TopBar';
+import Hero from './sections/Hero';
+import Experience from './sections/Experience';
+import Projects from './sections/Projects';
+import Stack from './sections/Stack';
+import PlayHero from './sections/PlayHero';
+import Travel from './sections/Travel';
+import Reading from './sections/Reading';
+import TerminalSetup from './sections/TerminalSetup';
+import Climbing from './sections/Climbing';
+import Segue from './sections/Segue';
+
+export type Surface = 'work' | 'play';
+
+type NavDetail = { surface: Surface; selector?: string; travel?: boolean };
+
+const surfaceFromHash = (): Surface =>
+  window.location.hash.startsWith('#/after-hours') ? 'play' : 'work';
+
+const WIPE_MS = 520;
+const INTRO_HOLD_MS = 900;
+
+type Wipe = { to: Surface; phase: 'in' | 'out' | 'hold'; label?: string };
 
 function App() {
+  const [surface, setSurface] = useState<Surface>(surfaceFromHash);
+  const [wipe, setWipe] = useState<Wipe | null>(() =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? null
+      : { to: surfaceFromHash(), phase: 'hold', label: 'cd ~/jeffreytseng' },
+  );
+  const surfaceRef = useRef(surface);
+  surfaceRef.current = surface;
+  const pendingRef = useRef<NavDetail | null>(null);
+  const timers = useRef<number[]>([]);
+
+  useEffect(() => {
+    const t1 = window.setTimeout(
+      () =>
+        setWipe((w) => (w?.phase === 'hold' ? { ...w, phase: 'out' } : w)),
+      INTRO_HOLD_MS,
+    );
+    const t2 = window.setTimeout(
+      () => setWipe((w) => (w?.label ? null : w)),
+      INTRO_HOLD_MS + WIPE_MS,
+    );
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
+  useEffect(() => {
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    const land = (detail: NavDetail) => {
+      window.scrollTo({ top: 0 });
+      if (detail.selector) {
+        requestAnimationFrame(() =>
+          document.querySelector(detail.selector!)?.scrollIntoView(),
+        );
+      }
+      if (detail.travel) {
+        timers.current.push(
+          window.setTimeout(
+            () => window.dispatchEvent(new Event('jt:travel')),
+            600,
+          ),
+        );
+      }
+    };
+
+    const runWipe = (detail: NavDetail) => {
+      if (reduced) {
+        setSurface(detail.surface);
+        land(detail);
+        return;
+      }
+      setWipe({ to: detail.surface, phase: 'in' });
+      timers.current.push(
+        window.setTimeout(() => {
+          setSurface(detail.surface);
+          land(detail);
+          setWipe({ to: detail.surface, phase: 'out' });
+          timers.current.push(
+            window.setTimeout(() => setWipe(null), WIPE_MS),
+          );
+        }, WIPE_MS),
+      );
+    };
+
+    const onNav = (event: Event) => {
+      const detail = (event as CustomEvent<NavDetail>).detail;
+      if (!detail) return;
+      if (detail.surface === surfaceRef.current) {
+        if (detail.selector) {
+          document
+            .querySelector(detail.selector)
+            ?.scrollIntoView({ behavior: 'smooth' });
+        }
+        if (detail.travel) {
+          timers.current.push(
+            window.setTimeout(
+              () => window.dispatchEvent(new Event('jt:travel')),
+              500,
+            ),
+          );
+        }
+        return;
+      }
+      const targetHash = detail.surface === 'play' ? '#/after-hours' : '#/';
+      pendingRef.current = detail;
+      if (window.location.hash === targetHash) {
+        runWipe(detail);
+        pendingRef.current = null;
+      } else {
+        window.location.hash = targetHash;
+      }
+    };
+
+    const onHashChange = () => {
+      const hash = window.location.hash;
+      // Only the surface-routing hashes switch surfaces; in-page section
+      // anchors (e.g. #reading, #travel) must not be read as leaving play.
+      const isRoute =
+        hash === '' || hash === '#' || hash === '#/' ||
+        hash.startsWith('#/after-hours');
+      if (!isRoute) return;
+      const next = surfaceFromHash();
+      if (next === surfaceRef.current) return;
+      const detail =
+        pendingRef.current?.surface === next
+          ? pendingRef.current
+          : { surface: next };
+      pendingRef.current = null;
+      runWipe(detail);
+    };
+
+    window.addEventListener('jt:nav', onNav);
+    window.addEventListener('hashchange', onHashChange);
+    return () => {
+      window.removeEventListener('jt:nav', onNav);
+      window.removeEventListener('hashchange', onHashChange);
+      timers.current.forEach(clearTimeout);
+      timers.current = [];
+    };
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('is-play', surface === 'play');
+  }, [surface]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Resume />
-        <Contact />
-      </main>
-      <Footer />
+    <div className={`surface${surface === 'play' ? ' surface--play' : ''}`}>
+      <DotGrid key={surface} inverted={surface === 'play'} />
+      <TopBar surface={surface} />
+      {surface === 'work' ? (
+        <main>
+          <Hero />
+          <Experience />
+          <Projects />
+          <Stack />
+          <Segue to="play" title="After hours" cmd="cd ~/after-hours" />
+        </main>
+      ) : (
+        <main>
+          <PlayHero />
+          <Travel />
+          <Reading />
+          <TerminalSetup />
+          <Climbing />
+          <Segue to="work" title="Back to work" cmd="cd ~/work" />
+        </main>
+      )}
+      <AgentCursor />
+      <CommandPalette />
+      <KeyboardLayer />
+      {wipe && (
+        <div
+          className={`wipe wipe--${wipe.phase} wipe--${wipe.to}`}
+          aria-hidden="true"
+        >
+          <span className="wipe-label">
+            {wipe.label ?? `cd ~/${wipe.to === 'play' ? 'after-hours' : 'work'}`}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

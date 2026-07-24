@@ -1,0 +1,253 @@
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+
+const BINDINGS: Array<[string, string]> = [
+  ['j / k', 'scroll down / up'],
+  ['d / u', 'half page down / up'],
+  ['gg / G', 'jump to top / bottom'],
+  ['[ / ]', 'previous / next section'],
+  ['1 – 9', 'jump to section n'],
+  ['/ or ⌘k', 'command palette'],
+  [':', 'ex command line (enter submits)'],
+  [':cd', 'after-hours / work'],
+  [':ski', 'let it snow'],
+  [':wq', 'relax — page is read-only'],
+  ['?', 'toggle this keymap'],
+];
+
+const sectionEls = () =>
+  Array.from(document.querySelectorAll<HTMLElement>('main section[id]'));
+
+const isTyping = (target: EventTarget | null) =>
+  target instanceof HTMLElement &&
+  (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+
+function KeyboardLayer() {
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [cmd, setCmd] = useState<string | null>(null);
+
+  useEffect(() => {
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    const behavior: ScrollBehavior = reduced ? 'auto' : 'smooth';
+    let lastG = 0;
+    let mode: 'normal' | 'command' = 'normal';
+    let cmdBuf = '';
+    let cmdTimer: ReturnType<typeof setTimeout>;
+
+    const scrollBy = (px: number) => window.scrollBy({ top: px, behavior });
+
+    const jumpSection = (dir: 1 | -1) => {
+      const els = sectionEls().map((el) => ({
+        el,
+        top: el.getBoundingClientRect().top,
+      }));
+      const next =
+        dir === 1
+          ? els.find((s) => s.top > 80)
+          : [...els].reverse().find((s) => s.top < -80);
+      if (next) next.el.scrollIntoView({ behavior });
+      else if (dir === -1) window.scrollTo({ top: 0, behavior });
+    };
+
+    // transient result message; fades after holdMs
+    const showResult = (text: string, holdMs: number) => {
+      setCmd(text);
+      clearTimeout(cmdTimer);
+      cmdTimer = setTimeout(() => setCmd(null), holdMs);
+    };
+
+    const execute = (raw: string) => {
+      const command = raw.trim();
+      mode = 'normal';
+      cmdBuf = '';
+      if (command === '') {
+        setCmd(null);
+        return;
+      }
+      if (['w', 'wq', 'q', 'q!', 'x'].includes(command)) {
+        showResult('E45: readonly — nothing to write ✓', 2400);
+        return;
+      }
+      if (command === 'ski' || command === 'snow') {
+        window.dispatchEvent(new Event('jt:snow'));
+        showResult('❄ let it snow', 2400);
+        return;
+      }
+      if (command === 'help' || command === 'h') {
+        setCmd(null);
+        setHelpOpen(true);
+        return;
+      }
+      if (command === 'cd' || command.startsWith('cd ')) {
+        const arg = command
+          .slice(2)
+          .trim()
+          .replace(/^~\/?/, '');
+        const to =
+          arg === '' || arg === 'work'
+            ? 'work'
+            : arg.startsWith('after') || arg === 'play'
+              ? 'play'
+              : null;
+        if (to) {
+          window.dispatchEvent(
+            new CustomEvent('jt:nav', { detail: { surface: to } }),
+          );
+          showResult(`→ ~/${to === 'play' ? 'after-hours' : 'work'}`, 1800);
+        } else {
+          showResult(`E344: no such dir: ${arg.slice(0, 14)}`, 2400);
+        }
+        return;
+      }
+      showResult(`E492: not an editor command: ${command.slice(0, 18)}`, 2400);
+    };
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isTyping(event.target)) return;
+
+      if (event.key === 'Escape') {
+        setHelpOpen(false);
+        mode = 'normal';
+        cmdBuf = '';
+        setCmd(null);
+        return;
+      }
+
+      if (mode === 'command') {
+        event.preventDefault();
+        if (event.key === 'Enter') {
+          execute(cmdBuf);
+        } else if (event.key === 'Backspace') {
+          if (cmdBuf === '') {
+            mode = 'normal';
+            setCmd(null);
+          } else {
+            cmdBuf = cmdBuf.slice(0, -1);
+            setCmd(`:${cmdBuf}`);
+          }
+        } else if (event.key.length === 1) {
+          cmdBuf += event.key;
+          setCmd(`:${cmdBuf}`);
+        }
+        return;
+      }
+
+      if (event.key === ':') {
+        mode = 'command';
+        cmdBuf = '';
+        clearTimeout(cmdTimer);
+        setCmd(':');
+        return;
+      }
+
+      switch (event.key) {
+        case 'j':
+          scrollBy(160);
+          break;
+        case 'k':
+          scrollBy(-160);
+          break;
+        case 'd':
+          scrollBy(window.innerHeight / 2);
+          break;
+        case 'u':
+          scrollBy(-window.innerHeight / 2);
+          break;
+        case 'g':
+          if (Date.now() - lastG < 450) {
+            window.scrollTo({ top: 0, behavior });
+            lastG = 0;
+          } else {
+            lastG = Date.now();
+          }
+          break;
+        case 'G':
+          window.scrollTo({ top: document.body.scrollHeight, behavior });
+          break;
+        case ']':
+          jumpSection(1);
+          break;
+        case '[':
+          jumpSection(-1);
+          break;
+        case '/':
+          event.preventDefault();
+          window.dispatchEvent(new Event('jt:palette'));
+          break;
+        case '?':
+          setHelpOpen((v) => !v);
+          break;
+        default: {
+          const n = Number(event.key);
+          if (n >= 1 && n <= 9) {
+            sectionEls()[n - 1]?.scrollIntoView({ behavior });
+          }
+        }
+      }
+    };
+
+    const onKeymapEvent = () => setHelpOpen((v) => !v);
+
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('jt:keymap', onKeymapEvent);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('jt:keymap', onKeymapEvent);
+      clearTimeout(cmdTimer);
+    };
+  }, []);
+
+  return (
+    <>
+      <AnimatePresence>
+        {helpOpen && (
+          <motion.div
+            className="palette-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            onClick={() => setHelpOpen(false)}
+          >
+            <motion.div
+              className="keymap"
+              role="dialog"
+              aria-label="Keyboard shortcuts"
+              initial={{ y: -12, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -12, opacity: 0 }}
+              transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <p className="keymap-title">jtseng(1) — keymap</p>
+              {BINDINGS.map(([keys, action]) => (
+                <div className="keymap-row" key={keys}>
+                  <kbd>{keys}</kbd>
+                  <span>{action}</span>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {cmd && (
+          <motion.p
+            className="cmdline"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.15 }}
+          >
+            {cmd}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+export default KeyboardLayer;
