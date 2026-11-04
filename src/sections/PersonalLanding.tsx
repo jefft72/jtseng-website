@@ -30,7 +30,7 @@ export default function PersonalLanding() {
         <section className="personal-intro" id="about" aria-labelledby="personal-name" tabIndex={-1}>
           <h1 id="personal-name">jeffrey tseng<span>.</span></h1>
           <p className="personal-hello">AI infrastructure, agents, and backend systems.</p>
-          <p className="personal-now">Right now, I’m co-founding <a href="https://diffex.ai" target="_blank" rel="noreferrer">Diffex</a>, building infrastructure at <a href="#experience">Judi Health</a>, and working on aircraft trajectory research with <a href="#experience">Purdue Data Mine / RTX</a>.</p>
+          <p className="personal-now">Right now, I’m building infrastructure at <a href="#experience">Judi Health</a> and working on aircraft trajectory research with <a href="#experience">Purdue Data Mine / RTX</a>.</p>
           <p className="personal-aside">CS at Purdue. Also into <a href="#/after-hours/climbing">climbing</a>, <a href="#/after-hours/travel">getting somewhere new</a>, and recommending <a href="#personal-reading">Red Rising</a> to everyone.</p>
           <nav className="personal-contact" aria-label="Contact and social links">
             <a href={`mailto:${links.email}`}>email <span aria-hidden="true">↗</span></a>
