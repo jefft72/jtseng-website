@@ -4,6 +4,7 @@ export type Experience = {
   org: string;
   period: string;
   signal: string;
+  details?: string[];
 };
 
 export type Project = {
@@ -11,10 +12,12 @@ export type Project = {
   name: string;
   type: string;
   year: string;
+  blurb?: string;
   summary: string;
   stack: string;
   metric: string;
   href?: string;
+  tools: { name: string; role: string }[];
 };
 
 export const experience: Experience[] = [
@@ -24,7 +27,12 @@ export const experience: Experience[] = [
     org: 'Judi Health (formerly Capital Rx)',
     period: 'JUN 2026 - PRESENT',
     signal:
-      'Building an AWS-hosted Firecracker microVM execution platform and backend services for pharmacy claim adjudication serving 5M+ contracted lives.',
+      'Leading an AWS-hosted Firecracker microVM platform that gives engineers and coding agents isolated sandboxes, alongside pharmacy claim infrastructure serving 5M+ contracted lives.',
+    details: [
+      'Designed a capacity-aware scheduler that places microVMs across EC2 hosts and manages their lifecycle.',
+      'Built a Rust linter that enforces type-safe function calls across the claims pipeline and integrated it into CI.',
+      'Backend engineering internship spanning summer and fall 2026.',
+    ],
   },
   {
     n: '02',
@@ -32,18 +40,39 @@ export const experience: Experience[] = [
     org: 'Diffex - Luntraa Inc.',
     period: 'APR 2026 - PRESENT',
     signal:
-      'Architected a modular Rust-based agent harness and evidence-driven self-evaluation pipeline, improving SWE-bench Lite performance to 20% after one evolution cycle.',
+      'Building a modular Rust agent harness and an evidence-driven self-evolution pipeline, reaching 20% on SWE-bench Lite after a single evolution cycle.',
+    details: [
+      'Awarded $50,000 in compute through the Daytona Grid Startup Initiative.',
+      'Built provider-agnostic model interfaces, typed execution traces, tool orchestration, persistent sessions, and replayable evaluations.',
+      'The self-evolution pipeline diagnoses recurring failures, attributes token and latency costs, and generates and validates targeted harness modifications.',
+    ],
   },
   {
     n: '03',
+    role: 'Machine Learning Researcher',
+    org: 'Purdue Data Mine / RTX Corporation',
+    period: 'AUG 2026 - PRESENT',
+    signal:
+      'Developing ML-based aircraft trajectories and a 3D simulation environment for real-time obstacle avoidance, route efficiency, and waypoint compliance.',
+    details: [
+      'Synthesizing flight data with path-planning algorithms to train models for dynamic airspace.',
+      'Working through Purdue Data Mine with mentorship from Raytheon engineers.',
+    ],
+  },
+  {
+    n: '04',
     role: 'Co-Founder',
     org: 'UPlate',
     period: 'AUG 2025 - JUL 2026',
     signal:
-      'Grew a campus dining and nutrition app to 150+ daily active users; engineered its RAG pipeline and full stateful Flutter onboarding flow.',
+      'Grew a campus dining and nutrition app to 150+ daily active users, led six engineers, and built its RAG pipeline and Flutter app.',
+    details: [
+      'Engineered semantic chunking over nutritional data to supply context to Google\'s Gemini API.',
+      'Built the full app, including a stateful onboarding flow for dietary profiles, and managed partnerships.',
+    ],
   },
   {
-    n: '04',
+    n: '05',
     role: 'Technical Teaching Assistant',
     org: 'Google Developer Groups - Purdue University',
     period: 'AUG 2025 - MAY 2026',
@@ -51,7 +80,7 @@ export const experience: Experience[] = [
       'Taught RAG architecture to 300+ students and designed take-home projects on React, Google Cloud, Vertex AI, and TensorFlow.',
   },
   {
-    n: '05',
+    n: '06',
     role: 'Team Lead',
     org: 'Hack the Future - Purdue University',
     period: 'OCT 2025 - MAY 2026',
@@ -66,32 +95,50 @@ export const projects: Project[] = [
     name: 'Diffex',
     type: 'AGENT HARNESS',
     year: '2026',
+    blurb: 'Agent infrastructure that learns from its own work.',
     summary:
-      'Modular, provider-agnostic agent harness with typed execution traces, tool orchestration, persistent session state, and replayable evaluations.',
+      'A modular Rust agent harness with typed execution traces, tool orchestration, persistent sessions, and replayable evaluations. Its self-evolution pipeline reached 20% on SWE-bench Lite after a single evolution cycle.',
     stack: 'RUST / LLMS / EVALUATIONS',
-    metric: '20% SWE-BENCH LITE AFTER ONE EVOLUTION CYCLE',
+    metric: '$50,000 in compute awarded through Daytona Grid',
     href: 'https://diffex.ai',
+    tools: [
+      { name: 'Rust', role: 'The agent harness, tool orchestration, and persistent sessions.' },
+      { name: 'SWE-bench Lite', role: 'The benchmark used to evaluate software-engineering performance after harness improvements.' },
+    ],
   },
   {
     n: '02',
-    name: 'OpenCraft',
-    type: 'MULTI-AGENT SYSTEM',
-    year: '2026',
+    name: 'AnimaLabs',
+    type: 'RESEARCH AGENTS',
+    year: '',
+    blurb: 'Research agents for biomedical simulation.',
     summary:
-      'Multi-agent coordination backend for Minecraft using Supabase as shared state for jobs, agents, and memory, with an integration harness for contention and handoffs.',
-    stack: 'SUPABASE / POSTGRES / REALTIME / PGVECTOR',
-    metric: 'HACKPRINCETON 2026 WINNER (DEDALUS TRACK)',
+      'Research and analyst agents connect biomedical literature from Europe PMC with deterministic simulations and cited LaTeX reports. The reporting pipeline produced 7 simulation-based reports and 23 charts with checksum-verified artifacts. Team simulations reproduced published Parkinson\'s disease findings on data the model was not fitted to.',
+    stack: 'AGENTS / APIFY / LATEX / SIMULATION',
+    metric: 'Cal Hacks 13.0 winner, CREAO AI Track / Commit Fellowship Prize',
+    tools: [
+      { name: 'Europe PMC', role: 'Published biomedical research used to propose cited experiments.' },
+      { name: 'Apify', role: 'Connects the research agent to Europe PMC search.' },
+      { name: 'LaTeX', role: 'Turns simulation analysis and findings into research reports.' },
+    ],
   },
   {
     n: '03',
-    name: 'UPlate',
-    type: 'MOBILE APP',
-    year: '2025',
+    name: 'OpenCraft',
+    type: 'MULTI-AGENT SYSTEM',
+    year: '2026',
+    blurb: 'Multiple agents, one shared Minecraft world.',
     summary:
-      'Campus dining and nutrition app with semantic-chunking RAG over nutritional data and a stateful multi-page Flutter onboarding flow.',
-    stack: 'FLUTTER / FIREBASE / GEMINI',
-    metric: '150+ DAILY ACTIVE USERS',
-    href: 'https://jefft72.github.io/UPlate/',
+      'Multi-agent coordination backend for Minecraft using Supabase as shared state for jobs, agents, and memory, with an integration harness for contention and handoffs.',
+    stack: 'SUPABASE / POSTGRES / REALTIME / PGVECTOR',
+    metric: 'HackPrinceton 2026 winner, Dedalus Track',
+    tools: [
+      { name: 'Supabase', role: 'Shared backend state for jobs, agents, and memory.' },
+      { name: 'PostgreSQL', role: 'Stores the coordination backend’s shared data.' },
+      { name: 'Realtime', role: 'Live updates to shared agent state.' },
+      { name: 'pgvector', role: 'Vector storage in the shared-state backend.' },
+      { name: 'Minecraft', role: 'The shared environment where agents coordinate their tasks.' },
+    ],
   },
 ];
 

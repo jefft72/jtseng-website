@@ -22,7 +22,7 @@ function TopBar({ surface }: { surface: Surface }) {
       className={`topbar${collapsed ? ' topbar--collapsed' : ''}`}
       aria-label="Primary"
     >
-      <a className="mark" href="#top">
+      <a className="mark" href={surface === 'play' ? '#/after-hours' : '#top'}>
         JT
       </a>
       <div className="topbar-links">
@@ -41,10 +41,10 @@ function TopBar({ surface }: { surface: Surface }) {
           </>
         ) : (
           <>
-            <a href="#travel">Travel</a>
-            <a href="#reading">Reading</a>
-            <a href="#terminal">Terminal</a>
-            <a href="#climbing">Climbing</a>
+            <a href="#/after-hours/travel">Travel</a>
+            <a href="#/after-hours/reading">Reading</a>
+            <a href="#/after-hours/terminal">Terminal</a>
+            <a href="#/after-hours/climbing">Climbing</a>
             <button
               type="button"
               className="topbar-switch"

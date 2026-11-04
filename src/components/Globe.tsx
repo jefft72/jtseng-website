@@ -63,18 +63,20 @@ function Globe() {
     ).matches;
     let raf = 0;
     let globe: ReturnType<typeof createGlobe> | null = null;
+    let renderedWidth = 0;
 
     const init = () => {
       const width = canvas.offsetWidth;
       if (width === 0) {
-        // layout not ready yet — retry next frame instead of mounting blank
+        // Layout is not ready yet - retry instead of mounting a blank globe.
         raf = requestAnimationFrame(init);
         return;
       }
       globe = createGlobe(canvas, {
         devicePixelRatio: 2,
-        width: width * 2,
-        height: width * 2,
+        // Cobe applies devicePixelRatio to these CSS dimensions itself.
+        width,
+        height: width,
         phi: phiRef.current,
         theta: THETA,
         dark: 1,
@@ -87,6 +89,7 @@ function Globe() {
         markerElevation: 0,
         markers: [],
       });
+      renderedWidth = width;
 
       const tick = () => {
         const target = targetPhiRef.current;
@@ -114,8 +117,6 @@ function Globe() {
         }
         globe?.update({
           phi: phiRef.current,
-          width: canvas.offsetWidth * 2,
-          height: canvas.offsetWidth * 2,
           markers: places.map((place) => {
             const d = displayOf(place);
             return { location: [d.lat, d.lng], size: 0.045 };
@@ -127,7 +128,15 @@ function Globe() {
     };
 
     init();
+    const resizeObserver = new ResizeObserver(() => {
+      const width = canvas.offsetWidth;
+      if (!globe || width === 0 || width === renderedWidth) return;
+      renderedWidth = width;
+      globe.update({ width, height: width });
+    });
+    resizeObserver.observe(canvas);
     return () => {
+      resizeObserver.disconnect();
       cancelAnimationFrame(raf);
       globe?.destroy();
     };
