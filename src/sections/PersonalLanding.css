@@ -40,9 +40,8 @@ html:has(.personal-home),
 .personal-intro h1 > span { color: var(--accent); }
 .personal-hello { margin-top: 26px !important; font: 400 25px/1.5 'Source Serif 4', Georgia, serif; letter-spacing: -.018em; text-wrap: balance; }
 .personal-now { margin-top: 23px !important; color: #5a6577; font-size: 13px; line-height: 1.95; }
-.personal-now a, .personal-aside a { color: #485b7b; text-decoration: underline; text-decoration-color: #acb8cc; transition: text-decoration-color .2s, color .2s; }
-.personal-now a:hover, .personal-aside a:hover { text-decoration-color: var(--accent); }
-.personal-aside { margin-top: 15px !important; color: var(--personal-muted); font-size: 12px; line-height: 1.9; }
+.personal-now a { color: #485b7b; text-decoration: underline; text-decoration-color: #acb8cc; transition: text-decoration-color .2s, color .2s; }
+.personal-now a:hover { text-decoration-color: var(--accent); }
 .personal-contact { display: flex; flex-wrap: wrap; gap: 25px; margin-top: 26px; font-size: 11px; }
 .personal-contact a > span { display: inline-block; margin-left: 5px; color: var(--accent); font-size: 11px; transition: transform .2s; }
 .personal-contact a:hover > span { transform: translate(2px,-2px); }
