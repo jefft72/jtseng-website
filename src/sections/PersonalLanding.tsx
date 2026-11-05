@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import DitherField from '../components/DitherField';
-import { experience, links, projects, reading, stackLines } from '../data';
+import { experience, links, projects, stackLines } from '../data';
 import './PersonalLanding.css';
 
 export default function PersonalLanding() {
@@ -110,15 +110,6 @@ export default function PersonalLanding() {
                 </div>
               </details>
             ))}
-          </div>
-        </section>
-
-        <section className="personal-reading" id="personal-reading" aria-labelledby="personal-reading-title">
-          <span className="personal-reading-mark" aria-hidden="true">↳</span>
-          <div>
-            <h2 id="personal-reading-title">currently somewhere in a book</h2>
-            <p className="personal-book-title"><a href="#/after-hours/reading">{reading.title}</a> <span>by {reading.author}</span></p>
-            <p className="personal-book-note">My only gripe is that Pierce Brown keeps killing everyone off...</p>
           </div>
         </section>
 

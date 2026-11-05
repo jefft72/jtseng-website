@@ -17,7 +17,7 @@ export type Surface = 'work' | 'play';
 type NavDetail = { surface: Surface; selector?: string; travel?: boolean };
 
 const playSections = new Set(['travel', 'reading', 'terminal', 'climbing']);
-const workSections = new Set(['top', 'about', 'experience', 'projects', 'stack', 'personal-reading', 'nb-background', ...projects.map((project) => `project-${project.name.toLowerCase()}`)]);
+const workSections = new Set(['top', 'about', 'experience', 'projects', 'stack', 'nb-background', ...projects.map((project) => `project-${project.name.toLowerCase()}`)]);
 
 function navigationFromHash(): NavDetail {
   const hash = window.location.hash;
